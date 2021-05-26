@@ -37,49 +37,76 @@ public extension Solana {
 
             // swap (un-parsed type)
             if let instructionIndex = getSwapInstructionIndex(instructions: instructions) {
-                let instruction = instructions[instructionIndex]
-                single = parseSwapTransaction(
-                    index: instructionIndex,
-                    instruction: instruction,
-                    innerInstructions: innerInstructions,
-                    myAccountSymbol: myAccountSymbol
-                )
+                let checkingInnerInstructions = innerInstructions?.first?.instructions
+                // swap
+                if checkingInnerInstructions?.count == 2,
+                   checkingInnerInstructions![0].parsed?.type == "transfer",
+                   checkingInnerInstructions![1].parsed?.type == "transfer" {
+                    let instruction = instructions[instructionIndex]
+                    single = parseSwapTransaction(
+                        index: instructionIndex,
+                        instruction: instruction,
+                        innerInstructions: innerInstructions,
+                        myAccountSymbol: myAccountSymbol
+                    )
                     .map {$0 as AnyHashable}
+                }
+
+                // Later: provide liquidity to pool (unsupported yet)
+                else if checkingInnerInstructions?.count == 3,
+                        checkingInnerInstructions![0].parsed?.type == "transfer",
+                        checkingInnerInstructions![1].parsed?.type == "transfer",
+                        checkingInnerInstructions![2].parsed?.type == "mintTo" {
+                    single = .just(nil)
+                }
+
+                // Later: burn?
+                else if checkingInnerInstructions?.count == 3,
+                        checkingInnerInstructions![0].parsed?.type == "burn",
+                        checkingInnerInstructions![1].parsed?.type == "transfer",
+                        checkingInnerInstructions![2].parsed?.type == "transfer" {
+                    single = .just(nil)
+                }
+
+                // unsupported
+                else {
+                    single = .just(nil)
+                }
             }
 
             // create account
             else if instructions.count == 2,
-               instructions.first?.parsed?.type == "createAccount",
-               instructions.last?.parsed?.type == "initializeAccount" {
+                    instructions.first?.parsed?.type == "createAccount",
+                    instructions.last?.parsed?.type == "initializeAccount" {
                 single = parseCreateAccountTransaction(
                     instruction: instructions[0],
                     initializeAccountInstruction: instructions.last
                 )
-                    .map {$0 as AnyHashable}
+                .map {$0 as AnyHashable}
             }
 
             // close account
             else if instructions.count == 1,
-               instructions.first?.parsed?.type == "closeAccount" {
+                    instructions.first?.parsed?.type == "closeAccount" {
                 single = parseCloseAccountTransaction(
                     closedTokenPubkey: instructions.first?.parsed?.info.account,
                     preBalances: transactionInfo.meta?.preBalances,
                     preTokenBalance: transactionInfo.meta?.preTokenBalances?.first
                 )
-                    .map {$0 as AnyHashable}
+                .map {$0 as AnyHashable}
             }
 
             // transfer
             else if instructions.count == 1 || instructions.count == 4 || instructions.count == 2,
-               instructions.last?.parsed?.type == "transfer" || instructions.last?.parsed?.type == "transferChecked",
-               let instruction = instructions.last {
+                    instructions.last?.parsed?.type == "transfer" || instructions.last?.parsed?.type == "transferChecked",
+                    let instruction = instructions.last {
                 single = parseTransferTransaction(
                     instruction: instruction,
                     postTokenBalances: transactionInfo.meta?.postTokenBalances ?? [],
                     myAccount: myAccount,
                     accountKeys: transactionInfo.transaction.message.accountKeys
                 )
-                    .map {$0 as AnyHashable}
+                .map {$0 as AnyHashable}
             }
 
             // unknown transaction
@@ -338,15 +365,15 @@ public extension Solana {
                 account: account,
                 decodedTo: AccountInfo.self
             )
-                .map {$0.data.value}
-                .catchAndReturn(nil)
-                .flatMap {
-                    if $0 == nil,
-                       let retryAccount = retryAccount {
-                        return getAccountInfo(account: retryAccount)
-                    }
-                    return .just($0)
+            .map {$0.data.value}
+            .catchAndReturn(nil)
+            .flatMap {
+                if $0 == nil,
+                   let retryAccount = retryAccount {
+                    return getAccountInfo(account: retryAccount)
                 }
+                return .just($0)
+            }
         }
     }
 }

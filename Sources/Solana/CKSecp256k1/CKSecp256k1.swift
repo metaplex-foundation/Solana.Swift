@@ -43,24 +43,24 @@ struct CKSecp256k1 {
         let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN))!
         let prvKey = privateKeyData.bytes
         var pKey = secp256k1_pubkey()
-        
+
         var result = secp256k1_ec_pubkey_create(context, &pKey, prvKey)
-        if (result != 1) {
+        if result != 1 {
             return nil
         }
-        
+
         let size = isCompression ? 33 : 65
         let pubkey = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
         var s = size
-        
-        result = secp256k1_ec_pubkey_serialize(context, pubkey, &s, &pKey, UInt32(isCompression ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED));
-        if (result != 1) {
+
+        result = secp256k1_ec_pubkey_serialize(context, pubkey, &s, &pKey, UInt32(isCompression ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED))
+        if result != 1 {
             return nil
         }
-        
-        secp256k1_context_destroy(context);
-        
-        let data = NSMutableData(bytes: pubkey, length:size).copy()
+
+        secp256k1_context_destroy(context)
+
+        let data = NSMutableData(bytes: pubkey, length: size).copy()
         return data as? Data
     }
     /*
@@ -94,20 +94,20 @@ struct CKSecp256k1 {
         let msg = msgData.bytes
         let siga = UnsafeMutablePointer<UInt8>.allocate(capacity: 64)
         var sig = secp256k1_ecdsa_signature()
-        
+
         var result = secp256k1_ecdsa_sign(context, &sig, msg, prvKey, nil, nil)
-        result = secp256k1_ecdsa_signature_serialize_compact(context, siga, &sig);
-        
-        if (result != 1) {
-            return nil;
+        result = secp256k1_ecdsa_signature_serialize_compact(context, siga, &sig)
+
+        if result != 1 {
+            return nil
         }
-        
-        secp256k1_context_destroy(context);
-        
-        let data = NSMutableData(bytes: siga, length:64).copy()
+
+        secp256k1_context_destroy(context)
+
+        let data = NSMutableData(bytes: siga, length: 64).copy()
         return data as? Data
     }
-    
+
     /*
      + (NSInteger)verifySignedData:(NSData *)sigData withMessageData:(NSData *)msgData usePublickKey:(NSData *)pubKeyData
     {
@@ -132,24 +132,24 @@ struct CKSecp256k1 {
         return result;
     }*/
     static func verifySignedData(sigData: Data, withMessageData msgData: Data, usePublickKey pubKeyData: Data) -> Int32 {
-        
+
         let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_VERIFY | SECP256K1_CONTEXT_SIGN))!
         let sig = sigData.bytes
         let msg = msgData.bytes
-        
+
         let pubKey = pubKeyData.bytes
         var pKey = secp256k1_pubkey()
-        
-        let pubResult = secp256k1_ec_pubkey_parse(context, &pKey, pubKey, pubKeyData.count);
-        if (pubResult != 1){ return -3 }
-        
+
+        let pubResult = secp256k1_ec_pubkey_parse(context, &pKey, pubKey, pubKeyData.count)
+        if pubResult != 1 { return -3 }
+
         var sig_ecdsa = secp256k1_ecdsa_signature()
-        let sigResult = secp256k1_ecdsa_signature_parse_compact(context, &sig_ecdsa, sig);
-        if (sigResult != 1){ return -4 }
-        
-        let result = secp256k1_ecdsa_verify(context, &sig_ecdsa, msg, &pKey);
-        
-        secp256k1_context_destroy(context);
+        let sigResult = secp256k1_ecdsa_signature_parse_compact(context, &sig_ecdsa, sig)
+        if sigResult != 1 { return -4 }
+
+        let result = secp256k1_ecdsa_verify(context, &sig_ecdsa, msg, &pKey)
+
+        secp256k1_context_destroy(context)
         return result
     }
 
