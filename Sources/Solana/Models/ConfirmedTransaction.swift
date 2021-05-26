@@ -43,7 +43,7 @@ public extension Solana {
 
                 // approve
                 let amount: String?
-                weak var delegate: String?
+                var delegate: String?
 
                 // transfer
                 let authority: String?

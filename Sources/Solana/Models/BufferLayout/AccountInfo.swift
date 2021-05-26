@@ -13,7 +13,7 @@ extension Solana {
         public let owner: PublicKey
         public let lamports: UInt64
         public let delegateOption: UInt32
-        public weak var delegate: PublicKey?
+        public var delegate: PublicKey?
         public let isInitialized: Bool
         public let isFrozen: Bool
         public let state: UInt8

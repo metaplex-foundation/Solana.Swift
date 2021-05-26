@@ -13,21 +13,21 @@ import XCTest
 class RestAPITransactionTests: RestAPITests {
     // MARK: - Create and close
     func testCreateTokenAccount() throws {
-        // USDC
-        let mintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
 
         _ = try solanaSDK.createTokenAccount(
             mintAddress: mintAddress,
-            isSimulation: true
+            isSimulation: false
         ).toBlocking().first()
     }
 
     func testCloseAccount() throws {
-        let token = "AWgmNoaiXh2GuKQa89dpqE6k23ae4uTmF9ym6USRhVWB"
-
+        
+        let token = "4PsGEFn43xc7ztymrt77XfUE4FespyNm6KuYYmsstz5L"
+        
         _ = try solanaSDK.closeTokenAccount(
             tokenPubkey: token,
-            isSimulation: true
+            isSimulation: false
         ).toBlocking().first()
     }
 

@@ -2113,16 +2113,6 @@ public struct BDouble: ExpressibleByIntegerLiteral,
 }
 
 // MARK: - BDouble Operators, needs to be more!
-\**********/
-\*********/
-\********/
-\*******/
-\******/
-\*****/
-\****/
-\***/
-\**/
-\*/
 
 public func ==(lhs: BDouble, rhs: BDouble) -> Bool {
     if lhs.sign != rhs.sign { return false }

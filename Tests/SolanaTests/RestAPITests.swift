@@ -11,12 +11,12 @@ import XCTest
 class RestAPITests: XCTestCase {
     var endpoint: Solana.APIEndPoint {
         .init(
-            url: "https://api.mainnet-beta.solana.com",
-            network: .mainnetBeta
+            url: "https://api.devnet.solana.com",
+            network: .devnet
         )
     }
     var solanaSDK: Solana!
-    var account: Solana.Account {solanaSDK.accountStorage.account!}
+    var account: Solana.Account { solanaSDK.accountStorage.account! }
 
     override func setUpWithError() throws {
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
@@ -25,7 +25,7 @@ class RestAPITests: XCTestCase {
     }
 
     func testGetTokenAccountBalance() throws {
-        let balance = try solanaSDK.getTokenAccountBalance(pubkey: "1dmDx6xPCaHE3wBTyGLASy3BHuvNVFiVBvrtg4X9sxa").toBlocking().first()
+        let balance = try solanaSDK.getTokenAccountBalance(pubkey: "4PsGEFn43xc7ztymrt77XfUE4FespyNm6KuYYmsstz5L").toBlocking().first()
         XCTAssertNotNil(balance?.uiAmount)
         XCTAssertNotNil(balance?.amount)
         XCTAssertNotNil(balance?.decimals)
