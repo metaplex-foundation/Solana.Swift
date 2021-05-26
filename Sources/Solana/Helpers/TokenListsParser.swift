@@ -12,8 +12,7 @@ public extension Solana {
         public init() {}
         public func parse(network: String) throws -> [Token] {
             // get json file
-            let bundle = Bundle(for: TokensListParser.self)
-            let path = bundle.path(forResource: network + ".tokens", ofType: "json")
+            let path = Bundle.module.url(forResource: network + ".tokens", withExtension: "json")?.path
             let jsonData = try Data(contentsOf: URL(fileURLWithPath: path!))
 
             // parse json
