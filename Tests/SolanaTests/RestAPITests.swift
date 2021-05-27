@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import RxSwift
+import RxBlocking
 @testable import Solana
 
 class RestAPITests: XCTestCase {
@@ -60,7 +62,7 @@ extension RestAPITests {
     }
 
     func testCloseAccount() throws {
-        let token = "FoDrW4UjZaUKxvEZprytrvF8T3zUzroM2smH9y6Z3t7y"
+        let token = "6AR3iMmnkP2U6ETecZviYEXnyiomeFwru7kftwSENmgK"
         _ = try solanaSDK.closeTokenAccount(
             tokenPubkey: token
         ).toBlocking().first()
@@ -110,10 +112,16 @@ extension RestAPITests {
     }
 
     func testSwapToken() throws {
-        let source = try Solana.PublicKey(string: "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm")
-        let sourceMint = Solana.PublicKey.wrappedSOLMint
-        let destinationMint = try Solana.PublicKey(string: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v")
-        let destination = try Solana.PublicKey(string: "C3enVPXBvpx7AWGZkqhn7xCcoxCrDCZy9hZ1e5qyoWo6")
+        let USDCWallet = "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8"
+        let USDTWallet = "EJwZgeZrdC8TXTQbQBoL6bfuAnFUUy1PVCMB4DYPzVaS"
+
+        let USDCMintAddress = "2ST2CedQ1QT7f2G31Qws9n7GFj7C56fKnhbxnvLymFwU"
+        let USDTMintAddress = "E9ySnfyR467236FjUQKswrXq1qmHmS7WyjbiWo7Fnmgo"
+        
+        let source = try Solana.PublicKey(string: USDCWallet)
+        let sourceMint = try Solana.PublicKey(string: USDCMintAddress)
+        let destination = try Solana.PublicKey(string: USDTWallet)
+        let destinationMint = try Solana.PublicKey(string: USDTMintAddress)
 
         _ = try solanaSDK.swap(
             source: source,
@@ -127,10 +135,10 @@ extension RestAPITests {
 
     func testSendSPLTokenToSolAccountViaAToken() throws {
         _ = try solanaSDK.sendSPLTokens(
-            mintAddress: "MAPS41MDahZ9QdKXhVa4dWB9RuyfV4XqhyAZ8XcYepb",
+            mintAddress: "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH",
             decimals: 6,
-            from: "H1yu3R247X5jQN9bbDU8KB7RY4JSeEaCv45p5CMziefd",
-            to: "J2EzmHcwZP4CUQwt9yUBgPS7JcMyJYCqw2WGVB5LTW6P",
+            from: "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ",
+            to: "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ",
             amount: 0.001.toLamport(decimals: 6)
         ).toBlocking().first()
     }

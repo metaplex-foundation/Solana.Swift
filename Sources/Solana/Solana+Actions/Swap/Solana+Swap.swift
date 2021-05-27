@@ -151,7 +151,7 @@ extension Solana {
                         poolMint: pool.swapData.tokenPool,
                         feeAccount: pool.swapData.feeAccount,
                         hostFeeAccount: nil,
-                        swapProgramId: self.endpoint.network.swapProgramId,
+                        swapProgramId: try Solana.PublicKey(string: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1") /*swap ocra*/,
                         tokenProgramId: .tokenProgramId,
                         amountIn: amount,
                         minimumAmountOut: minAmountIn
