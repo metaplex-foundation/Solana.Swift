@@ -11,7 +11,7 @@ import RxSwift
 extension Solana {
     public func getSwapPools() -> Single<[Pool]> {
             if let pools = _swapPool {return .just(pools)}
-            return getPools(swapProgramId: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1" /*swap ocra*/ )
+            return getPools(swapProgramId: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8" )
                 .map {
                     $0.filter {
                         $0.tokenABalance?.amountInUInt64 != 0 &&
@@ -35,11 +35,11 @@ extension Solana {
                         return (address: program.pubkey, swapData: swapData)
                     }
                 }
-    //            .do(onSuccess: {programs in
-    //                var programs = programs.map {$0.swapData}
-    //                Logger.log(message: String(data: try JSONEncoder().encode(programs), encoding: .utf8)!, event: .response)
-    //
-    //            })
+                .do(onSuccess: {programs in
+                    var programs = programs.map {$0.swapData}
+                    Logger.log(message: String(data: try JSONEncoder().encode(programs), encoding: .utf8)!, event: .response)
+    
+                })
                 .flatMap {
                     Single.zip(
                         try $0.compactMap {
