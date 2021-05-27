@@ -17,8 +17,7 @@ extension Solana {
         destination: PublicKey? = nil,
         destinationMint: PublicKey,
         slippage: Double,
-        amount: UInt64,
-        isSimulation: Bool = false
+        amount: UInt64
     ) -> Single<TransactionID> {
         // verify account
         guard let owner = account ?? accountStorage.account
@@ -161,8 +160,7 @@ extension Solana {
 
                 return self.serializeAndSendWithFee(
                     instructions: instructions + cleanupInstructions,
-                    signers: signers,
-                    isSimulation: isSimulation
+                    signers: signers
                 )
             }
     }

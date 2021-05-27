@@ -16,18 +16,14 @@ class RestAPITransactionTests: RestAPITests {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
 
         _ = try solanaSDK.createTokenAccount(
-            mintAddress: mintAddress,
-            isSimulation: false
+            mintAddress: mintAddress
         ).toBlocking().first()
     }
 
     func testCloseAccount() throws {
-        
-        let token = "4PsGEFn43xc7ztymrt77XfUE4FespyNm6KuYYmsstz5L"
-        
+        let token = "FoDrW4UjZaUKxvEZprytrvF8T3zUzroM2smH9y6Z3t7y"
         _ = try solanaSDK.closeTokenAccount(
-            tokenPubkey: token,
-            isSimulation: false
+            tokenPubkey: token
         ).toBlocking().first()
     }
 
@@ -40,14 +36,12 @@ class RestAPITransactionTests: RestAPITests {
 
         _ = try solanaSDK.sendSOL(
             to: toPublicKey,
-            amount: balance!/10,
-            isSimulation: true
+            amount: balance!/10
         ).toBlocking().first()
     }
 
     func testSendSOLWithoutFee() throws {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-
         _ = try solanaSDK.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
@@ -55,33 +49,24 @@ class RestAPITransactionTests: RestAPITests {
     }
 
     func testSendSPLTokenWithFee() throws {
-        // USDC
-        let mintAddress = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-        let source = "DjY1uZozQTPz9c6WsjpPC3jXWp7u98KzyuyQTRzcGHFk"
-        let destination = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-
-        _ = try solanaSDK.sendSPLTokens(
-            mintAddress: mintAddress,
-            decimals: 6,
-            from: source,
-            to: destination,
-            amount: Double(0.001).toLamport(decimals: 6),
-            isSimulation: true
-        ).toBlocking().first()
-    }
-
-    func testSendSPLTokenWithoutFee() throws {
-        // USDC
-        let mintAddress = "kinXdEcpDQeHPEuQnqmUgtYykqKGVFq6CeVX5iAHJq6"
-        let source = "93gmUv69EYA8V2jS8DRYxcpXHdX8bGQgq3Sef5EJMnDV"
-        let destination = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
+        let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
+        let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
 
         _ = try solanaSDK.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: source,
             to: destination,
-            amount: Double(10).toLamport(decimals: 5)
+            amount: Double(0.001).toLamport(decimals: 5)
+        ).toBlocking().first()
+        
+        _ = try solanaSDK.sendSPLTokens(
+            mintAddress: mintAddress,
+            decimals: 5,
+            from: destination,
+            to: source,
+            amount: Double(0.001).toLamport(decimals: 5)
         ).toBlocking().first()
     }
 
@@ -97,8 +82,7 @@ class RestAPITransactionTests: RestAPITests {
             destination: destination,
             destinationMint: destinationMint,
             slippage: 0.5,
-            amount: 0.001.toLamport(decimals: 9),
-            isSimulation: true
+            amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first()
     }
 
@@ -108,8 +92,7 @@ class RestAPITransactionTests: RestAPITests {
             decimals: 6,
             from: "H1yu3R247X5jQN9bbDU8KB7RY4JSeEaCv45p5CMziefd",
             to: "J2EzmHcwZP4CUQwt9yUBgPS7JcMyJYCqw2WGVB5LTW6P",
-            amount: 0.001.toLamport(decimals: 6),
-            isSimulation: true
+            amount: 0.001.toLamport(decimals: 6)
         ).toBlocking().first()
     }
 }

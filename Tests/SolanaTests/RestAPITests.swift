@@ -25,7 +25,8 @@ class RestAPITests: XCTestCase {
     }
 
     func testGetTokenAccountBalance() throws {
-        let balance = try solanaSDK.getTokenAccountBalance(pubkey: "4PsGEFn43xc7ztymrt77XfUE4FespyNm6KuYYmsstz5L").toBlocking().first()
+        let tokenAddress = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
+        let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
         XCTAssertNotNil(balance?.uiAmount)
         XCTAssertNotNil(balance?.amount)
         XCTAssertNotNil(balance?.decimals)

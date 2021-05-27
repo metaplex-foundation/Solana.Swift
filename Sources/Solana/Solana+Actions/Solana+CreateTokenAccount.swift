@@ -14,8 +14,7 @@ extension Solana {
     }
 
     public func createTokenAccount(
-        mintAddress: String,
-        isSimulation: Bool = false
+        mintAddress: String
     ) -> Single<(signature: String, newPubkey: String)> {
         guard let payer = self.accountStorage.account else {
             return .error(Error.unauthorized)
@@ -53,8 +52,7 @@ extension Solana {
                 return self.serializeAndSendWithFee(
                     instructions: instructions,
                     recentBlockhash: recentBlockhash,
-                    signers: [payer, newAccount],
-                    isSimulation: isSimulation
+                    signers: [payer, newAccount]
                 )
                     .map {($0, newAccount.publicKey.base58EncodedString)}
             }

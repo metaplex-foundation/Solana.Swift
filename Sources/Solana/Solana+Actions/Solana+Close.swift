@@ -11,8 +11,7 @@ import RxSwift
 extension Solana {
     public func closeTokenAccount(
         account: Solana.Account? = nil,
-        tokenPubkey: String,
-        isSimulation: Bool = false
+        tokenPubkey: String
     ) -> Single<TransactionID> {
         guard let account = account ?? accountStorage.account else {
             return .error(Error.unauthorized)
@@ -26,7 +25,7 @@ extension Solana {
                 owner: account.publicKey
             )
 
-            return serializeAndSendWithFee(instructions: [instruction], signers: [account], isSimulation: isSimulation)
+            return serializeAndSendWithFee(instructions: [instruction], signers: [account])
         } catch {
             return .error(error)
         }

@@ -18,7 +18,7 @@ extension Solana {
             case .mainnetBeta:
                 return try! Solana.PublicKey(string: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1")
             case .devnet:
-                return try! Solana.PublicKey(string: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1")
+                return try! Solana.PublicKey(string: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8")
             case .testnet:
                 return try! Solana.PublicKey(string: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1")
             }

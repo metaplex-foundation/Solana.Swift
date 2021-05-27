@@ -11,8 +11,7 @@ import RxSwift
 extension Solana {
     public func getOrCreateAssociatedTokenAccount(
         owner: PublicKey,
-        tokenMint: PublicKey,
-        isSimulation: Bool = false
+        tokenMint: PublicKey
     ) -> Single<(transactionId: TransactionID?, associatedTokenAddress: PublicKey)> {
         guard let associatedAddress = try? PublicKey.associatedTokenAddress(
             walletAddress: owner,
@@ -38,18 +37,15 @@ extension Solana {
                 // if not, create one
                 return self.createAssociatedTokenAccount(
                     for: owner,
-                    tokenMint: tokenMint,
-                    isSimulation: isSimulation
-                )
-                    .map {(transactionId: $0, associatedTokenAddress: associatedAddress)}
+                    tokenMint: tokenMint
+                ).map {(transactionId: $0, associatedTokenAddress: associatedAddress)}
             }
     }
 
     func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account? = nil,
-        isSimulation: Bool = false
+        payer: Account? = nil
     ) -> Single<TransactionID> {
         // get account
         guard let payer = payer ?? accountStorage.account else {
@@ -75,10 +71,8 @@ extension Solana {
             // send transaction
             return serializeAndSendWithFee(
                 instructions: [instruction],
-                signers: [payer],
-                isSimulation: isSimulation
+                signers: [payer]
             )
-
         } catch {
             return .error(error)
         }

@@ -14,7 +14,7 @@ extension Solana.Network {
         case .mainnetBeta:
             return "promote ignore inmate coast excess candy vanish erosion palm oxygen build powder"
         case .devnet:
-            return "galaxy lend nose glow equip student way hockey step dismiss expect silent"
+            return "siege amazing camp income refuse struggle feed kingdom lawn champion velvet crystal stomach trend hen uncover roast nasty until hidden crumble city bag minute"
         default:
             fatalError("unsupported")
         }

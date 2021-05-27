@@ -13,12 +13,12 @@ import RxBlocking
 
 class RestAPITransactionHistoryTests: RestAPITests {
     func testGetConfirmedSignaturesForAddress() throws {
-        let result = try solanaSDK.getConfirmedSignaturesForAddress2(account: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG", configs: Solana.RequestConfiguration(limit: 10)).toBlocking().first()
+        let result = try solanaSDK.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: Solana.RequestConfiguration(limit: 10)).toBlocking().first()
         XCTAssertEqual(result?.count, 10)
     }
 
     func testGetConfirmedTransaction() throws {
-        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "2dy6y54mVBx2jZQef4xCLcDFS4tmLLScDJA7PQvfcxLMiEH1aTHFDXgRwFmurFpFQ8tz1TGAGQbon7AvsfyiFWfK").toBlocking().first()
+        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "5dxrTLhZGwPzaYyE7xpTh5HgQdyV6hnseKGDHuhKAeTapw2TbTHtNh1aA2ecrbbGM2ZQ5gD6G7jzcd98Vro5L1DU").toBlocking().first()
         XCTAssertNotNil(result)
     }
 }

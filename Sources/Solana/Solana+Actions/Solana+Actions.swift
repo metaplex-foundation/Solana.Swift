@@ -14,13 +14,11 @@ extension Solana {
     ///   - instructions: transaction's instructions
     ///   - recentBlockhash: recentBlockhash
     ///   - signers: signers
-    ///   - isSimulation: define if this is a simulation or real transaction
     /// - Returns: transaction id
     func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
-        isSimulation: Bool
+        signers: [Account]
     ) -> Single<String> {
         let maxAttemps = 3
         var numberOfTries = 0
@@ -30,17 +28,7 @@ extension Solana {
             signers: signers
         )
             .flatMap {
-                if isSimulation {
-                    return self.simulateTransaction(transaction: $0)
-                        .map {result -> String in
-                            if result.err != nil {
-                                throw Error.other("Simulation error")
-                            }
-                            return "<simulated transaction id>"
-                        }
-                } else {
-                    return self.sendTransaction(serializedTransaction: $0)
-                }
+                return self.sendTransaction(serializedTransaction: $0)
             }
             .catch {error in
                 if numberOfTries <= maxAttemps,
@@ -57,7 +45,7 @@ extension Solana {
 
                     if shouldRetry {
                         numberOfTries += 1
-                        return self.serializeAndSendWithFee(instructions: instructions, signers: signers, isSimulation: isSimulation)
+                        return self.serializeAndSendWithFee(instructions: instructions, signers: signers)
                     }
                 }
                 throw error

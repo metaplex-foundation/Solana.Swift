@@ -15,14 +15,10 @@ extension Solana {
     /// - Parameters:
     ///   - toPublicKey: destination address
     ///   - amount: amount to send
-    ///   - withoutFee: send without fee. if it's true, the transaction can not be a simulation
-    ///   - isSimulation: define if this is a simulation or real transaction
     /// - Returns: transaction id
     public func sendSOL(
         to destination: String,
-        amount: UInt64,
-        withoutFee: Bool = true,
-        isSimulation: Bool = false
+        amount: UInt64
     ) -> Single<TransactionID> {
         guard let account = self.accountStorage.account else {
             return .error(Error.unauthorized)
@@ -60,8 +56,7 @@ extension Solana {
 
                     return self.serializeAndSendWithFee(
                         instructions: [instruction],
-                        signers: [account],
-                        isSimulation: isSimulation
+                        signers: [account]
                     )
                 }
                 .catch {error in
@@ -83,15 +78,13 @@ extension Solana {
     ///   - destinationAddress: destination wallet address
     ///   - amount: amount to send
     ///   - withoutFee: send without fee. if it's true, the transaction can not be a simulation
-    ///   - isSimulation: define if this is a simulation or real transaction
     /// - Returns: transaction id
     public func sendSPLTokens(
         mintAddress: String,
         decimals: Decimals,
         from fromPublicKey: String,
         to destinationAddress: String,
-        amount: UInt64,
-        isSimulation: Bool = false
+        amount: UInt64
     ) -> Single<TransactionID> {
         guard let account = self.accountStorage.account else {
             return .error(Error.unauthorized)
@@ -139,7 +132,7 @@ extension Solana {
 
                 instructions.append(sendInstruction)
 
-                return self.serializeAndSendWithFee(instructions: instructions, signers: [account], isSimulation: isSimulation)
+                return self.serializeAndSendWithFee(instructions: instructions, signers: [account])
             }
             .catch {error in
                 var error = error
