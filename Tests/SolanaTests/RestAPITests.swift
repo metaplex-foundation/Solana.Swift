@@ -27,7 +27,7 @@ class RestAPITests: XCTestCase {
     }
 
     func testGetTokenAccountBalance() throws {
-        let tokenAddress = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
+        let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
         let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
         XCTAssertNotNil(balance?.uiAmount)
         XCTAssertNotNil(balance?.amount)
@@ -62,7 +62,7 @@ extension RestAPITests {
     }
 
     func testCloseAccount() throws {
-        let token = "6AR3iMmnkP2U6ETecZviYEXnyiomeFwru7kftwSENmgK"
+        let token = "7KxA7JU6MueQqQwMXZ4PTBB1ov9C7UfPa4RLiDxuHGsx"
         _ = try solanaSDK.closeTokenAccount(
             tokenPubkey: token
         ).toBlocking().first()

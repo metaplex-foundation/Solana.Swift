@@ -1,10 +1,3 @@
-//
-//  Decimals+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 06/04/2021.
-//
-
 import Foundation
 
 extension Solana.Decimals {

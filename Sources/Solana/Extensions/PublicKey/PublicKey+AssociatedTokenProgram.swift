@@ -1,10 +1,3 @@
-//
-//  PublicKey+AssociatedTokenProgram.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 29/04/2021.
-//
-
 import Foundation
 
 // https://github.com/solana-labs/solana-web3.js/blob/dfb4497745c9fbf01e9633037bf9898dfd5adf94/src/publickey.ts#L224

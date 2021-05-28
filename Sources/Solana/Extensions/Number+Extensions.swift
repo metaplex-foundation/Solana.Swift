@@ -1,10 +1,3 @@
-//
-//  Number+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 11/6/20.
-//
-
 import Foundation
 
 extension UInt32 {

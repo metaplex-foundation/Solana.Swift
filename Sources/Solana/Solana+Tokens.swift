@@ -27,23 +27,22 @@ extension Solana {
             configs: configs,
             decodedTo: AccountInfo.self
         )
-            .map {
-                $0.compactMap {$0.account.data.value != nil ? $0: nil}
+        .map {
+            $0.compactMap {$0.account.data.value != nil ? $0: nil}
+        }
+        .map {$0.map {($0.pubkey, $0.account.data.value!)}}
+        .map {
+            $0.map { (pubkey, accountInfo) in
+                let mintAddress = accountInfo.mint.base58EncodedString
+                let token = self.supportedTokens.first(where: {$0.address == mintAddress}) ?? .unsupported(mint: mintAddress)
+                
+                return Wallet(
+                    pubkey: pubkey,
+                    lamports: accountInfo.lamports,
+                    token: token,
+                    liquidity: false
+                )
             }
-            .map {$0.map {($0.pubkey, $0.account.data.value!)}}
-            .map {
-                $0.map { (pubkey, accountInfo) in
-                    let mintAddress = accountInfo.mint.base58EncodedString
-                    let token = self.supportedTokens.first(where: {$0.address == mintAddress}) ?? .unsupported(mint: mintAddress)
-
-                    return Wallet(
-                        pubkey: pubkey,
-                        lamports: accountInfo.lamports,
-                        token: token,
-                        liquidity: false
-                    )
-                }
-            }
+        }
     }
-
 }

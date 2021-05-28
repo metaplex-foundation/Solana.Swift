@@ -1,10 +1,3 @@
-//
-//  NSRegularExpression+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 18/11/2020.
-//
-
 import Foundation
 
 extension NSRegularExpression {

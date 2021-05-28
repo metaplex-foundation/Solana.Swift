@@ -1,10 +1,3 @@
-//
-//  Bytes+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 11/12/20.
-//
-
 import Foundation
 
 public extension Array where Element == UInt8 {

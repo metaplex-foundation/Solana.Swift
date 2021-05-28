@@ -1,10 +1,3 @@
-//
-//  AccountMeta+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 02/04/2021.
-//
-
 import Foundation
 
 extension Array where Element == Solana.Account.Meta {

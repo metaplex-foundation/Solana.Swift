@@ -36,11 +36,11 @@ public class Solana {
     // MARK: - Helper
     public func request<T: Decodable>(
         method: HTTPMethod = .post,
-        path: String = "",
+        //path: String = "",
         bcMethod: String = #function,
         parameters: [Encodable?] = []
     ) -> Single<T> {
-        guard let url = URL(string: endpoint.url + path) else {
+        guard let url = URL(string: endpoint.url) else {
             return .error(Error.invalidRequest(reason: "Invalid URL"))
         }
         let params = parameters.compactMap {$0}
