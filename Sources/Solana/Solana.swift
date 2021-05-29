@@ -19,12 +19,12 @@ public protocol SolanaAccountStorage {
 public class Solana {
     // MARK: - Properties
     public let accountStorage: SolanaAccountStorage
-    var endpoint: APIEndPoint
+    var endpoint: RpcApiEndPoint
     var _swapPool: [Pool]?
     public private(set) var supportedTokens = [Token]()
 
     // MARK: - Initializer
-    public init(endpoint: APIEndPoint, accountStorage: SolanaAccountStorage) {
+    public init(endpoint: RpcApiEndPoint, accountStorage: SolanaAccountStorage) {
         self.endpoint = endpoint
         self.accountStorage = accountStorage
 
@@ -40,9 +40,7 @@ public class Solana {
         bcMethod: String = #function,
         parameters: [Encodable?] = []
     ) -> Single<T> {
-        guard let url = URL(string: endpoint.url) else {
-            return .error(Error.invalidRequest(reason: "Invalid URL"))
-        }
+        let url = endpoint.url
         let params = parameters.compactMap {$0}
 
         let bcMethod = bcMethod.replacingOccurrences(of: "\\([\\w\\s:]*\\)", with: "", options: .regularExpression)

@@ -11,10 +11,7 @@ import XCTest
 @testable import Solana
 
 class DecodingConfirmedTransactionTests: XCTestCase {
-    let endpoint = Solana.APIEndPoint(
-        url: "https://api.mainnet-beta.solana.com",
-        network: .mainnetBeta
-    )
+    let endpoint = Solana.RpcApiEndPoint.mainnetBetaSolana
     var solanaSDK: Solana!
     var parser: Solana.TransactionParser!
 

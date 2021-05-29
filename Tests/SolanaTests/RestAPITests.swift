@@ -11,12 +11,7 @@ import RxBlocking
 @testable import Solana
 
 class RestAPITests: XCTestCase {
-    var endpoint: Solana.APIEndPoint {
-        .init(
-            url: "https://api.devnet.solana.com",
-            network: .devnet
-        )
-    }
+    var endpoint = Solana.RpcApiEndPoint.devnetSolana
     var solanaSDK: Solana!
     var account: Solana.Account { solanaSDK.accountStorage.account! }
 
