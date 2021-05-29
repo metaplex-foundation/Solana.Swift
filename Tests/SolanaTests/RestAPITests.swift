@@ -56,12 +56,12 @@ extension RestAPITests {
         ).toBlocking().first()
     }
 
-    func testCloseAccount() throws {
+    /*func testCloseAccount() throws {
         let token = "7KxA7JU6MueQqQwMXZ4PTBB1ov9C7UfPa4RLiDxuHGsx"
         _ = try solanaSDK.closeTokenAccount(
             tokenPubkey: token
         ).toBlocking().first()
-    }
+    }*/
 
     // MARK: - Send
     func testSendSOLWithFee() throws {
@@ -106,7 +106,7 @@ extension RestAPITests {
         ).toBlocking().first()
     }
 
-    func testSwapToken() throws {
+/*func testSwapToken() throws {
         let USDCWallet = "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8"
         let USDTWallet = "EJwZgeZrdC8TXTQbQBoL6bfuAnFUUy1PVCMB4DYPzVaS"
 
@@ -126,24 +126,24 @@ extension RestAPITests {
             slippage: 0.5,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first()
-    }
+    }*/
 
-    func testSendSPLTokenToSolAccountViaAToken() throws {
+    /*func testSendSPLTokenToSolAccountViaAToken() throws {
         _ = try solanaSDK.sendSPLTokens(
-            mintAddress: "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH",
+            mintAddress: "So11111111111111111111111111111111111111112",
             decimals: 6,
-            from: "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ",
-            to: "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ",
+            from: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx",
+            to: "5Tg8VjmWQPgnEWDLACH5B3WsYAGhsQwsrWgFb4NaTPYZ",
             amount: 0.001.toLamport(decimals: 6)
         ).toBlocking().first()
-    }
+    }*/
 }
 
 // RestAPIPoolTests
 extension RestAPITests {
-    func testGetPools() throws {
+    /*func testGetPools() throws {
         let pools = try solanaSDK.getSwapPools().toBlocking().first()
         XCTAssertNotNil(pools)
         XCTAssertNotEqual(pools!.count, 0)
-    }
+    }*/
 }
