@@ -141,9 +141,9 @@ extension RestAPITests {
 
 // RestAPIPoolTests
 extension RestAPITests {
-    /*func testGetPools() throws {
+    func testGetPools() throws {
         let pools = try solanaSDK.getSwapPools().toBlocking().first()
         XCTAssertNotNil(pools)
         XCTAssertNotEqual(pools!.count, 0)
-    }*/
+    }
 }
