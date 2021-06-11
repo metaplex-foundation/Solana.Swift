@@ -6,8 +6,14 @@
 //
 
 import Foundation
-import Alamofire
 import RxSwift
+
+public enum HTTPMethod: String{
+    case post = "POST"
+    case get = "GET"
+    case put = "PUT"
+    case delete = "DELETE"
+}
 
 public protocol SolanaAccountStorage {
     func save(_ account: Solana.Account) throws
@@ -46,9 +52,10 @@ public class Solana {
         
         Logger.log(message: "\(method.rawValue) \(bcMethod) [id=\(requestAPI.id)] \(params.map(EncodableWrapper.init(wrapped:)).jsonString ?? "")", event: .request, apiMethod: bcMethod)
         
-        var urlRequest: URLRequest!
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
-            urlRequest = try URLRequest(url: url, method: method, headers: [.contentType("application/json")])
             urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
         } catch {
             onComplete(.failure(error))
