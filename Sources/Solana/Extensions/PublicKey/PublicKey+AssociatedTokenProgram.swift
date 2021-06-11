@@ -44,7 +44,7 @@ extension Solana.PublicKey {
                 continue
             }
         }
-        throw Solana.Error.notFound
+        throw Solana.SolanaError.notFound
     }
 
     private static func createProgramAddress(
@@ -55,7 +55,7 @@ extension Solana.PublicKey {
         var data = Data()
         for seed in seeds {
             if seed.bytes.count > maxSeedLength {
-                throw Solana.Error.other("Max seed length exceeded")
+                throw Solana.SolanaError.other("Max seed length exceeded")
             }
             data.append(seed)
         }
@@ -68,7 +68,7 @@ extension Solana.PublicKey {
 
         // check it
         if isOnCurve(publicKeyBytes: publicKeyBytes).toBool() {
-            throw Solana.Error.other("Invalid seeds, address must fall off the curve")
+            throw Solana.SolanaError.other("Invalid seeds, address must fall off the curve")
         }
         return try Solana.PublicKey(data: publicKeyBytes)
     }

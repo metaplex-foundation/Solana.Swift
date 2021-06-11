@@ -16,9 +16,9 @@ extension Solana {
             self.network = network
         }
        
-        static let mainnetBetaSerum = RpcApiEndPoint(url: URL(string: "https://solana-api.projectserum.com")!, network: .mainnetBeta)
-        static let mainnetBetaSolana = RpcApiEndPoint(url: URL(string: "https://api.mainnet-beta.solana.com")!, network: .mainnetBeta)
-        static let devnetSolana = RpcApiEndPoint(url: URL(string: "https://devnet.solana.com")!, network: .devnet)
-        static let testnettSolana = RpcApiEndPoint(url: URL(string: "https://testnet.solana.com")!, network: .testnet)
+        public static let mainnetBetaSerum = RpcApiEndPoint(url: URL(string: "https://solana-api.projectserum.com")!, network: .mainnetBeta)
+        public static let mainnetBetaSolana = RpcApiEndPoint(url: URL(string: "https://api.mainnet-beta.solana.com")!, network: .mainnetBeta)
+        public static let devnetSolana = RpcApiEndPoint(url: URL(string: "https://api.devnet.solana.com")!, network: .devnet)
+        public static let testnettSolana = RpcApiEndPoint(url: URL(string: "https://testnet.solana.com")!, network: .testnet)
     }
 }

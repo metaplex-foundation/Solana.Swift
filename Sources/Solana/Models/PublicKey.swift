@@ -26,7 +26,7 @@ public extension Solana {
         public init(string: String?) throws {
             guard let string = string, string.utf8.count >= Solana.PublicKey.LENGTH
             else {
-                throw Error.other("Invalid public key input")
+                throw SolanaError.other("Invalid public key input")
             }
             let bytes = Base58.decode(string)
             self.bytes = bytes
@@ -34,14 +34,14 @@ public extension Solana {
 
         public init(data: Data) throws {
             guard data.count <= Solana.PublicKey.LENGTH else {
-                throw Error.other("Invalid public key input")
+                throw SolanaError.other("Invalid public key input")
             }
             self.bytes = [UInt8](data)
         }
 
         public init(bytes: [UInt8]?) throws {
             guard let bytes = bytes, bytes.count <= PublicKey.LENGTH else {
-                throw Error.other("Invalid public key input")
+                throw SolanaError.other("Invalid public key input")
             }
             self.bytes = bytes
         }

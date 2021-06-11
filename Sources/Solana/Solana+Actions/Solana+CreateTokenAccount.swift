@@ -17,7 +17,7 @@ extension Solana {
         mintAddress: String
     ) -> Single<(signature: String, newPubkey: String)> {
         guard let payer = self.accountStorage.account else {
-            return .error(Error.unauthorized)
+            return .error(SolanaError.unauthorized)
         }
 
         var newAccount: Account!

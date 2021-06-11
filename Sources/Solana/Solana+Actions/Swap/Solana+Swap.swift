@@ -21,7 +21,7 @@ extension Solana {
     ) -> Single<TransactionID> {
         // verify account
         guard let owner = account ?? accountStorage.account
-        else {return .error(Error.unauthorized)}
+        else {return .error(SolanaError.unauthorized)}
 
         // reuse variables
         var pool = pool
@@ -41,7 +41,7 @@ extension Solana {
                         pool = matchPool
                         return matchPool
                     }
-                    throw Error.other("Unsupported swapping tokens")
+                    throw SolanaError.other("Unsupported swapping tokens")
                 }
         }
 
@@ -64,7 +64,7 @@ extension Solana {
                       let poolAuthority = pool.authority,
                       let estimatedAmount = pool.estimatedAmount(forInputAmount: amount, includeFees: true),
                       let tokenBBalance = UInt64(pool.tokenBBalance?.amount ?? "")
-                else {return .error(Error.other("Swap pool is not valid"))}
+                else {return .error(SolanaError.other("Swap pool is not valid"))}
                 // get variables
                 let tokenAInfo      = params[0] as! AccountInfo
                 let minimumBalanceForRentExemption
@@ -170,12 +170,12 @@ extension Solana {
         getAccountInfo(account: account, decodedTo: AccountInfo.self)
             .map {
                 if $0.owner != tokenProgramId.base58EncodedString {
-                    throw Error.other("Invalid account owner")
+                    throw SolanaError.other("Invalid account owner")
                 }
                 if let info = $0.data.value {
                     return info
                 }
-                throw Error.other("Invalid data")
+                throw SolanaError.other("Invalid data")
             }
     }
 

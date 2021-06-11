@@ -16,7 +16,6 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(name: "TweetNacl", url: "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git", from: "1.0.2"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "6.2.0"),
-        .package(url: "https://github.com/RxSwiftCommunity/RxAlamofire.git", from: "6.1.1"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.4.0"),
         .package(url: "https://github.com/daltoniam/Starscream.git", from: "4.0.4"),
         .package(name: "secp256k1", url: "https://github.com/Boilertalk/secp256k1.swift.git", from: "0.1.0")
@@ -26,13 +25,13 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Solana",
-            dependencies: ["TweetNacl", "RxSwift", "CryptoSwift", "RxAlamofire", "Starscream", "secp256k1"],
+            dependencies: ["TweetNacl", "RxSwift", "CryptoSwift", "Starscream", "secp256k1", .product(name: "RxCocoa", package: "RxSwift")],
             resources: [ .process("Resources")
             ]
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "RxSwift", "CryptoSwift", "RxAlamofire", "Starscream", .product(name: "RxBlocking", package: "RxSwift")],
+            dependencies: ["Solana", "TweetNacl", "RxSwift", "CryptoSwift", "Starscream", .product(name: "RxBlocking", package: "RxSwift")],
             resources: [ .process("Resources")
             ]
         )

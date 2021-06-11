@@ -8,8 +8,8 @@
 import Foundation
 
 public extension Solana {
-    enum Error: Swift.Error, Equatable {
-        public static func == (lhs: Solana.Error, rhs: Solana.Error) -> Bool {
+    enum SolanaError: Swift.Error, Equatable {
+        public static func == (lhs: Solana.SolanaError, rhs: Solana.SolanaError) -> Bool {
             switch (lhs, rhs) {
             case (.unauthorized, .unauthorized):
                 return true

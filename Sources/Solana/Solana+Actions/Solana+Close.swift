@@ -14,7 +14,7 @@ extension Solana {
         tokenPubkey: String
     ) -> Single<TransactionID> {
         guard let account = account ?? accountStorage.account else {
-            return .error(Error.unauthorized)
+            return .error(SolanaError.unauthorized)
         }
         do {
             let tokenPubkey = try PublicKey(string: tokenPubkey)

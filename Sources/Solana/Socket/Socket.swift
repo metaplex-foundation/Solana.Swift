@@ -92,7 +92,7 @@ extension Solana {
             updateSubscriptions()
         }
 
-        func onError(_ error: Error) {
+        func onError(_ error: SolanaError) {
             status.accept(.error(error))
             Logger.log(message: "Socket error: \(error.localizedDescription)", event: .error)
         }
@@ -124,12 +124,12 @@ extension Solana {
                 }
                 .map {
                     guard let data = $0.data(using: .utf8) else {
-                        throw Error.other("The response is not valid")
+                        throw SolanaError.other("The response is not valid")
                     }
 
                     guard let subscription = try JSONDecoder().decode(Response<UInt64>.self, from: data).result
                     else {
-                        throw Error.other("Subscription is not valid")
+                        throw SolanaError.other("Subscription is not valid")
                     }
                     return subscription
                 }
@@ -153,11 +153,11 @@ extension Solana {
                 }
                 .map { string in
                     guard let data = string.data(using: .utf8) else {
-                        throw Error.other("The response is not valid")
+                        throw SolanaError.other("The response is not valid")
                     }
                     guard let result = try JSONDecoder().decode(Response<T>.self, from: data).params?.result
                     else {
-                        throw Error.other("The response is empty")
+                        throw SolanaError.other("The response is empty")
                     }
                     return result
                 }
@@ -169,7 +169,7 @@ extension Solana {
                 do {
                     let data = try JSONEncoder().encode(requestAPI)
                     guard let string = String(data: data, encoding: .utf8) else {
-                        throw Error.other("Request is invalid \(requestAPI)")
+                        throw SolanaError.other("Request is invalid \(requestAPI)")
                     }
                     self?.socket.write(string: string, completion: {
                         Logger.log(message: "\(requestAPI.method) success", event: .event)
