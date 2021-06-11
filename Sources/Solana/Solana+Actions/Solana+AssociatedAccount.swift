@@ -17,7 +17,7 @@ extension Solana {
             walletAddress: owner,
             tokenMintAddress: tokenMint
         ) else {
-            return .error(Error.other("Could not create associated token account"))
+            return .error(SolanaError.other("Could not create associated token account"))
         }
 
         // check if token account exists
@@ -49,7 +49,7 @@ extension Solana {
     ) -> Single<TransactionID> {
         // get account
         guard let payer = payer ?? accountStorage.account else {
-            return .error(Error.unauthorized)
+            return .error(SolanaError.unauthorized)
         }
 
         // generate address

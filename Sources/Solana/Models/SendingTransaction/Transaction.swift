@@ -25,7 +25,7 @@ extension Solana {
 
         // MARK: - Methods
         mutating func sign(signers: [Account]) throws {
-            guard signers.count > 0 else {throw Error.invalidRequest(reason: "No signers")}
+            guard signers.count > 0 else {throw SolanaError.invalidRequest(reason: "No signers")}
 
             // unique signers
             let signers = signers.reduce([Account](), {signers, signer in
@@ -54,7 +54,7 @@ extension Solana {
 
             // verification
             if verifySignatures && !_verifySignatures(serializedMessage: serializedMessage, requiredAllSignatures: requiredAllSignatures) {
-                throw Error.invalidRequest(reason: "Signature verification failed")
+                throw SolanaError.invalidRequest(reason: "Signature verification failed")
             }
 
             return _serialize(serializedMessage: serializedMessage)
@@ -94,7 +94,7 @@ extension Solana {
                   data.count == 64,
                   let index = signatures.firstIndex(where: {$0.publicKey == signature.publicKey})
             else {
-                throw Error.other("Signer not valid: \(signature.publicKey.base58EncodedString)")
+                throw SolanaError.other("Signer not valid: \(signature.publicKey.base58EncodedString)")
             }
 
             signatures[index] = signature
@@ -125,7 +125,7 @@ extension Solana {
         private func compileMessage() throws -> Message {
             // verify instructions
             guard instructions.count > 0 else {
-                throw Error.other("No instructions provided")
+                throw SolanaError.other("No instructions provided")
             }
 
             // programIds & accountMetas
@@ -177,10 +177,10 @@ extension Solana {
                     if !accountMetas[index].isSigner {
 //                        accountMetas[index].isSigner = true
 //                        Logger.log(message: "Transaction references a signature that is unnecessary, only the fee payer and instruction signer accounts should sign a transaction. This behavior is deprecated and will throw an error in the next major version release.", event: .warning)
-                        throw Error.invalidRequest(reason: "Transaction references a signature that is unnecessary")
+                        throw SolanaError.invalidRequest(reason: "Transaction references a signature that is unnecessary")
                     }
                 } else {
-                    throw Error.invalidRequest(reason: "Unknown signer: \(signature.publicKey.base58EncodedString)")
+                    throw SolanaError.invalidRequest(reason: "Unknown signer: \(signature.publicKey.base58EncodedString)")
                 }
             }
 

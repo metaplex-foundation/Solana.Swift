@@ -7,14 +7,14 @@ public extension Solana {
         return (request(parameters: [account, configs]) as Single<Rpc<BufferInfo<T>?>>)
             .map {
                 guard let value = $0.value else {
-                    throw Error.other("Could not retrieve account info")
+                    throw SolanaError.other("Could not retrieve account info")
                 }
                 return value
             }
     }
     func getBalance(account: String? = nil, commitment: Commitment? = nil) -> Single<UInt64> {
         guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString
-        else {return .error(Error.unauthorized)}
+        else {return .error(SolanaError.unauthorized)}
         
         return (request(parameters: [account, RequestConfiguration(commitment: commitment)]) as Single<Rpc<UInt64>>)
             .map {$0.value}
@@ -107,7 +107,7 @@ public extension Solana {
             .map {$0.blockhash}
             .map { recentBlockhash in
                 if recentBlockhash == nil {
-                    throw Error.other("Blockhash not found")
+                    throw SolanaError.other("Blockhash not found")
                 }
                 return recentBlockhash!
             }
@@ -139,7 +139,7 @@ public extension Solana {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAccountBalance>>)
             .map {
                 if UInt64($0.value.amount) == nil {
-                    throw Error.invalidResponse(ResponseError(code: nil, message: "Could not retrieve balance", data: nil))
+                    throw SolanaError.invalidResponse(ResponseError(code: nil, message: "Could not retrieve balance", data: nil))
                 }
                 return $0.value
             }
@@ -176,7 +176,7 @@ public extension Solana {
         request(parameters: [serializedTransaction, configs])
             .catch { error in
                 // Modify error message
-                if let error = error as? Error {
+                if let error = error as? SolanaError {
                     switch error {
                     case .invalidResponse(let response) where response.message != nil:
                         var message = response.message
@@ -191,7 +191,7 @@ public extension Solana {
                             message = readableMessage
                         }
                         
-                        return .error(Error.invalidResponse(ResponseError(code: response.code, message: message, data: response.data)))
+                        return .error(SolanaError.invalidResponse(ResponseError(code: response.code, message: message, data: response.data)))
                     default:
                         break
                     }
@@ -218,14 +218,14 @@ public extension Solana {
         getAccountInfo(account: mintAddress.base58EncodedString, decodedTo: Mint.self)
             .map {
                 if $0.owner != programId.base58EncodedString {
-                    throw Error.other("Invalid mint owner")
+                    throw SolanaError.other("Invalid mint owner")
                 }
                 
                 if let data = $0.data.value {
                     return data
                 }
                 
-                throw Error.other("Invalid data")
+                throw SolanaError.other("Invalid data")
             }
     }
     

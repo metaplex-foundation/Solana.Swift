@@ -21,25 +21,25 @@ extension Solana {
         amount: UInt64
     ) -> Single<TransactionID> {
         guard let account = self.accountStorage.account else {
-            return .error(Error.unauthorized)
+            return .error(SolanaError.unauthorized)
         }
 
         do {
             let fromPublicKey = account.publicKey
 
             if fromPublicKey.base58EncodedString == destination {
-                throw Error.other("You can not send tokens to yourself")
+                throw SolanaError.other("You can not send tokens to yourself")
             }
 
             // check
             return getAccountInfo(account: destination, decodedTo: EmptyInfo.self)
                 .map {info -> Void in
                     guard info.owner == PublicKey.programId.base58EncodedString
-                    else {throw Error.other("Invalid account info")}
+                    else {throw SolanaError.other("Invalid account info")}
                     return
                 }
                 .catch { error in
-                    if (error as? Error) == Error.other("Could not retrieve account info") {
+                    if (error as? SolanaError) == SolanaError.other("Could not retrieve account info") {
                         // let request through
                         return .just(())
                     }
@@ -62,7 +62,7 @@ extension Solana {
                 .catch {error in
                     var error = error
                     if error.localizedDescription == "Invalid param: WrongSize" {
-                        error = Error.other("Wrong wallet address")
+                        error = SolanaError.other("Wrong wallet address")
                     }
                     throw error
                 }
@@ -87,7 +87,7 @@ extension Solana {
         amount: UInt64
     ) -> Single<TransactionID> {
         guard let account = self.accountStorage.account else {
-            return .error(Error.unauthorized)
+            return .error(SolanaError.unauthorized)
         }
 
         return findSPLTokenDestinationAddress(
@@ -100,7 +100,7 @@ extension Solana {
 
                 // catch error
                 if fromPublicKey == toPublicKey.base58EncodedString {
-                    throw Error.other("You can not send tokens to yourself")
+                    throw SolanaError.other("You can not send tokens to yourself")
                 }
 
                 let fromPublicKey = try PublicKey(string: fromPublicKey)
@@ -137,7 +137,7 @@ extension Solana {
             .catch {error in
                 var error = error
                 if error.localizedDescription == "Invalid param: WrongSize" {
-                    error = Error.other("Wrong wallet address")
+                    error = SolanaError.other("Wrong wallet address")
                 }
                 throw error
             }
@@ -174,11 +174,11 @@ extension Solana {
                 }
 
                 // token is of another type
-                throw Error.invalidRequest(reason: "Wallet address is not valid")
+                throw SolanaError.invalidRequest(reason: "Wallet address is not valid")
             }
             .catch { error in
                 // let request through if result of getAccountInfo is null (it may be a new SOL address)
-                if (error as? Error) == Error.other("Could not retrieve account info") {
+                if (error as? SolanaError) == SolanaError.other("Could not retrieve account info") {
                     let owner = try PublicKey(string: destinationAddress)
                     let tokenMint = try PublicKey(string: mintAddress)
 

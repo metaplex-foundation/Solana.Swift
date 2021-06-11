@@ -32,7 +32,7 @@ extension Solana {
             }
             .catch {error in
                 if numberOfTries <= maxAttemps,
-                   let error = error as? Solana.Error {
+                   let error = error as? Solana.SolanaError {
                     var shouldRetry = false
                     switch error {
                     case .other(let message) where message == "Blockhash not found":
@@ -67,7 +67,7 @@ extension Solana {
         }
 
         guard let feePayer = feePayer ?? accountStorage.account?.publicKey else {
-            return .error(Error.invalidRequest(reason: "Fee-payer not found"))
+            return .error(SolanaError.invalidRequest(reason: "Fee-payer not found"))
         }
 
         // serialize transaction
@@ -80,7 +80,7 @@ extension Solana {
                 )
                 try transaction.sign(signers: signers)
                 guard let serializedTransaction = try transaction.serialize().bytes.toBase64() else {
-                    throw Error.other("Could not serialize transaction")
+                    throw SolanaError.other("Could not serialize transaction")
                 }
                 return serializedTransaction
             }
