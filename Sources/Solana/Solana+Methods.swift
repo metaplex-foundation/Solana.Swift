@@ -237,11 +237,11 @@ public extension Solana {
                 .map {
                     if $0?.contains(where: {$0.owner != programId.base58EncodedString}) == true
                     {
-                        throw Error.other("Invalid mint owner")
+                        throw SolanaError.other("Invalid mint owner")
                     }
                     
                     guard let result = $0?.compactMap {$0.data.value}, result.count == mintAddresses.count else {
-                        throw Error.other("Some of mint data are missing")
+                        throw SolanaError.other("Some of mint data are missing")
                     }
                     
                     var mintDict = [PublicKey: Mint]()
