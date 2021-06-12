@@ -29,14 +29,25 @@ class Methods: XCTestCase {
         let value = try solanaSDK.getBalance(account: account.publicKey.base58EncodedString).toBlocking().first()
         XCTAssertNotNil(value)
     }
-    
-    func testGetBlockTime() throws {
-        let date = try solanaSDK.getBlockTime(block: 61968801).toBlocking().first()
-        XCTAssertNotNil(date)
-    }
     func testGetClusterNodes() throws {
         let nodes = try solanaSDK.getClusterNodes().toBlocking().first()
         XCTAssertNotNil(nodes)
+    }
+    func testGetBlockTime() throws {
+        let date = try solanaSDK.getBlockCommitment(block: 61968801).toBlocking().first()
+        XCTAssertNotNil(date)
+    }
+    func testGetConfirmedBlock() throws {
+        let block = try solanaSDK.getConfirmedBlock(slot: 61998730).toBlocking().first()
+        XCTAssertNotNil(block)
+    }
+    func testGetConfirmedBlocks() throws {
+        let blocks = try solanaSDK.getConfirmedBlocks(startSlot:61998720, endSlot: 61998730).toBlocking().first()
+        XCTAssertNotNil(blocks)
+    }
+    func testGetConfirmedBlocksWithLimit() throws {
+        let blocks = try solanaSDK.getConfirmedBlocksWithLimit(startSlot:61998720, limit: 10).toBlocking().first()
+        XCTAssertNotNil(blocks)
     }
     func testGetTokenAccountBalance() throws {
         let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"

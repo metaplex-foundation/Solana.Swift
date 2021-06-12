@@ -80,8 +80,12 @@ public class Solana {
                     onComplete(.failure(SolanaError.invalidResponseNoData))
                     return
                 }
-                let result = try JSONDecoder().decode(Response<T>.self, from: data).result
-                onComplete(.success(result!))
+                let decoded = try JSONDecoder().decode(Response<T>.self, from: data)
+                if let result = decoded.result {
+                    onComplete(.success(result))
+                } else {
+                    onComplete(.failure(SolanaError.nullResponse))
+                }
             } catch let serializeError {
                 onComplete(.failure(serializeError))
                 return

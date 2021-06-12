@@ -2,22 +2,13 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getConfirmedBlock(slot: UInt64, encoding: String = "json") -> Single<ConfirmedBlock?> {
-        request(parameters: [slot, encoding])
-    }
-    func getConfirmedBlocks(startSlot: UInt64, endSlot: UInt64) -> Single<[UInt64]> {
-        request(parameters: [startSlot, endSlot])
-    }
-    func getConfirmedBlocksWithLimit(startSlot: UInt64, limit: UInt64) -> Single<[UInt64]> {
-        request(parameters: [startSlot, limit])
-    }
     func getConfirmedSignaturesForAddress(account: String, startSlot: UInt64, endSlot: UInt64) -> Single<[String]> {
         request(parameters: [account, startSlot, endSlot])
     }
     func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) -> Single<[SignatureInfo]> {
         request(parameters: [account, configs])
     }
-    func getConfirmedTransaction(transactionSignature: String) -> Single<TransactionInfo> {
+    func getConfirmedTransaction(transactionSignature: String) -> Single<TransactionInfo?> {
         request(parameters: [transactionSignature, "jsonParsed"])
     }
     func getEpochInfo(commitment: Commitment? = nil) -> Single<EpochInfo> {

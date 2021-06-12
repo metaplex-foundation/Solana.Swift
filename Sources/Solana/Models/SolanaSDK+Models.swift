@@ -8,6 +8,7 @@ import Foundation
 import RxSwift
 
 public extension Solana {
+    typealias PublicKeyString = String
     typealias TransactionID = String
     typealias Lamports = UInt64
     typealias Decimals = UInt8
@@ -58,7 +59,7 @@ public extension Solana {
 		public let blockhash: String
 		public let previousBlockhash: String
 		public let parentSlot: UInt64
-		public let transactions: [TransactionInfo]
+		public let transactions: [TransactionInfoFromBlock]
 		public let rewards: [Reward]
 		public let blockTime: UInt64?
 	}
@@ -158,7 +159,13 @@ public extension Solana {
     struct TransactionInfo: Decodable {
         public let blockTime: UInt64?
         public let meta: TransactionMeta?
-        public let transaction: Solana.ConfirmedTransaction
+        public let transaction: ConfirmedTransaction
+        public let slot: UInt64?
+    }
+    struct TransactionInfoFromBlock: Decodable {
+        public let blockTime: UInt64?
+        public let meta: TransactionMeta?
+        public let transaction: ConfirmedTransactionFromBlock
         public let slot: UInt64?
     }
     struct TransactionMeta: Decodable {
