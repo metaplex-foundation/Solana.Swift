@@ -30,6 +30,10 @@ class Methods: XCTestCase {
         XCTAssertNotNil(value)
     }
     
+    func testGetBlockTime() throws {
+        let date = try solanaSDK.getBlockTime(block: 61968801).toBlocking().first()
+        XCTAssertNotNil(date)
+    }
     func testGetTokenAccountBalance() throws {
         let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
         let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
