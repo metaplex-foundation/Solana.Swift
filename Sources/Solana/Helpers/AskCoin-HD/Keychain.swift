@@ -5,7 +5,7 @@
 //  Created by 仇弘扬 on 2017/8/14.
 //  Copyright © 2017年 askcoin. All rights reserved.
 //
-
+#if canImport(UIKit)
 import UIKit
 import CryptoSwift
 
@@ -259,3 +259,4 @@ extension Keychain {
 		return try derivedKeychain(at: "44'/1'")
 	}
 }
+#endif
