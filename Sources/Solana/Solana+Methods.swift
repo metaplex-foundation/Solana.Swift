@@ -2,17 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    
-    func getBlockTime(block: UInt64) -> Single<Date?> {
-        (request(parameters: [block]) as Single<Int64?>)
-            .map {timestamp in
-                guard let timestamp = timestamp else {return nil}
-                return Date(timeIntervalSince1970: TimeInterval(timestamp))
-            }
-    }
-    func getClusterNodes() -> Single<ClusterNodes> {
-        request()
-    }
     func getConfirmedBlock(slot: UInt64, encoding: String = "json") -> Single<ConfirmedBlock?> {
         request(parameters: [slot, encoding])
     }

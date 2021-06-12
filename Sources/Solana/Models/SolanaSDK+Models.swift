@@ -47,9 +47,10 @@ public extension Solana {
 		public let totalStake: UInt64
 	}
 	struct ClusterNodes: Decodable {
+        public let featureSet: UInt64?
 		public let pubkey: String
 		public let gossip: String
-		public let tpu: String
+		public let tpu: String?
 		public let rpc: String?
 		public let version: String?
 	}
