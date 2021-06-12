@@ -2,13 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getBalance(account: String? = nil, commitment: Commitment? = nil) -> Single<UInt64> {
-        guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString
-        else {return .error(SolanaError.unauthorized)}
-        
-        return (request(parameters: [account, RequestConfiguration(commitment: commitment)]) as Single<Rpc<UInt64>>)
-            .map {$0.value}
-    }
     
     func getBlockTime(block: UInt64) -> Single<Date?> {
         (request(parameters: [block]) as Single<Int64?>)
