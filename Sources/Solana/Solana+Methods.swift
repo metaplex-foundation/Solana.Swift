@@ -2,16 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type) -> Single<BufferInfo<T>> {
-        let configs = RequestConfiguration(encoding: "base64")
-        return (request(parameters: [account, configs]) as Single<Rpc<BufferInfo<T>?>>)
-            .map {
-                guard let value = $0.value else {
-                    throw SolanaError.other("Could not retrieve account info")
-                }
-                return value
-            }
-    }
     func getBalance(account: String? = nil, commitment: Commitment? = nil) -> Single<UInt64> {
         guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString
         else {return .error(SolanaError.unauthorized)}
@@ -19,6 +9,7 @@ public extension Solana {
         return (request(parameters: [account, RequestConfiguration(commitment: commitment)]) as Single<Rpc<UInt64>>)
             .map {$0.value}
     }
+    
     func getBlockCommitment(block: String) -> Single<BlockCommitment> {
         request(parameters: [block])
     }

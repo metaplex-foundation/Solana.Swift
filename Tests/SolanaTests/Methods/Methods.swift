@@ -1,16 +1,9 @@
-//
-//  DevnetRestAPITests.swift
-//  p2p_walletTests
-//
-//  Created by Chung Tran on 10/28/20.
-//
-
 import XCTest
 import RxSwift
 import RxBlocking
 @testable import Solana
 
-class RestAPITests: XCTestCase {
+class Methods: XCTestCase {
     var endpoint = Solana.RpcApiEndPoint.devnetSolana
     var solanaSDK: Solana!
     var account: Solana.Account { solanaSDK.accountStorage.account! }
@@ -21,6 +14,12 @@ class RestAPITests: XCTestCase {
         try solanaSDK.accountStorage.save(account)
     }
 
+    func testGetAccountInfo() throws {
+        let info: Solana.BufferInfo<Solana.AccountInfo>? = try solanaSDK.getAccountInfo(account: account.publicKey.base58EncodedString, decodedTo: Solana.AccountInfo.self).toBlocking().first()
+        XCTAssertNotNil(info)
+        XCTAssertNotNil(info?.data)
+    }
+    
     func testGetTokenAccountBalance() throws {
         let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
         let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
@@ -33,7 +32,7 @@ class RestAPITests: XCTestCase {
 
 // RestAPITransactionHistoryTests
 
-extension RestAPITests {
+extension Methods {
     func testGetConfirmedSignaturesForAddress() throws {
         let result = try solanaSDK.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: Solana.RequestConfiguration(limit: 10)).toBlocking().first()
         XCTAssertEqual(result?.count, 10)
@@ -46,7 +45,7 @@ extension RestAPITests {
 }
 
 // RestAPITransactionTests
-extension RestAPITests {
+extension Methods {
     // MARK: - Create and close
     func testCreateTokenAccount() throws {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
@@ -140,7 +139,7 @@ extension RestAPITests {
 }
 
 // RestAPIPoolTests
-extension RestAPITests {
+extension Methods {
     func testGetPools() throws {
         let pools = try solanaSDK.getSwapPools().toBlocking().first()
         XCTAssertNotNil(pools)
