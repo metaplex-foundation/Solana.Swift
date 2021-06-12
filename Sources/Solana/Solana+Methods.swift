@@ -3,13 +3,6 @@ import RxSwift
 
 public extension Solana {
     
-    func getBlockTime(block: UInt64) -> Single<Date?> {
-        (request(parameters: [block]) as Single<Int64?>)
-            .map {timestamp in
-                guard let timestamp = timestamp else {return nil}
-                return Date(timeIntervalSince1970: TimeInterval(timestamp))
-            }
-    }
     func getClusterNodes() -> Single<ClusterNodes> {
         request()
     }
