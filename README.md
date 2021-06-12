@@ -41,3 +41,7 @@ RxSwift maybe be removed from the library or at least moved to a diferent sublib
 ### Disclaimer 
 
 It was originally fork from the [P2p-org library](https://github.com/p2p-org/solana-swift "P2p-org library").
+
+### Support it 
+
+SOL: CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7
