@@ -33,7 +33,6 @@ public class Solana {
         self.endpoint = endpoint
         self.accountStorage = accountStorage
 
-        // get supported tokens
         let parser = TokensListParser()
         supportedTokens = (try? parser.parse(network: endpoint.network.cluster)) ?? []
     }
@@ -73,16 +72,20 @@ public class Solana {
             
             guard let response = response, let httpURLResponse = response as? HTTPURLResponse,
                   (200..<300).contains(httpURLResponse.statusCode) else {
-                onComplete(.failure(SolanaError.unknown))
+                onComplete(.failure(SolanaError.httpError))
                 return
             }
-            
-            guard let data = data,
-                  let result = try? JSONDecoder().decode(Response<T>.self, from: data).result else {
-                onComplete(.failure(SolanaError.unknown))
+            do {
+                guard let data = data else {
+                    onComplete(.failure(SolanaError.invalidResponseNoData))
+                    return
+                }
+                let result = try JSONDecoder().decode(Response<T>.self, from: data).result
+                onComplete(.success(result!))
+            } catch let serializeError {
+                onComplete(.failure(serializeError))
                 return
             }
-            onComplete(.success(result))
         }
         task.resume()
     }

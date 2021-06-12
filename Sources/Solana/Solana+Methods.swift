@@ -2,10 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    
-    func getClusterNodes() -> Single<ClusterNodes> {
-        request()
-    }
     func getConfirmedBlock(slot: UInt64, encoding: String = "json") -> Single<ConfirmedBlock?> {
         request(parameters: [slot, encoding])
     }

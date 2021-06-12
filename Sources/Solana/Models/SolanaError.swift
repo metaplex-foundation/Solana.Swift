@@ -45,5 +45,7 @@ public extension Solana {
         // Other
         case other(String)
         case unknown
+        case httpError
+        case invalidResponseNoData
     }
 }
