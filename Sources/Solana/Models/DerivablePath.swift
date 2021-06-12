@@ -13,12 +13,15 @@ extension Solana {
         public enum DerivableType: String, CaseIterable {
             case bip44Change
             case bip44
+            #if canImport(UIKit)
             case deprecated
-
+            #endif
             var prefix: String {
                 switch self {
+                #if canImport(UIKit)
                 case .deprecated:
                     return "m/501'"
+                #endif
                 case .bip44, .bip44Change:
                     return "m/44'/501'"
                 }
@@ -47,8 +50,10 @@ extension Solana {
         public var rawValue: String {
             var value = type.prefix
             switch type {
+            #if canImport(UIKit)
             case .deprecated:
                 value += "/\(walletIndex)'/0/\(accountIndex ?? 0)"
+            #endif
             case .bip44:
                 value += "/\(walletIndex)'"
             case .bip44Change:

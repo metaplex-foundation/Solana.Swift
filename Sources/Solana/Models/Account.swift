@@ -26,22 +26,15 @@ public extension Solana {
             if !phrase.isEmpty {
                 mnemonic = try Mnemonic(phrase: phrase)
             } else {
-                // change from 12-words to 24-words (128 to 256)
                 mnemonic = Mnemonic()
                 phrase = mnemonic.phrase
             }
             self.phrase = phrase
 
-            var derivablePath = derivablePath
-            if derivablePath == nil {
-                if phrase.count == 12 {
-                    derivablePath = .init(type: .deprecated, walletIndex: 0, accountIndex: 0)
-                } else {
-                    derivablePath = .default
-                }
-            }
+            let derivablePath = derivablePath ?? .default
 
-            switch derivablePath!.type {
+            switch derivablePath.type {
+            #if canImport(UIKit)
             case .deprecated:
                 let keychain = try Keychain(seedString: phrase.joined(separator: " "), network: network.cluster)
                 guard let seed = try keychain.derivedKeychain(at: derivablePath!.rawValue).privateKey else {
@@ -52,8 +45,9 @@ public extension Solana {
 
                 self.publicKey = try PublicKey(data: keys.publicKey)
                 self.secretKey = keys.secretKey
+            #endif
             default:
-                let keys = try Ed25519HDKey.derivePath(derivablePath!.rawValue, seed: mnemonic.seed.toHexString())
+                let keys = try Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString())
 
                 let keyPair = try NaclSign.KeyPair.keyPair(fromSeed: keys.key)
                 self.publicKey = try PublicKey(data: keyPair.publicKey)
