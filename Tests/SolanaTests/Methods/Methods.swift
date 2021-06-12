@@ -19,7 +19,12 @@ class Methods: XCTestCase {
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
     }
-    
+        
+    func testGetBlockCommitment() throws {
+        let block = try solanaSDK.getBlockCommitment(block: 82493733).toBlocking().first()
+        XCTAssertNotNil(block)
+    }
+  
     func testGetBalance() throws {
         let value = try solanaSDK.getBalance(account: account.publicKey.base58EncodedString).toBlocking().first()
         XCTAssertNotNil(value)

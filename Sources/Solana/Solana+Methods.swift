@@ -3,9 +3,6 @@ import RxSwift
 
 public extension Solana {
     
-    func getBlockCommitment(block: String) -> Single<BlockCommitment> {
-        request(parameters: [block])
-    }
     func getBlockTime(block: UInt64) -> Single<Date?> {
         (request(parameters: [block]) as Single<Int64?>)
             .map {timestamp in
