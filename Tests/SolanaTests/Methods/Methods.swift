@@ -132,8 +132,12 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getRecentPerformanceSamples(limit: 5).toBlocking().first()
         XCTAssertNotNil(accounts)
     }
-    func testGetSupply() throws {
-        let accounts = try solanaSDK.getSupply().toBlocking().first()
+    func testGetVoteAccounts() throws {
+        let accounts = try solanaSDK.getVoteAccounts().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
+    func testGetRecentBlockhash() throws {
+        let accounts = try solanaSDK.getRecentBlockhash().toBlocking().first()
         XCTAssertNotNil(accounts)
     }
 }

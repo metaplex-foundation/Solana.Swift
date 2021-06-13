@@ -10,17 +10,6 @@ public extension Solana {
     func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
         request(parameters: [publicKey, configs])
     }
-    func getRecentBlockhash(commitment: Commitment? = nil) -> Single<String> {
-        (request(parameters: [RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
-            .map {$0.value}
-            .map {$0.blockhash}
-            .map { recentBlockhash in
-                if recentBlockhash == nil {
-                    throw SolanaError.other("Blockhash not found")
-                }
-                return recentBlockhash!
-            }
-    }
     func getSignatureStatuses(pubkeys: [String], configs: RequestConfiguration? = nil) -> Single<[SignatureStatus?]> {
         (request(parameters: [pubkeys, configs]) as Single<Rpc<[SignatureStatus?]>>)
             .map {$0.value}
@@ -61,9 +50,6 @@ public extension Solana {
     func getTokenSupply(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAmount> {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
             .map {$0.value}
-    }
-    func getVoteAccounts(commitment: Commitment? = nil) -> Single<VoteAccounts> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
     }
     func minimumLedgerSlot() -> Single<UInt64> {
         request()
