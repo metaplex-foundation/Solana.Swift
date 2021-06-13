@@ -8,45 +8,13 @@
 import Foundation
 
 public extension Solana {
-    enum SolanaError: Swift.Error, Equatable {
-        public static func == (lhs: Solana.SolanaError, rhs: Solana.SolanaError) -> Bool {
-            switch (lhs, rhs) {
-            case (.unauthorized, .unauthorized):
-                return true
-            case (.notFound, .notFound):
-                return true
-            case (.invalidRequest(let rs1), .invalidRequest(let rs2)):
-                return rs1 == rs2
-            case (.invalidResponse(let rs1), .invalidResponse(let rs2)):
-                return rs1.code == rs2.code
-            case (.socket(let er1), .socket(let er2)):
-                return er1.localizedDescription == er2.localizedDescription
-            case (.other(let rs1), .other(let rs2)):
-                return rs1 == rs2
-            case (.unknown, .unknown):
-                return true
-            default:
-                return false
-            }
-        }
-
+    enum SolanaError: Error {
         case unauthorized
-        case notFound
-
-        // Invalid Requests
+        case notFoundProgramAddress
         case invalidRequest(reason: String? = nil)
-
-        // Invalid responses
         case invalidResponse(ResponseError)
-
-        // Socket error
-        case socket(Swift.Error)
-
-        // Other
+        case socket(Error)
+        case couldNotRetriveAccountInfo
         case other(String)
-        case unknown
-        case httpError
-        case nullResponse
-        case invalidResponseNoData
     }
 }

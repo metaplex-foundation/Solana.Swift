@@ -39,7 +39,8 @@ extension Solana {
                     return
                 }
                 .catch { error in
-                    if (error as? SolanaError) == SolanaError.other("Could not retrieve account info") {
+                    if let solanaError = error as? SolanaError,
+                       case SolanaError.couldNotRetriveAccountInfo = solanaError {
                         // let request through
                         return .just(())
                     }
@@ -178,7 +179,8 @@ extension Solana {
             }
             .catch { error in
                 // let request through if result of getAccountInfo is null (it may be a new SOL address)
-                if (error as? SolanaError) == SolanaError.other("Could not retrieve account info") {
+                if let solanaError = error as? SolanaError,
+                    case SolanaError.couldNotRetriveAccountInfo = solanaError {
                     let owner = try PublicKey(string: destinationAddress)
                     let tokenMint = try PublicKey(string: mintAddress)
 
