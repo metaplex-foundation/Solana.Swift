@@ -2,11 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) -> Single<[BufferInfo<T>]?> {
-            let configs = RequestConfiguration(encoding: "base64")
-            return (request(parameters: [pubkeys, configs]) as Single<Rpc<[BufferInfo<T>]?>>)
-                .map {$0.value}
-    }
     func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
         request(parameters: [publicKey, configs])
     }

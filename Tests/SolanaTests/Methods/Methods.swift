@@ -19,6 +19,12 @@ class Methods: XCTestCase {
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
     }
+    
+    func testGetMultipleAccounts() throws {
+        let info: [Solana.BufferInfo<Solana.AccountInfo>?] = try solanaSDK.getMultipleAccounts(pubkeys: [account.publicKey.base58EncodedString], decodedTo: Solana.AccountInfo.self).toBlocking().first()!!
+        XCTAssertNotNil(info)
+        XCTAssertNotNil(info[0]?.data)
+    }
         
     func testGetBlockCommitment() throws {
         let block = try solanaSDK.getBlockCommitment(block: 82493733).toBlocking().first()
