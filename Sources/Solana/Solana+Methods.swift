@@ -2,12 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getEpochInfo(commitment: Commitment? = nil) -> Single<EpochInfo> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
-    func getEpochSchedule() -> Single<EpochSchedule> {
-        request()
-    }
     func getFeeCalculatorForBlockhash(blockhash: String, commitment: Commitment? = nil) -> Single<Fee> {
         (request(parameters: [blockhash, RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
             .map {$0.value}
