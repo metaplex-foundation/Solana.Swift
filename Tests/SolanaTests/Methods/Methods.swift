@@ -87,6 +87,22 @@ class Methods: XCTestCase {
         let fee = try solanaSDK.getFees().toBlocking().first()
         XCTAssertNotNil(fee)
     }
+    func testGetFirstAvailableBlock() throws {
+        let block = try solanaSDK.getFirstAvailableBlock().toBlocking().first()
+        XCTAssertNotNil(block)
+    }
+    func testGetGenesisHash() throws {
+        let hash = try solanaSDK.getGenesisHash().toBlocking().first()
+        XCTAssertNotNil(hash)
+    }
+    func testGetIdentity() throws {
+        let identity = try solanaSDK.getIdentity().toBlocking().first()
+        XCTAssertNotNil(identity)
+    }
+    func testGetVersion() throws {
+        let version = try solanaSDK.getVersion().toBlocking().first()
+        XCTAssertNotNil(version)
+    }
 }
 
 // RestAPITransactionTests

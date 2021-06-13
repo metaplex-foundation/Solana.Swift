@@ -2,15 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getFirstAvailableBlock() -> Single<UInt64> {
-        request()
-    }
-    func getGenesisHash() -> Single<String> {
-        request()
-    }
-    func getIdentity() -> Single<String> {
-        request()
-    }
     func getInflationGovernor(commitment: Commitment? = nil) -> Single<InflationGovernor> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
     }
@@ -94,9 +85,6 @@ public extension Solana {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
             .map {$0.value}
     }
-    func getVersion() -> Single<Version> {
-        request()
-    }
     func getVoteAccounts(commitment: Commitment? = nil) -> Single<VoteAccounts> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
     }
@@ -140,9 +128,6 @@ public extension Solana {
     func setLogFilter(filter: String) -> Single<String?> {
         request(parameters: [filter])
     }
-    func validatorExit() -> Single<Bool> {
-        request()
-    }
     
     // MARK: - Additional methods
     func getMintData(
@@ -174,7 +159,7 @@ public extension Solana {
                         throw SolanaError.other("Invalid mint owner")
                     }
                     
-                    guard let result = $0?.compactMap {$0.data.value}, result.count == mintAddresses.count else {
+                    guard let result = $0?.compactMap({$0.data.value}), result.count == mintAddresses.count else {
                         throw SolanaError.other("Some of mint data are missing")
                     }
                     
