@@ -9,7 +9,6 @@ public protocol SolanaAccountStorage {
 public class Solana {
     let endpoint: RpcApiEndPoint
     let accountStorage: SolanaAccountStorage
-    private var swapPool: [Pool]?
     public private(set) var supportedTokens = [Token]()
 
     public init(endpoint: RpcApiEndPoint, accountStorage: SolanaAccountStorage) {
