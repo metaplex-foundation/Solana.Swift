@@ -58,13 +58,6 @@ class Methods: XCTestCase {
         let blocks = try solanaSDK.getConfirmedBlocksWithLimit(startSlot:61998720, limit: 10).toBlocking().first()
         XCTAssertNotNil(blocks)
     }
-    func testGetTokenAccountBalance() throws {
-        let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
-        let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
-        XCTAssertNotNil(balance?.uiAmount)
-        XCTAssertNotNil(balance?.amount)
-        XCTAssertNotNil(balance?.decimals)
-    }
     func testGetConfirmedSignaturesForAddress() throws {
         let signatures = try solanaSDK.getConfirmedSignaturesForAddress(account: "Vote111111111111111111111111111111111111111", startSlot: 61968701, endSlot: 61968801).toBlocking().first()
         XCTAssertNotNil(signatures)
@@ -172,6 +165,16 @@ class Methods: XCTestCase {
     func testGetSignatureStatuses() throws {
         let count = try solanaSDK.getSignatureStatuses(pubkeys: ["3o2Jk6wsPY5eEXaXr1cC3a4uZcjFVxc5VnKR5kXvXD8E6DnqGfikovk4u6Ts7zSAewmbYiUby9tAzHeUtGTLFcdK"]).toBlocking().first()
         XCTAssertNotNil(count)
+    }
+    
+    /* Tokens */
+    
+    func testGetTokenAccountBalance() throws {
+        let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
+        let balance = try solanaSDK.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
+        XCTAssertNotNil(balance?.uiAmount)
+        XCTAssertNotNil(balance?.amount)
+        XCTAssertNotNil(balance?.decimals)
     }
 }
 

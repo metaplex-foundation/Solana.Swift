@@ -10,5 +10,6 @@ public extension Solana {
         case couldNotRetriveAccountInfo
         case other(String)
         case nullValue
+        case couldNotRetriveBalance
     }
 }
