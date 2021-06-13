@@ -120,6 +120,22 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getLargestAccounts().toBlocking().first()
         XCTAssertNotNil(accounts)
     }
+    func testGetLeaderSchedule() throws {
+        let accounts = try solanaSDK.getLeaderSchedule().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
+    func testGetMinimumBalanceForRentExemption() throws {
+        let accounts = try solanaSDK.getMinimumBalanceForRentExemption(dataLength: 32000).toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
+    func testGetRecentPerformanceSamples() throws {
+        let accounts = try solanaSDK.getRecentPerformanceSamples(limit: 5).toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
+    func testGetSupply() throws {
+        let accounts = try solanaSDK.getSupply().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
 }
 
 // RestAPITransactionTests
