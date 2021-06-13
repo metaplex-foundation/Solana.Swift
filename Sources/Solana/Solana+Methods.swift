@@ -14,15 +14,6 @@ public extension Solana {
         (request(parameters: [RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
             .map {$0.value}
     }
-    func getFirstAvailableBlock() -> Single<UInt64> {
-        request()
-    }
-    func getGenesisHash() -> Single<String> {
-        request()
-    }
-    func getIdentity() -> Single<String> {
-        request()
-    }
     func getInflationGovernor(commitment: Commitment? = nil) -> Single<InflationGovernor> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
     }
@@ -106,9 +97,6 @@ public extension Solana {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
             .map {$0.value}
     }
-    func getVersion() -> Single<Version> {
-        request()
-    }
     func getVoteAccounts(commitment: Commitment? = nil) -> Single<VoteAccounts> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
     }
@@ -151,9 +139,6 @@ public extension Solana {
     }
     func setLogFilter(filter: String) -> Single<String?> {
         request(parameters: [filter])
-    }
-    func validatorExit() -> Single<Bool> {
-        request()
     }
     
     // MARK: - Additional methods
