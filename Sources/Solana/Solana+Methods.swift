@@ -2,18 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getFeeCalculatorForBlockhash(blockhash: String, commitment: Commitment? = nil) -> Single<Fee> {
-        (request(parameters: [blockhash, RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
-            .map {$0.value}
-    }
-    func getFeeRateGovernor() -> Single<Fee> {
-        (request() as Single<Rpc<Fee>>)
-            .map {$0.value}
-    }
-    func getFees(commitment: Commitment? = nil) -> Single<Fee> {
-        (request(parameters: [RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
-            .map {$0.value}
-    }
     func getFirstAvailableBlock() -> Single<UInt64> {
         request()
     }

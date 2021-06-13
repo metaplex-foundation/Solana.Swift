@@ -16,5 +16,6 @@ public extension Solana {
         case socket(Error)
         case couldNotRetriveAccountInfo
         case other(String)
+        case nullValue
     }
 }
