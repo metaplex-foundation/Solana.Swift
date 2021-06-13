@@ -186,7 +186,7 @@ public extension Solana {
                         throw SolanaError.other("Invalid mint owner")
                     }
                     
-                    guard let result = $0?.compactMap {$0.data.value}, result.count == mintAddresses.count else {
+                    guard let result = $0?.compactMap({$0.data.value}), result.count == mintAddresses.count else {
                         throw SolanaError.other("Some of mint data are missing")
                     }
                     
