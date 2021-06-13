@@ -136,7 +136,7 @@ extension Methods {
         ).toBlocking().first()
     }
 
-    func testSendSOLWithoutFee() throws {
+    func testSendSOL() throws {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
         _ = try solanaSDK.sendSOL(
             to: toPublicKey,
