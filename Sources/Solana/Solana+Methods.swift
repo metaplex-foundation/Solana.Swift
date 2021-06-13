@@ -81,9 +81,6 @@ public extension Solana {
     func minimumLedgerSlot() -> Single<UInt64> {
         request()
     }
-    func requestAirdrop(account: String, lamports: UInt64, commitment: Commitment? = nil) -> Single<String> {
-        request(parameters: [account, lamports, RequestConfiguration(commitment: commitment)])
-    }
     internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
         request(parameters: [serializedTransaction, configs])
             .catch { error in

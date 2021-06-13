@@ -12,6 +12,7 @@ class Methods: XCTestCase {
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
         let account = try Solana.Account(phrase: endpoint.network.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
+        _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 10000000000).toBlocking().first()
     }
 
     func testGetAccountInfo() throws {
@@ -102,6 +103,10 @@ class Methods: XCTestCase {
     func testGetVersion() throws {
         let version = try solanaSDK.getVersion().toBlocking().first()
         XCTAssertNotNil(version)
+    }
+    func testRequestAirdrop() throws {
+        let airdrop = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 10000000000).toBlocking().first()
+        XCTAssertNotNil(airdrop)
     }
     func testGetInflationGovernor() throws {
         let governor = try solanaSDK.getInflationGovernor().toBlocking().first()
