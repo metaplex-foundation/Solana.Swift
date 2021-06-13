@@ -51,9 +51,6 @@ public extension Solana {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
             .map {$0.value}
     }
-    func minimumLedgerSlot() -> Single<UInt64> {
-        request()
-    }
     internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
         request(parameters: [serializedTransaction, configs])
             .catch { error in

@@ -140,6 +140,10 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getRecentBlockhash().toBlocking().first()
         XCTAssertNotNil(accounts)
     }
+    func testMinimumLedgerSlot() throws {
+        let accounts = try solanaSDK.minimumLedgerSlot().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
 }
 
 // RestAPITransactionTests
