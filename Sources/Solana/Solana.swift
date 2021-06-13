@@ -83,8 +83,10 @@ public class Solana {
                 let decoded = try JSONDecoder().decode(Response<T>.self, from: data)
                 if let result = decoded.result {
                     onComplete(.success(result))
+                } else if let responseError = decoded.error {
+                    onComplete(.failure(SolanaError.invalidResponse(responseError)))
                 } else {
-                    onComplete(.failure(SolanaError.nullResponse))
+                    onComplete(.failure(SolanaError.unknown))
                 }
             } catch let serializeError {
                 onComplete(.failure(serializeError))
