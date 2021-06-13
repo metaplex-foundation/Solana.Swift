@@ -1,10 +1,3 @@
-//
-//  Pool.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 21/01/2021.
-//
-
 import Foundation
 
 extension Solana {
@@ -16,11 +9,11 @@ extension Solana {
         public var swapData: TokenSwapInfo
         public var tokenABalance: TokenAccountBalance?
         public var tokenBBalance: TokenAccountBalance?
-
+        
         public var authority: PublicKey? {
             poolTokenMint.mintAuthority
         }
-
+        
         // MARK: - Calculations
         public func estimatedAmount(
             forInputAmount inputAmount: Lamports,
@@ -29,24 +22,24 @@ extension Solana {
             guard let tokenABalance = tokenABalance?.amountInUInt64,
                   let tokenBBalance = tokenBBalance?.amountInUInt64
             else {return nil}
-
+            
             let i = BInt(inputAmount)
-
+            
             let b = BInt(tokenBBalance)
             let a = BInt(tokenABalance)
             let d = BInt(swapData.tradeFeeDenominator)
             let n = includeFees ? BInt(swapData.tradeFeeNumerator) : 0
-
+            
             let numerator = b * i * (d - n)
             let denominator = (a + i) * d
-
+            
             if denominator == 0 {
                 return nil
             }
-
+            
             return Lamports(numerator / denominator)
         }
-
+        
         public func inputAmount(
             forEstimatedAmount estimatedAmount: Lamports,
             includeFees: Bool
@@ -54,49 +47,49 @@ extension Solana {
             guard let tokenABalance = tokenABalance?.amountInUInt64,
                   let tokenBBalance = tokenBBalance?.amountInUInt64
             else {return nil}
-
+            
             let e = BInt(estimatedAmount)
-
+            
             let b = BInt(tokenBBalance)
             let a = BInt(tokenABalance)
             let d = BInt(swapData.tradeFeeDenominator)
             let n = includeFees ? BInt(swapData.tradeFeeNumerator) : 0
-
+            
             let numerator = e * a * d
             let denominator = b * (d - n) - e * d
-
+            
             return Lamports(numerator / denominator)
         }
-
+        
         public func minimumReceiveAmount(
             estimatedAmount: Lamports,
             slippage: Double
         ) -> Lamports {
             Lamports(Float64(estimatedAmount) * Float64(1 - slippage))
         }
-
+        
         public func fee(forInputAmount inputAmount: UInt64) -> Double? {
             guard let tokenABalance = tokenABalance?.amountInUInt64,
                   let tokenBBalance = tokenBBalance?.amountInUInt64
             else {return nil}
-
+            
             let i = BInt(inputAmount)
-
+            
             let b = BInt(tokenBBalance)
             let a = BInt(tokenABalance)
             let d = BInt(swapData.tradeFeeDenominator)
             let n = BInt(swapData.tradeFeeNumerator)
-
+            
             let numerator = b * i * n
             let denominator = (a + i) * d
-
+            
             if denominator == 0 {
                 return nil
             }
-
+            
             return Lamports(numerator / denominator).convertToBalance(decimals: tokenBInfo.decimals)
         }
-
+        
         // MARK: - Helpers
         var reversedPool: Pool {
             var pool = self

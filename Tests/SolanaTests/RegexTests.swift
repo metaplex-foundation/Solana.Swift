@@ -1,15 +1,7 @@
-//
-//  RegexTests.swift
-//  SolanaSwift_Tests
-//
-//  Created by Chung Tran on 18/11/2020.
-//  Copyright © 2020 CocoaPods. All rights reserved.
-//
-
 import XCTest
 
 class RegexTests: XCTestCase {
-
+    
     func testPubkeyRegex() throws {
         let regex = NSRegularExpression.publicKey
         XCTAssertTrue(regex.matches("3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"))
@@ -22,10 +14,10 @@ class RegexTests: XCTestCase {
         XCTAssertTrue(regex.matches("36sp9nNMm4jja1h8wcvBYKyUYaqvHV1sfuBSJ5ddjcMd"))
         XCTAssertTrue(regex.matches("3Jc5CLBGd9dPfiXQ6K6ANu69g9mg9gHyKXxA2Gsk9qFa"))
         XCTAssertTrue(regex.matches("41r5NV6uj386xwXmeKwQ8V6mTH6Y4aouth5yQzeReFJt"))
-
+        
         XCTAssertFalse(regex.matches("3h1zGmCwsRJnVk5BuR"))
         XCTAssertFalse(regex.matches("41r5NV6uj386xwXmeKwQ8V6mTH6Y4aouth5yQzeReFJt333"))
         XCTAssertFalse(regex.matches("41r5NV6uj386xwXm-KwQ8V6mTH6Y4+outh5yQzeReFJt"))
     }
-
+    
 }

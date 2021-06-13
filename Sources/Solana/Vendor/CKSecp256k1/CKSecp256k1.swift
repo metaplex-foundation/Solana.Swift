@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Arturo Jamaica on 2021/05/26.
-//
-
 import Foundation
 import secp256k1
 

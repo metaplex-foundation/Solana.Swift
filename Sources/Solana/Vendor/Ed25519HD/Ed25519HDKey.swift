@@ -1,10 +1,3 @@
-//
-//  Ed25519HDKey.swift
-//  Ed25519HDKeySwift
-//
-//  Created by Chung Tran on 07/05/2021.
-//
-
 import Foundation
 import TweetNacl
 import CryptoSwift

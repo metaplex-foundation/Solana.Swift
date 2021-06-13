@@ -1,10 +1,3 @@
-//
-//  AccountLayout.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 19/11/2020.
-//
-
 import Foundation
 
 extension Solana {
@@ -24,7 +17,7 @@ extension Solana {
         public var delegatedAmount: UInt64
         public let closeAuthorityOption: UInt32
         public var closeAuthority: PublicKey?
-
+        
         public init?(_ keys: [String: [UInt8]]) {
             guard let mint = try? PublicKey(bytes: keys["mint"]),
                   let owner = try? PublicKey(bytes: keys["owner"]),
@@ -40,7 +33,7 @@ extension Solana {
             else {
                 return nil
             }
-
+            
             self.mint = mint
             self.owner = owner
             self.lamports = amount
@@ -52,15 +45,15 @@ extension Solana {
             self.delegatedAmount = delegatedAmount
             self.closeAuthorityOption = closeAuthorityOption
             self.closeAuthority = closeAuthority
-
+            
             if delegateOption == 0 {
                 self.delegate = nil
                 self.delegatedAmount = 0
             }
-
+            
             self.isInitialized = state != 0
             self.isFrozen = state == 2
-
+            
             if isNativeOption == 1 {
                 self.rentExemptReserve = isNativeRaw
                 self.isNative = true
@@ -68,12 +61,12 @@ extension Solana {
                 self.rentExemptReserve = nil
                 isNative = false
             }
-
+            
             if closeAuthorityOption == 0 {
                 self.closeAuthority = nil
             }
         }
-
+        
         public static func layout() -> [(key: String?, length: Int)] {
             [
                 (key: "mint", length: PublicKey.LENGTH),

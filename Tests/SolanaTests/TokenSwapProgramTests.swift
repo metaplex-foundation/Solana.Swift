@@ -1,17 +1,9 @@
-//
-//  TokenSwapProgramTests.swift
-//  SolanaSwift_Tests
-//
-//  Created by Chung Tran on 20/01/2021.
-//  Copyright © 2021 CocoaPods. All rights reserved.
-//
-
 import XCTest
 @testable import Solana
 
 class TokenSwapProgramTests: XCTestCase {
     let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
-
+    
     func testSwapInstruction() throws {
         let instruction = Solana.TokenSwapProgram.swapInstruction(
             tokenSwap: publicKey,
@@ -29,10 +21,10 @@ class TokenSwapProgramTests: XCTestCase {
             amountIn: 100000,
             minimumAmountOut: 0
         )
-
+        
         XCTAssertEqual(Base58.decode("tSBHVn49GSCW4DNB1EYv9M"), instruction.data)
     }
-
+    
     func testDepositInstruction() throws {
         let instruction = Solana.TokenSwapProgram.depositInstruction(
             tokenSwap: publicKey,
@@ -49,10 +41,10 @@ class TokenSwapProgramTests: XCTestCase {
             maximumTokenA: 51,
             maximumTokenB: 1038
         )
-
+        
         XCTAssertEqual(Base58.decode("22WQQtPPUknk68tx2dUGRL1Q4Vj2mkg6Hd"), instruction.data)
     }
-
+    
     func testWithdrawInstruction() throws {
         let instruction = Solana.TokenSwapProgram.withdrawInstruction(
             tokenSwap: publicKey,
@@ -70,7 +62,7 @@ class TokenSwapProgramTests: XCTestCase {
             minimumTokenA: 49,
             minimumTokenB: 979
         )
-
+        
         XCTAssertEqual(Base58.decode("2aJyv2ixHWcYWoAKJkYMzSPwTrGUfnSR9R"), instruction.data)
     }
 }
