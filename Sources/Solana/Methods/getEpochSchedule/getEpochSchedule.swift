@@ -1,7 +1,5 @@
 import Foundation
 
-import Foundation
-
 extension Solana {
     func getEpochSchedule(onComplete: @escaping (Result<EpochSchedule, Error>) -> ()){
         request() { (result: Result<EpochSchedule, Error>) in
