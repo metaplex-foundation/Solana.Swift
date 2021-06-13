@@ -25,7 +25,10 @@ class Methods: XCTestCase {
         XCTAssertNotNil(info)
         XCTAssertNotNil(info[0]?.data)
     }
-        
+    func testGetProgramAccounts() throws {
+        let info = try solanaSDK.getProgramAccounts(publicKey: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8", decodedTo: Solana.TokenSwapInfo.self).toBlocking().first()
+        XCTAssertNotNil(info)
+    }
     func testGetBlockCommitment() throws {
         let block = try solanaSDK.getBlockCommitment(block: 82493733).toBlocking().first()
         XCTAssertNotNil(block)
