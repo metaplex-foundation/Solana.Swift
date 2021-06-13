@@ -8,10 +8,14 @@ public extension Solana {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }
-        request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64>, Error>) in
+        request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64?>, Error>) in
             switch result {
             case .success(let rpc):
-                onComplete(.success(rpc.value))
+                guard let value = rpc.value else {
+                    onComplete(.failure(SolanaError.nullValue))
+                    return
+                }
+                onComplete(.success(value))
             case .failure(let error):
                 onComplete(.failure(error))
             }
