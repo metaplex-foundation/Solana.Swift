@@ -103,6 +103,18 @@ class Methods: XCTestCase {
         let version = try solanaSDK.getVersion().toBlocking().first()
         XCTAssertNotNil(version)
     }
+    func testGetInflationGovernor() throws {
+        let governor = try solanaSDK.getInflationGovernor().toBlocking().first()
+        XCTAssertNotNil(governor)
+    }
+    func testGetInflationRate() throws {
+        let rate = try solanaSDK.getInflationRate().toBlocking().first()
+        XCTAssertNotNil(rate)
+    }
+    func testGetLargestAccounts() throws {
+        let accounts = try solanaSDK.getLargestAccounts().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
 }
 
 // RestAPITransactionTests
