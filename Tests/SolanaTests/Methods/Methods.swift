@@ -12,7 +12,6 @@ class Methods: XCTestCase {
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
         let account = try Solana.Account(phrase: endpoint.network.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
-        _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 10000000000).toBlocking().first()
     }
 
     func testGetAccountInfo() throws {
@@ -143,6 +142,27 @@ class Methods: XCTestCase {
     func testMinimumLedgerSlot() throws {
         let accounts = try solanaSDK.minimumLedgerSlot().toBlocking().first()
         XCTAssertNotNil(accounts)
+    }
+    func testGetSlot() throws {
+        let slot = try solanaSDK.getSlot().toBlocking().first()
+        XCTAssertNotNil(slot)
+    }
+    func testGetSlotLeader() throws {
+        let hash = try solanaSDK.getSlotLeader().toBlocking().first()
+        XCTAssertNotNil(hash)
+    }
+    func testGetTransactionCount() throws {
+        let count = try solanaSDK.getTransactionCount().toBlocking().first()
+        XCTAssertNotNil(count)
+    }
+    func testGetStakeActivation() throws {
+        // https://explorer.solana.com/address/HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf?cluster=devnet
+        let hash = try solanaSDK.getStakeActivation(stakeAccount: "HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf").toBlocking().first()
+        XCTAssertNotNil(hash)
+    }
+    func testGetSignatureStatuses() throws {
+        let count = try solanaSDK.getSignatureStatuses(pubkeys: ["3o2Jk6wsPY5eEXaXr1cC3a4uZcjFVxc5VnKR5kXvXD8E6DnqGfikovk4u6Ts7zSAewmbYiUby9tAzHeUtGTLFcdK"]).toBlocking().first()
+        XCTAssertNotNil(count)
     }
 }
 
