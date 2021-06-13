@@ -56,17 +56,19 @@ class Methods: XCTestCase {
         XCTAssertNotNil(balance?.amount)
         XCTAssertNotNil(balance?.decimals)
     }
-
 }
 
 // RestAPITransactionHistoryTests
 
 extension Methods {
     func testGetConfirmedSignaturesForAddress() throws {
+        let signatures = try solanaSDK.getConfirmedSignaturesForAddress(account: "Vote111111111111111111111111111111111111111", startSlot: 61968701, endSlot: 61968801).toBlocking().first()
+        XCTAssertNotNil(signatures)
+    }
+    func testGetConfirmedSignaturesForAddress2() throws {
         let result = try solanaSDK.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: Solana.RequestConfiguration(limit: 10)).toBlocking().first()
         XCTAssertEqual(result?.count, 10)
     }
-
     func testGetConfirmedTransaction() throws {
         let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "5dxrTLhZGwPzaYyE7xpTh5HgQdyV6hnseKGDHuhKAeTapw2TbTHtNh1aA2ecrbbGM2ZQ5gD6G7jzcd98Vro5L1DU").toBlocking().first()
         XCTAssertNotNil(result)
