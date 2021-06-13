@@ -13,7 +13,7 @@ public typealias Bignum = BInt
 
 public extension Bignum {
 	/// Representation as Data
-	public var data: Data {
+    var data: Data {
 		let n = limbs.count
 		var data = Data(count: n * 8)
 		data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt8>) -> Void in
@@ -29,30 +29,30 @@ public extension Bignum {
 	}
 
 	/// Decimal string representation
-	public var dec: String { return description }
+    var dec: String { return description }
 
 	/// Hexadecimal string representation
-	public var hex: String { return data.hexString }
+	var hex: String { return data.hexString }
 
     ///
     /// Initialise a BInt from a hexadecimal string
     ///
     /// - Parameter hex: the hexadecimal string to convert to a big integer
-    public init(hex: String) {
+    init(hex: String) {
         self.init(number: hex.lowercased(), withBase: 16)
     }
 
 	/// Initialise from an unsigned, 64 bit integer
 	///
 	/// - Parameter n: the 64 bit unsigned integer to convert to a BInt
-	public init(_ n: UInt64) {
+	init(_ n: UInt64) {
 		self.init(limbs: [n])
 	}
 
     /// Initialise from big-endian data
     ///
     /// - Parameter data: the data to convert to a Bignum
-    public init(data: Data) {
+    init(data: Data) {
 		let n = data.count
 		guard n > 0 else {
 			self.init(0)
