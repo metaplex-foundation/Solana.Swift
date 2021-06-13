@@ -2,12 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) -> Single<[String: [Int]]?> {
-        request(parameters: [epoch, RequestConfiguration(commitment: commitment)])
-    }
-    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = "recent") -> Single<UInt64> {
-        request(parameters: [dataLength, RequestConfiguration(commitment: commitment)])
-    }
     func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) -> Single<[BufferInfo<T>]?> {
             let configs = RequestConfiguration(encoding: "base64")
             return (request(parameters: [pubkeys, configs]) as Single<Rpc<[BufferInfo<T>]?>>)
@@ -15,20 +9,6 @@ public extension Solana {
     }
     func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
         request(parameters: [publicKey, configs])
-    }
-    func getRecentBlockhash(commitment: Commitment? = nil) -> Single<String> {
-        (request(parameters: [RequestConfiguration(commitment: commitment)]) as Single<Rpc<Fee>>)
-            .map {$0.value}
-            .map {$0.blockhash}
-            .map { recentBlockhash in
-                if recentBlockhash == nil {
-                    throw SolanaError.other("Blockhash not found")
-                }
-                return recentBlockhash!
-            }
-    }
-    func getRecentPerformanceSamples(limit: UInt64) -> Single<[PerformanceSample]> {
-        request(parameters: [limit])
     }
     func getSignatureStatuses(pubkeys: [String], configs: RequestConfiguration? = nil) -> Single<[SignatureStatus?]> {
         (request(parameters: [pubkeys, configs]) as Single<Rpc<[SignatureStatus?]>>)
@@ -42,10 +22,6 @@ public extension Solana {
     }
     func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil) -> Single<StakeActivation> {
         request(parameters: [stakeAccount, configs])
-    }
-    func getSupply(commitment: Commitment? = nil) -> Single<Supply> {
-        (request(parameters: [RequestConfiguration(commitment: commitment)]) as Single<Rpc<Supply>>)
-            .map {$0.value}
     }
     func getTransactionCount(commitment: Commitment? = nil) -> Single<UInt64> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
@@ -74,12 +50,6 @@ public extension Solana {
     func getTokenSupply(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAmount> {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
             .map {$0.value}
-    }
-    func getVoteAccounts(commitment: Commitment? = nil) -> Single<VoteAccounts> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
-    func minimumLedgerSlot() -> Single<UInt64> {
-        request()
     }
     internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
         request(parameters: [serializedTransaction, configs])
@@ -111,9 +81,6 @@ public extension Solana {
     func simulateTransaction(transaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionStatus> {
         (request(parameters: [transaction, configs]) as Single<Rpc<TransactionStatus>>)
             .map {$0.value}
-    }
-    func setLogFilter(filter: String) -> Single<String?> {
-        request(parameters: [filter])
     }
     
     // MARK: - Additional methods
