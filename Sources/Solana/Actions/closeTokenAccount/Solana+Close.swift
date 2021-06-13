@@ -1,10 +1,3 @@
-//
-//  SolanaSDK+Close.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 24/02/2021.
-//
-
 import Foundation
 import RxSwift
 
@@ -18,13 +11,13 @@ extension Solana {
         }
         do {
             let tokenPubkey = try PublicKey(string: tokenPubkey)
-
+            
             let instruction = TokenProgram.closeAccountInstruction(
                 account: tokenPubkey,
                 destination: account.publicKey,
                 owner: account.publicKey
             )
-
+            
             return serializeAndSendWithFee(instructions: [instruction], signers: [account])
         } catch {
             return .error(error)

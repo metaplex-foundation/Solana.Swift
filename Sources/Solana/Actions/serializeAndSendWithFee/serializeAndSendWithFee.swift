@@ -1,10 +1,3 @@
-//
-//  SolanaSDK+Extensions.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 11/9/20.
-//
-
 import Foundation
 import RxSwift
 
@@ -27,31 +20,31 @@ extension Solana {
             recentBlockhash: recentBlockhash,
             signers: signers
         )
-            .flatMap {
-                return self.sendTransaction(serializedTransaction: $0)
-            }
-            .catch {error in
-                if numberOfTries <= maxAttemps,
-                   let error = error as? Solana.SolanaError {
-                    var shouldRetry = false
-                    switch error {
-                    case .other(let message) where message == "Blockhash not found":
-                        shouldRetry = true
-                    case .invalidResponse(let response) where response.message == "Blockhash not found":
-                        shouldRetry = true
-                    default:
-                        break
-                    }
-
-                    if shouldRetry {
-                        numberOfTries += 1
-                        return self.serializeAndSendWithFee(instructions: instructions, signers: signers)
-                    }
+        .flatMap {
+            return self.sendTransaction(serializedTransaction: $0)
+        }
+        .catch {error in
+            if numberOfTries <= maxAttemps,
+               let error = error as? Solana.SolanaError {
+                var shouldRetry = false
+                switch error {
+                case .other(let message) where message == "Blockhash not found":
+                    shouldRetry = true
+                case .invalidResponse(let response) where response.message == "Blockhash not found":
+                    shouldRetry = true
+                default:
+                    break
                 }
-                throw error
+                
+                if shouldRetry {
+                    numberOfTries += 1
+                    return self.serializeAndSendWithFee(instructions: instructions, signers: signers)
+                }
             }
+            throw error
+        }
     }
-
+    
     private func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
@@ -65,11 +58,11 @@ extension Solana {
         } else {
             getRecentBlockhashRequest = getRecentBlockhash()
         }
-
+        
         guard let feePayer = feePayer ?? accountStorage.account?.publicKey else {
             return .error(SolanaError.invalidRequest(reason: "Fee-payer not found"))
         }
-
+        
         // serialize transaction
         return getRecentBlockhashRequest
             .map {recentBlockhash -> String in

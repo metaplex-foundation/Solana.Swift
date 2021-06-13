@@ -1,15 +1,8 @@
-//
-//  SolanaSDK+Pool.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 26/01/2021.
-//
-
 import Foundation
 import RxSwift
 
 private var mintDatasCache = [Solana.Mint]()
-
+private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
 extension Solana {
     struct ParsedSwapInfo: Codable {
         let address: String
@@ -24,7 +17,7 @@ extension Solana {
     }
     
     public func getSwapPools() -> Single<[Pool]> {
-        getPools(swapProgramId: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8")
+        getPools(swapProgramId: swapProgramId)
             .map {
                 $0.filter {
                     $0.tokenABalance?.amountInUInt64 != 0 &&
@@ -45,7 +38,7 @@ extension Solana {
                     guard swapData.mintA.base58EncodedString != "11111111111111111111111111111111",
                           swapData.mintB.base58EncodedString != "11111111111111111111111111111111",
                           swapData.tokenPool.base58EncodedString != "11111111111111111111111111111111"
-                    else {return nil}
+                    else { return nil }
                     return ParsedSwapInfo(address: program.pubkey, info: swapData)
                 }
                 
@@ -90,7 +83,7 @@ extension Solana {
                         }
                         return parsedInfo
                     }
-                    
+                
             }
             .map { parsedSwapInfos in
                 parsedSwapInfos.map {self.getPool(parsedSwapInfo: $0)}
@@ -118,12 +111,12 @@ extension Solana {
             getTokenAccountBalance(pubkey: pool.swapData.tokenAccountA.base58EncodedString),
             getTokenAccountBalance(pubkey: pool.swapData.tokenAccountB.base58EncodedString)
         )
-            .map { (tokenABalance, tokenBBalance) in
-                var pool = pool
-                pool.tokenABalance = tokenABalance
-                pool.tokenBBalance = tokenBBalance
-                return pool
-            }
+        .map { (tokenABalance, tokenBBalance) in
+            var pool = pool
+            pool.tokenABalance = tokenABalance
+            pool.tokenBBalance = tokenBBalance
+            return pool
+        }
     }
 }
 
