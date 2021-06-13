@@ -108,6 +108,18 @@ class Methods: XCTestCase {
         let airdrop = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 10000000000).toBlocking().first()
         XCTAssertNotNil(airdrop)
     }
+    func testGetInflationGovernor() throws {
+        let governor = try solanaSDK.getInflationGovernor().toBlocking().first()
+        XCTAssertNotNil(governor)
+    }
+    func testGetInflationRate() throws {
+        let rate = try solanaSDK.getInflationRate().toBlocking().first()
+        XCTAssertNotNil(rate)
+    }
+    func testGetLargestAccounts() throws {
+        let accounts = try solanaSDK.getLargestAccounts().toBlocking().first()
+        XCTAssertNotNil(accounts)
+    }
 }
 
 // RestAPITransactionTests

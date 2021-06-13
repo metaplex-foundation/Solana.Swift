@@ -2,16 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getInflationGovernor(commitment: Commitment? = nil) -> Single<InflationGovernor> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
-    func getInflationRate() -> Single<InflationRate> {
-        request()
-    }
-    func getLargestAccounts() -> Single<[LargestAccount]> {
-        (request() as Single<Rpc<[LargestAccount]>>)
-            .map {$0.value}
-    }
     func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) -> Single<[String: [Int]]?> {
         request(parameters: [epoch, RequestConfiguration(commitment: commitment)])
     }
