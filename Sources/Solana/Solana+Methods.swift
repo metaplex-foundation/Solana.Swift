@@ -10,22 +10,6 @@ public extension Solana {
     func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
         request(parameters: [publicKey, configs])
     }
-    func getSignatureStatuses(pubkeys: [String], configs: RequestConfiguration? = nil) -> Single<[SignatureStatus?]> {
-        (request(parameters: [pubkeys, configs]) as Single<Rpc<[SignatureStatus?]>>)
-            .map {$0.value}
-    }
-    func getSlot(commitment: Commitment? = nil) -> Single<UInt64> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
-    func getSlotLeader(commitment: Commitment? = nil) -> Single<String> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
-    func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil) -> Single<StakeActivation> {
-        request(parameters: [stakeAccount, configs])
-    }
-    func getTransactionCount(commitment: Commitment? = nil) -> Single<UInt64> {
-        request(parameters: [RequestConfiguration(commitment: commitment)])
-    }
     func getTokenAccountBalance(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAccountBalance> {
         (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAccountBalance>>)
             .map {
