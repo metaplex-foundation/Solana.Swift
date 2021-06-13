@@ -7,7 +7,7 @@ public extension Solana {
             switch result{
             case .success(let rpc):
                 guard let value = rpc.value else {
-                    onComplete(.failure(SolanaError.other("Could not retrieve account info")))
+                    onComplete(.failure(SolanaError.couldNotRetriveAccountInfo))
                     return
                 }
                 onComplete(.success(value))

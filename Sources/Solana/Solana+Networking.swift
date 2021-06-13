@@ -9,6 +9,13 @@ public extension Solana {
         case delete = "DELETE"
     }
     
+    enum RPCError: Error{
+        case httpError
+        case invalidResponseNoData
+        case invalidResponse(ResponseError)
+        case unknownResponse
+    }
+    
     func request<T: Decodable>(
         urlSession: URLSession = URLSession.shared,
         method: HTTPMethod = .post,
@@ -45,21 +52,21 @@ public extension Solana {
             
             guard let response = response, let httpURLResponse = response as? HTTPURLResponse,
                   (200..<300).contains(httpURLResponse.statusCode) else {
-                onComplete(.failure(SolanaError.httpError))
+                onComplete(.failure(RPCError.httpError))
                 return
             }
             do {
                 guard let data = data else {
-                    onComplete(.failure(SolanaError.invalidResponseNoData))
+                    onComplete(.failure(RPCError.invalidResponseNoData))
                     return
                 }
                 let decoded = try JSONDecoder().decode(Response<T>.self, from: data)
                 if let result = decoded.result {
                     onComplete(.success(result))
                 } else if let responseError = decoded.error {
-                    onComplete(.failure(SolanaError.invalidResponse(responseError)))
+                    onComplete(.failure(RPCError.invalidResponse(responseError)))
                 } else {
-                    onComplete(.failure(SolanaError.unknown))
+                    onComplete(.failure(RPCError.unknownResponse))
                 }
             } catch let serializeError {
                 onComplete(.failure(serializeError))

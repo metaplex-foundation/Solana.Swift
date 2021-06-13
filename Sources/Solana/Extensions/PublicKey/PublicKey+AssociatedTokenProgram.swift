@@ -44,7 +44,7 @@ extension Solana.PublicKey {
                 continue
             }
         }
-        throw Solana.SolanaError.notFound
+        throw Solana.SolanaError.notFoundProgramAddress
     }
 
     private static func createProgramAddress(
