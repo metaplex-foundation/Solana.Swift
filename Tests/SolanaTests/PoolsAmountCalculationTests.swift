@@ -1,11 +1,3 @@
-//
-//  PoolsAmountCalculationTests.swift
-//  SolanaSwift_Tests
-//
-//  Created by Chung Tran on 20/04/2021.
-//  Copyright © 2021 CocoaPods. All rights reserved.
-//
-
 import Foundation
 import XCTest
 @testable import Solana
@@ -78,14 +70,14 @@ class PoolsAmountCalculationTests: XCTestCase {
             )
         )
     }
-
+    
     func testAmountCalculation() throws {
         let inputAmount: Double = 1
         let expectedEstimatedAmount = 5.352587
-
+        
         let originalInputAmount: UInt64 = inputAmount.toLamport(decimals: pool.tokenAInfo.decimals)
         let estimatedAmountResult = pool.estimatedAmount(forInputAmount: originalInputAmount, includeFees: true)
-
+        
         XCTAssertEqual(estimatedAmountResult?.convertToBalance(decimals: 6), expectedEstimatedAmount)
     }
 }

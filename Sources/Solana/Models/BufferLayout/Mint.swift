@@ -1,10 +1,3 @@
-//
-//  MintLayout.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 19/11/2020.
-//
-
 import Foundation
 
 extension Solana {
@@ -18,7 +11,7 @@ extension Solana {
             self.freezeAuthorityOption = freezeAuthorityOption
             self.freezeAuthority = freezeAuthority
         }
-
+        
         public let mintAuthorityOption: UInt32
         public let mintAuthority: PublicKey?
         public let supply: UInt64
@@ -28,12 +21,12 @@ extension Solana {
         public let freezeAuthority: PublicKey?
         public init?(_ keys: [String: [UInt8]]) {
             guard let mintAuthorityOption = keys["mintAuthorityOption"]?.toUInt32(),
-                let mintAuthority = try? PublicKey(bytes: keys["mintAuthority"]),
-                let supply = keys["supply"]?.toUInt64(),
-                let decimals = keys["decimals"]?.first,
-                let isInitialized = keys["decimals"]?.first,
-                let freezeAuthorityOption = keys["freezeAuthorityOption"]?.toUInt32(),
-                let freezeAuthority = try? PublicKey(bytes: keys["freezeAuthority"])
+                  let mintAuthority = try? PublicKey(bytes: keys["mintAuthority"]),
+                  let supply = keys["supply"]?.toUInt64(),
+                  let decimals = keys["decimals"]?.first,
+                  let isInitialized = keys["decimals"]?.first,
+                  let freezeAuthorityOption = keys["freezeAuthorityOption"]?.toUInt32(),
+                  let freezeAuthority = try? PublicKey(bytes: keys["freezeAuthority"])
             else {return nil}
             self.mintAuthorityOption = mintAuthorityOption
             if mintAuthorityOption == 0 {
@@ -41,7 +34,7 @@ extension Solana {
             } else {
                 self.mintAuthority = mintAuthority
             }
-
+            
             self.supply = supply
             self.decimals = decimals
             self.isInitialized = isInitialized != 0
@@ -52,7 +45,7 @@ extension Solana {
                 self.freezeAuthority = freezeAuthority
             }
         }
-
+        
         public static func layout()  -> [(key: String?, length: Int)] {
             [
                 (key: "mintAuthorityOption", length: 4),

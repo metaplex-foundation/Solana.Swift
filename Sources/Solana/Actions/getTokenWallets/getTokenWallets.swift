@@ -1,10 +1,3 @@
-//
-//  SolanaSDK+Tokens.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 26/01/2021.
-//
-
 import Foundation
 import RxSwift
 

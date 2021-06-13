@@ -1,10 +1,3 @@
-//
-//  TokenSwapInfo.swift
-//  SolanaSwift
-//
-//  Created by Chung Tran on 21/01/2021.
-//
-
 import Foundation
 
 extension Solana {
@@ -31,7 +24,7 @@ extension Solana {
             self.curveType = curveType
             self.payer = payer
         }
-
+        
         // MARK: - Properties
         public let version: UInt8
         public let isInitialized: Bool
@@ -53,7 +46,7 @@ extension Solana {
         public let hostFeeDenominator: UInt64
         public let curveType: UInt8
         public let payer: PublicKey
-
+        
         // MARK: - Initializer
         public init?(_ keys: [String: [UInt8]]) {
             guard let version = keys["version"]?.first,
@@ -100,7 +93,7 @@ extension Solana {
             self.curveType = curveType
             self.payer = payer
         }
-
+        
         // MARK: - Layout
         public static func layout()  -> [(key: String?, length: Int)] {
             [

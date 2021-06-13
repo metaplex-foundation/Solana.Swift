@@ -5,7 +5,7 @@ extension Solana {
         case mainnetBeta = "mainnet-beta"
         case devnet = "devnet"
         case testnet = "testnet"
-
+        
         public var cluster: String { rawValue }
     }
 }
