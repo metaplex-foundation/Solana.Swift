@@ -1,7 +1,13 @@
 import Foundation
 import RxSwift
 
+private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
 extension Solana {
+    public struct SwapResponse {
+        public let transactionId: String
+        public let newWalletPubkey: String?
+    }
+    
     public func swap(
         account: Account? = nil,
         pool: Pool? = nil,
@@ -11,7 +17,7 @@ extension Solana {
         destinationMint: PublicKey,
         slippage: Double,
         amount: UInt64
-    ) -> Single<TransactionID> {
+    ) -> Single<SwapResponse> {
         // verify account
         guard let owner = account ?? accountStorage.account
         else {return .error(SolanaError.unauthorized)}
@@ -95,6 +101,8 @@ extension Solana {
                 }
                 
                 // check toToken
+                var newWalletPubkey: String?
+                
                 let isMintBWSOL = destinationMint == .wrappedSOLMint
                 if destination == nil || isMintBWSOL {
                     // create toToken if it doesn't exist
@@ -108,6 +116,7 @@ extension Solana {
                     )
                     
                     destination = newAccount.publicKey
+                    newWalletPubkey = destination?.base58EncodedString
                 }
                 
                 // approve
@@ -144,7 +153,7 @@ extension Solana {
                         poolMint: pool.swapData.tokenPool,
                         feeAccount: pool.swapData.feeAccount,
                         hostFeeAccount: nil,
-                        swapProgramId: try Solana.PublicKey(string: "DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1") /*swap ocra*/,
+                        swapProgramId: try PublicKey(string: swapProgramId),
                         tokenProgramId: .tokenProgramId,
                         amountIn: amount,
                         minimumAmountOut: minAmountIn
@@ -155,6 +164,7 @@ extension Solana {
                     instructions: instructions + cleanupInstructions,
                     signers: signers
                 )
+                .map {.init(transactionId: $0, newWalletPubkey: newWalletPubkey)}
             }
     }
     
