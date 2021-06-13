@@ -2,15 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getConfirmedSignaturesForAddress(account: String, startSlot: UInt64, endSlot: UInt64) -> Single<[String]> {
-        request(parameters: [account, startSlot, endSlot])
-    }
-    func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) -> Single<[SignatureInfo]> {
-        request(parameters: [account, configs])
-    }
-    func getConfirmedTransaction(transactionSignature: String) -> Single<TransactionInfo?> {
-        request(parameters: [transactionSignature, "jsonParsed"])
-    }
     func getEpochInfo(commitment: Commitment? = nil) -> Single<EpochInfo> {
         request(parameters: [RequestConfiguration(commitment: commitment)])
     }
