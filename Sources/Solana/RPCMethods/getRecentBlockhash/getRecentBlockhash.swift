@@ -10,7 +10,7 @@ extension Solana {
                     return
                 }
                 guard let blockhash = value.blockhash else {
-                    onComplete(.failure(SolanaError.other("Blockhash not found")))
+                    onComplete(.failure(SolanaError.blockHashNotFound))
                     return
                 }
                 onComplete(.success(blockhash))

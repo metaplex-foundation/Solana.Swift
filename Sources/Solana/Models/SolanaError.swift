@@ -11,5 +11,6 @@ public extension Solana {
         case other(String)
         case nullValue
         case couldNotRetriveBalance
+        case blockHashNotFound
     }
 }
