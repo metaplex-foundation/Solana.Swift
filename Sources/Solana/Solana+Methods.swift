@@ -2,31 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getTokenAccountBalance(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAccountBalance> {
-        (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAccountBalance>>)
-            .map {
-                if UInt64($0.value.amount) == nil {
-                    throw SolanaError.invalidResponse(ResponseError(code: nil, message: "Could not retrieve balance", data: nil))
-                }
-                return $0.value
-            }
-    }
-    func getTokenAccountsByDelegate(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) -> Single<[TokenAccount<AccountInfo>]> {
-        (request(parameters: [pubkey, mint, programId, configs]) as Single<Rpc<[TokenAccount<AccountInfo>]>>)
-            .map {$0.value}
-    }
-    func getTokenAccountsByOwner(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) -> Single<[TokenAccount<AccountInfo>]> {
-        (request(parameters: [pubkey, mint, programId, configs]) as Single<Rpc<[TokenAccount<AccountInfo>]>>)
-            .map {$0.value}
-    }
-    func getTokenLargestAccounts(pubkey: String, commitment: Commitment? = nil) -> Single<[TokenAmount]> {
-        (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<[TokenAmount]>>)
-            .map {$0.value}
-    }
-    func getTokenSupply(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAmount> {
-        (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
-            .map {$0.value}
-    }
     internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
         request(parameters: [serializedTransaction, configs])
             .catch { error in
