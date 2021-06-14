@@ -176,7 +176,6 @@ class Methods: XCTestCase {
         XCTAssertNotNil(balance?.amount)
         XCTAssertNotNil(balance?.decimals)
     }
-    
     // TODO: Find a valid combination
     /*func testGetTokenAccountsByDelegate() throws {
         let address = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
@@ -188,6 +187,14 @@ class Methods: XCTestCase {
         let balance = try solanaSDK.getTokenAccountsByOwner(pubkey: address, mint: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
         XCTAssertNotNil(balance[0])
     }*/
+    func testGetTokenSupply() throws {
+        let supply = try solanaSDK.getTokenSupply(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
+        XCTAssertNotNil(supply)
+    }
+    func testGetTokenLargestAccounts() throws {
+        let accounts = try solanaSDK.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
+        XCTAssertNotNil(accounts[0])
+    }
 }
 
 // RestAPITransactionTests

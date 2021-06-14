@@ -2,14 +2,6 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    func getTokenLargestAccounts(pubkey: String, commitment: Commitment? = nil) -> Single<[TokenAmount]> {
-        (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<[TokenAmount]>>)
-            .map {$0.value}
-    }
-    func getTokenSupply(pubkey: String, commitment: Commitment? = nil) -> Single<TokenAmount> {
-        (request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) as Single<Rpc<TokenAmount>>)
-            .map {$0.value}
-    }
     internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
         request(parameters: [serializedTransaction, configs])
             .catch { error in
