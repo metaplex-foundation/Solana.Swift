@@ -195,6 +195,60 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
         XCTAssertNotNil(accounts[0])
     }
+    
+    /* Transactions */
+    
+    func testSimulationSerializeAndSend() throws {
+        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+
+        let balance = try solanaSDK.getBalance().toBlocking().first()
+        XCTAssertNotNil(balance)
+
+        let instruction = Solana.SystemProgram.transferInstruction(
+            from: account.publicKey,
+            to: try Solana.PublicKey(string: toPublicKey),
+            lamports: 0.001.toLamport(decimals: 9)
+        )
+        
+        let transactionId = try solanaSDK.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account]).toBlocking().first()
+        XCTAssertNotNil(transactionId)
+    }
+    
+    func testSerializeAndSend() throws {
+        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+
+        let balance = try solanaSDK.getBalance().toBlocking().first()
+        XCTAssertNotNil(balance)
+
+        let instruction = Solana.SystemProgram.transferInstruction(
+            from: account.publicKey,
+            to: try Solana.PublicKey(string: toPublicKey),
+            lamports: 0.001.toLamport(decimals: 9)
+        )
+        
+        let transactionId = try solanaSDK.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
+        XCTAssertNotNil(transactionId)
+    }
+    func testSendSOLFromBalance() throws {
+        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+
+        let balance = try solanaSDK.getBalance().toBlocking().first()
+        XCTAssertNotNil(balance)
+
+        let transactionId = try solanaSDK.sendSOL(
+            to: toPublicKey,
+            amount: balance!/10
+        ).toBlocking().first()
+        XCTAssertNotNil(transactionId)
+    }
+    func testSendSOL() throws {
+        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+        let transactionId = try solanaSDK.sendSOL(
+            to: toPublicKey,
+            amount: 0.001.toLamport(decimals: 9)
+        ).toBlocking().first()
+        XCTAssertNotNil(transactionId)
+    }
 }
 
 // RestAPITransactionTests
@@ -216,25 +270,6 @@ extension Methods {
     }*/
 
     // MARK: - Send
-    func testSendSOLWithFee() throws {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-
-        let balance = try solanaSDK.getBalance().toBlocking().first()
-        XCTAssertNotNil(balance)
-
-        _ = try solanaSDK.sendSOL(
-            to: toPublicKey,
-            amount: balance!/10
-        ).toBlocking().first()
-    }
-
-    func testSendSOL() throws {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        _ = try solanaSDK.sendSOL(
-            to: toPublicKey,
-            amount: 0.001.toLamport(decimals: 9)
-        ).toBlocking().first()
-    }
 
     func testSendSPLTokenWithFee() throws {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
