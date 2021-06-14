@@ -2,12 +2,6 @@ import Foundation
 import RxSwift
 
 extension Solana {
-    /// Traditional sending without FeeRelayer
-    /// - Parameters:
-    ///   - instructions: transaction's instructions
-    ///   - recentBlockhash: recentBlockhash
-    ///   - signers: signers
-    /// - Returns: transaction id
     func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
@@ -39,6 +33,51 @@ extension Solana {
                 if shouldRetry {
                     numberOfTries += 1
                     return self.serializeAndSendWithFee(instructions: instructions, signers: signers)
+                }
+            }
+            throw error
+        }
+    }
+    
+    func serializeAndSendWithFeeSimulation(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account]
+    ) -> Single<String> {
+        let maxAttemps = 3
+        var numberOfTries = 0
+        return serializeTransaction(
+            instructions: instructions,
+            recentBlockhash: recentBlockhash,
+            signers: signers
+        )
+        .flatMap {
+            return self.simulateTransaction(transaction: $0)
+                .map {result -> String in
+                    if result.err != nil {
+                        throw SolanaError.other("Simulation error")
+                    }
+                    return "<simulated transaction id>"
+                }
+            
+        }
+        .catch {error in
+            if numberOfTries <= maxAttemps,
+               let error = error as? SolanaError
+            {
+                var shouldRetry = false
+                switch error {
+                case .other(let message) where message == "Blockhash not found":
+                    shouldRetry = true
+                case .invalidResponse(let response) where response.message == "Blockhash not found":
+                    shouldRetry = true
+                default:
+                    break
+                }
+                
+                if shouldRetry {
+                    numberOfTries += 1
+                    return self.serializeAndSendWithFeeSimulation(instructions: instructions, signers: signers)
                 }
             }
             throw error

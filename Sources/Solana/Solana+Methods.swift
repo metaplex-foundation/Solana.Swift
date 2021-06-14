@@ -2,39 +2,7 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    internal func sendTransaction(serializedTransaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionID> {
-        request(parameters: [serializedTransaction, configs])
-            .catch { error in
-                // Modify error message
-                if let error = error as? SolanaError {
-                    switch error {
-                    case .invalidResponse(let response) where response.message != nil:
-                        var message = response.message
-                        if let readableMessage = response.data?.logs
-                            .first(where: {$0.contains("Error:")})?
-                            .components(separatedBy: "Error: ")
-                            .last {
-                            message = readableMessage
-                        } else if let readableMessage = response.message?
-                                    .components(separatedBy: "Transaction simulation failed: ")
-                                    .last {
-                            message = readableMessage
-                        }
-                        
-                        return .error(SolanaError.invalidResponse(ResponseError(code: response.code, message: message, data: response.data)))
-                    default:
-                        break
-                    }
-                }
-                return .error(error)
-            }
-    }
-    func simulateTransaction(transaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) -> Single<TransactionStatus> {
-        (request(parameters: [transaction, configs]) as Single<Rpc<TransactionStatus>>)
-            .map {$0.value}
-    }
-    
-    // MARK: - Additional methods
+
     func getMintData(
         mintAddress: PublicKey,
         programId: PublicKey = .tokenProgramId
