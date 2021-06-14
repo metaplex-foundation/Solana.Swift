@@ -325,12 +325,3 @@ extension Methods {
         ).toBlocking().first()
     }*/
 }
-
-// RestAPIPoolTests
-extension Methods {
-    func testGetPools() throws {
-        let pools = try solanaSDK.getSwapPools().toBlocking().first()
-        XCTAssertNotNil(pools)
-        XCTAssertNotEqual(pools!.count, 0)
-    }
-}
