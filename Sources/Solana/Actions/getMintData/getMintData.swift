@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 public extension Solana {
     
@@ -21,20 +20,6 @@ public extension Solana {
                 onComplete(.failure(error))
                 return
             }
-        }
-    }
-    
-    func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId) -> Single<Mint> {
-        Single.create { emitter in
-            self.getMintData(mintAddress: mintAddress, programId: programId) { result in
-                switch result {
-                case .success(let mint):
-                    return emitter(.success(mint))
-                case .failure(let error):
-                    return emitter(.failure(error))
-                }
-            }
-            return Disposables.create()
         }
     }
     
@@ -65,20 +50,6 @@ public extension Solana {
                 onComplete(.failure(error))
                 return
             }
-        }
-    }
-    
-    func getMultipleMintDatas(mintAddresses: [PublicKey], programId: PublicKey = .tokenProgramId) -> Single<[PublicKey: Mint]> {
-        Single.create { emitter in
-            self.getMultipleMintDatas(mintAddresses: mintAddresses, programId: programId) { result in
-                switch result {
-                case .success(let mint):
-                    return emitter(.success(mint))
-                case .failure(let error):
-                    return emitter(.failure(error))
-                }
-            }
-            return Disposables.create()
         }
     }
 }
