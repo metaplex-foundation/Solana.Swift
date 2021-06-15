@@ -1,13 +1,14 @@
 import Foundation
-import RxSwift
 
 extension Solana {
     public func closeTokenAccount(
         account: Solana.Account? = nil,
-        tokenPubkey: String
-    ) -> Single<TransactionID> {
+        tokenPubkey: String,
+        onComplete: @escaping (Result<TransactionID, Error>) -> ()
+    ) {
         guard let account = account ?? accountStorage.account else {
-            return .error(SolanaError.unauthorized)
+            onComplete(.failure(SolanaError.unauthorized))
+            return
         }
         do {
             let tokenPubkey = try PublicKey(string: tokenPubkey)
@@ -17,10 +18,13 @@ extension Solana {
                 destination: account.publicKey,
                 owner: account.publicKey
             )
-            
-            return serializeAndSendWithFee(instructions: [instruction], signers: [account])
+            serializeAndSendWithFee(instructions: [instruction], signers: [account]){
+                onComplete($0)
+                return
+            }
         } catch {
-            return .error(error)
+            onComplete(.failure((error)))
+            return
         }
     }
 }

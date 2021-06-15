@@ -195,28 +195,6 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
         XCTAssertNotNil(accounts[0])
     }
-}
-
-// RestAPITransactionTests
-extension Methods {
-    // MARK: - Create and close
-    func testCreateTokenAccount() throws {
-        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-
-        _ = try solanaSDK.createTokenAccount(
-            mintAddress: mintAddress
-        ).toBlocking().first()
-    }
-
-    /*func testCloseAccount() throws {
-        let token = "7KxA7JU6MueQqQwMXZ4PTBB1ov9C7UfPa4RLiDxuHGsx"
-        _ = try solanaSDK.closeTokenAccount(
-            tokenPubkey: token
-        ).toBlocking().first()
-    }*/
-
-    // MARK: - Send
-
     func testSendSPLTokenWithFee() throws {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
         let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
@@ -238,6 +216,19 @@ extension Methods {
             amount: Double(0.001).toLamport(decimals: 5)
         ).toBlocking().first()
     }
+}
+
+// RestAPITransactionTests
+extension Methods {
+    // MARK: - Create and close
+    /*func testCloseAccount() throws {
+        let token = "7KxA7JU6MueQqQwMXZ4PTBB1ov9C7UfPa4RLiDxuHGsx"
+        _ = try solanaSDK.closeTokenAccount(
+            tokenPubkey: token
+        ).toBlocking().first()
+    }*/
+
+    // MARK: - Send
 
     /*func testSwapToken() throws {
         let USDCWallet = "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8"
