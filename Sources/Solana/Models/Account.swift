@@ -30,7 +30,7 @@ public extension Solana {
             #if canImport(UIKit)
             case .deprecated:
                 let keychain = try Keychain(seedString: phrase.joined(separator: " "), network: network.cluster)
-                guard let seed = try keychain.derivedKeychain(at: derivablePath!.rawValue).privateKey else {
+                guard let seed = try keychain.derivedKeychain(at: derivablePath.rawValue).privateKey else {
                     throw SolanaError.other("Could not derivate private key")
                 }
                 
