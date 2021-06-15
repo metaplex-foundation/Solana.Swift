@@ -220,14 +220,6 @@ class Methods: XCTestCase {
 
 // RestAPITransactionTests
 extension Methods {
-    // MARK: - Create and close
-    /*func testCloseAccount() throws {
-        let token = "7KxA7JU6MueQqQwMXZ4PTBB1ov9C7UfPa4RLiDxuHGsx"
-        _ = try solanaSDK.closeTokenAccount(
-            tokenPubkey: token
-        ).toBlocking().first()
-    }*/
-
     // MARK: - Send
 
     /*func testSwapToken() throws {
