@@ -1,10 +1,3 @@
-//
-//  InMemoryAccountStorage.swift
-//  p2p_walletTests
-//
-//  Created by Chung Tran on 10/28/20.
-//
-
 import Foundation
 @testable import Solana
 
