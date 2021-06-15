@@ -9,8 +9,9 @@ class getTokenWallets: XCTestCase {
     var account: Solana.Account { solanaSDK.accountStorage.account! }
 
     override func setUpWithError() throws {
+        let wallet: TestsWallet = .getWallets
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: endpoint.network.testAccount.components(separatedBy: " "), network: endpoint.network)
+        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
     }
     

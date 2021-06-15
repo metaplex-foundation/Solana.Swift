@@ -8,8 +8,9 @@ class DecodingConfirmedTransactionTests: XCTestCase {
     var parser: Solana.TransactionParser!
     
     override func setUpWithError() throws {
+        let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: endpoint.network.testAccount.components(separatedBy: " "), network: endpoint.network)
+        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
         
         parser = Solana.TransactionParser(solanaSDK: solanaSDK)
