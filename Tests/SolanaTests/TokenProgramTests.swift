@@ -4,11 +4,6 @@ import XCTest
 class TokenProgramTests: XCTestCase {
     let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
     
-    //    func testInitializeMintInstruction() throws {
-    //        let instruction = SolanaSDK.TokenProgram.initializeMintInstruction(tokenProgramId: publicKey, mint: publicKey, decimals: 2, authority: publicKey, freezeAuthority: nil)
-    //        XCTAssertEqual("1nBYrAcY5rLBEoZaGN6hahh3ZhgQTgLmsmunRee8a3zaA42wLZ7aux2HiX6tCKp73MWVj6fDagGuhfTPYGY32UNcis", Base58.encode(instruction.data))
-    //    }
-    
     func testInitializeAccountInstruction() throws {
         let instruction = Solana.TokenProgram.initializeAccountInstruction(account: publicKey, mint: publicKey, owner: publicKey)
         XCTAssertEqual("2", Base58.encode(instruction.data))
