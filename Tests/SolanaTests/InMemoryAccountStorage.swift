@@ -1,18 +1,26 @@
 import Foundation
 @testable import Solana
 
-extension Solana.Network {
+
+enum TestsWallet{
+    case mainnetBeta
+    case devnet
+    case getWallets
+    
     var testAccount: String {
         switch self {
         case .mainnetBeta:
             return "promote ignore inmate coast excess candy vanish erosion palm oxygen build powder"
         case .devnet:
             return "siege amazing camp income refuse struggle feed kingdom lawn champion velvet crystal stomach trend hen uncover roast nasty until hidden crumble city bag minute"
+        case .getWallets:
+            return "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side"
         default:
             fatalError("unsupported")
         }
     }
 }
+
 
 class InMemoryAccountStorage: SolanaAccountStorage {
     private var _account: Solana.Account?
