@@ -195,27 +195,6 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
         XCTAssertNotNil(accounts[0])
     }
-    func testSendSPLTokenWithFee() throws {
-        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
-        let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
-
-        _ = try solanaSDK.sendSPLTokens(
-            mintAddress: mintAddress,
-            decimals: 5,
-            from: source,
-            to: destination,
-            amount: Double(0.001).toLamport(decimals: 5)
-        ).toBlocking().first()
-        
-        _ = try solanaSDK.sendSPLTokens(
-            mintAddress: mintAddress,
-            decimals: 5,
-            from: destination,
-            to: source,
-            amount: Double(0.001).toLamport(decimals: 5)
-        ).toBlocking().first()
-    }
 }
 
 // RestAPITransactionTests
