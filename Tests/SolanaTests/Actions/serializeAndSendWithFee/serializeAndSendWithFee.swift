@@ -45,24 +45,4 @@ class serializeAndSendWithFee: XCTestCase {
         let transactionId = try solanaSDK.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
-    func testSendSOLFromBalance() throws {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-
-        let balance = try solanaSDK.getBalance().toBlocking().first()
-        XCTAssertNotNil(balance)
-
-        let transactionId = try solanaSDK.sendSOL(
-            to: toPublicKey,
-            amount: balance!/10
-        ).toBlocking().first()
-        XCTAssertNotNil(transactionId)
-    }
-    func testSendSOL() throws {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        let transactionId = try solanaSDK.sendSOL(
-            to: toPublicKey,
-            amount: 0.001.toLamport(decimals: 9)
-        ).toBlocking().first()
-        XCTAssertNotNil(transactionId)
-    }
 }
