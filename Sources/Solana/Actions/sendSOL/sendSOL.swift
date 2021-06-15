@@ -2,60 +2,66 @@ import Foundation
 import RxSwift
 
 extension Solana {
-    public typealias SPLTokenDestinationAddress = (destination: PublicKey, isUnregisteredAsocciatedToken: Bool)
     public func sendSOL(
         to destination: String,
-        amount: UInt64
-    ) -> Single<TransactionID> {
+        amount: UInt64,
+        onComplete: @escaping ((Result<TransactionID, Error>) -> ())
+    ) {
         guard let account = self.accountStorage.account else {
-            return .error(SolanaError.unauthorized)
+            onComplete(.failure(SolanaError.unauthorized))
+            return
         }
         
-        do {
-            let fromPublicKey = account.publicKey
+        let fromPublicKey = account.publicKey
+        if fromPublicKey.base58EncodedString == destination {
+            onComplete(.failure(SolanaError.other("You can not send tokens to yourself")))
+            return
+        }
+        
+        // check
+        getAccountInfo(account: destination, decodedTo: EmptyInfo.self) { resultInfo in
             
-            if fromPublicKey.base58EncodedString == destination {
-                throw SolanaError.other("You can not send tokens to yourself")
-            }
-            
-            // check
-            return getAccountInfo(account: destination, decodedTo: EmptyInfo.self)
-                .map {info -> Void in
-                    guard info.owner == PublicKey.programId.base58EncodedString
-                    else {throw SolanaError.other("Invalid account info")}
+            if case Result.failure( let error) = resultInfo {
+                if let solanaError = error as? SolanaError,
+                   case SolanaError.couldNotRetriveAccountInfo = solanaError {
+                    // let request through
+                } else {
+                    onComplete(.failure(error))
                     return
                 }
-                .catch { error in
-                    if let solanaError = error as? SolanaError,
-                       case SolanaError.couldNotRetriveAccountInfo = solanaError {
-                        // let request through
-                        return .just(())
-                    }
-                    throw error
+            }
+            
+            guard case Result.success(let info) = resultInfo else {
+                onComplete(.failure(SolanaError.couldNotRetriveAccountInfo))
+                return
+            }
+            
+            guard info.owner == PublicKey.programId.base58EncodedString else {
+                onComplete(.failure(SolanaError.other("Invalid account info")))
+                return
+            }
+            guard let to = try? PublicKey(string: destination) else {
+                onComplete(.failure(SolanaError.invalidPublicKey))
+                return
+            }
+            
+            let instruction = SystemProgram.transferInstruction(
+                from: fromPublicKey,
+                to: to,
+                lamports: amount
+            )
+            self.serializeAndSendWithFee(
+                instructions: [instruction],
+                signers: [account]
+            ) {
+                switch $0 {
+                case .success(let transaction):
+                    onComplete(.success(transaction))
+                case .failure(let error):
+                    onComplete(.failure(error))
                 }
-                .flatMap {
-                    
-                    // transaction with fee, can be a simulation
-                    let instruction = SystemProgram.transferInstruction(
-                        from: fromPublicKey,
-                        to: try PublicKey(string: destination),
-                        lamports: amount
-                    )
-                    
-                    return self.serializeAndSendWithFee(
-                        instructions: [instruction],
-                        signers: [account]
-                    )
-                }
-                .catch {error in
-                    var error = error
-                    if error.localizedDescription == "Invalid param: WrongSize" {
-                        error = SolanaError.other("Wrong wallet address")
-                    }
-                    throw error
-                }
-        } catch {
-            return .error(error)
+            }
         }
+        
     }
 }
