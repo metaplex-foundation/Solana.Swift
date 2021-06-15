@@ -42,8 +42,7 @@ public extension Solana {
         }
         
         let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
-            
-            Logger.log(message: String(data: data ?? Data(), encoding: .utf8) ?? "", event: .response, apiMethod: bcMethod)
+            //Logger.log(message: String(data: data ?? Data(), encoding: .utf8) ?? "", event: .response, apiMethod: bcMethod)
             
             if let error = error {
                 onComplete(.failure(error))
