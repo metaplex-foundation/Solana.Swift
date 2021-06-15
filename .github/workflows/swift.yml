@@ -24,4 +24,5 @@ jobs:
     - name: Coverage Post
       uses: romeovs/lcov-reporter-action@v0.2.16
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         lcov-file: ./coverage/lcov.info
