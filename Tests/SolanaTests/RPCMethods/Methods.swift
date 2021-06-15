@@ -43,7 +43,7 @@ class Methods: XCTestCase {
         XCTAssertNotNil(nodes)
     }
     func testGetBlockTime() throws {
-        let date = try solanaSDK.getBlockCommitment(block: 61968801).toBlocking().first()
+        let date = try solanaSDK.getBlockTime(block: 61968801).toBlocking().first()
         XCTAssertNotNil(date)
     }
     func testGetConfirmedBlock() throws {
