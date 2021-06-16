@@ -1,25 +1,14 @@
 import Foundation
 
 public extension Solana {
-    struct PublicKey: Codable, Equatable, CustomStringConvertible, Hashable {
+    struct PublicKey: Equatable, CustomStringConvertible, Hashable {
         public static let LENGTH = 32
         public let bytes: [UInt8]
-        
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try container.encode(base58EncodedString)
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let string = try container.decode(String.self)
-            try self.init(string: string)
-        }
         
         public init(string: String?) throws {
             guard let string = string, string.utf8.count >= Solana.PublicKey.LENGTH
             else {
-                throw SolanaError.other("Invalid public key input")
+                throw SolanaError.invalidPublicKey
             }
             let bytes = Base58.decode(string)
             self.bytes = bytes
@@ -27,14 +16,14 @@ public extension Solana {
         
         public init(data: Data) throws {
             guard data.count <= Solana.PublicKey.LENGTH else {
-                throw SolanaError.other("Invalid public key input")
+                throw SolanaError.invalidPublicKey
             }
             self.bytes = [UInt8](data)
         }
         
         public init(bytes: [UInt8]?) throws {
             guard let bytes = bytes, bytes.count <= PublicKey.LENGTH else {
-                throw SolanaError.other("Invalid public key input")
+                throw SolanaError.invalidPublicKey
             }
             self.bytes = bytes
         }
@@ -55,5 +44,18 @@ public extension Solana {
             let pubkey = base58EncodedString
             return pubkey.prefix(numOfSymbolsRevealed) + "..." + pubkey.suffix(numOfSymbolsRevealed)
         }
+    }
+}
+
+extension Solana.PublicKey: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(base58EncodedString)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let string = try container.decode(String.self)
+        try self.init(string: string)
     }
 }
