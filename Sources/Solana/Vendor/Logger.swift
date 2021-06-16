@@ -66,7 +66,7 @@ public class Logger {
         if showEvents?.contains(event) == false {return}
         if let method = apiMethod, shownApiMethods?.contains(method) == false {return}
         #if DEBUG
-            print("\(Date().toString()) \(event.rawValue)[\(sourceFileName(filePath: fileName))]:\(line) \(column) \(funcName) -> \(message)")
+            debugPrint("\(Date().toString()) \(event.rawValue)[\(sourceFileName(filePath: fileName))]:\(line) \(column) \(funcName) -> \(message)")
         #else
         #endif
     }
