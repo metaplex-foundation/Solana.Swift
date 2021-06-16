@@ -13,11 +13,4 @@ class closeTokenAccount: XCTestCase {
         let account = try Solana.Account(phrase: endpoint.network.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
     }
-    
-    /*func testCloseAccount() throws {
-        let token = "31VJdomzjjKRyezbyBW2Ktf585T7XgWRGPyfoc7B1Q6F"
-        _ = try solanaSDK.closeTokenAccount(
-            tokenPubkey: token
-        ).toBlocking().first()
-    }*/
 }
