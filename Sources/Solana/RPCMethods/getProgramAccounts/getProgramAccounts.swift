@@ -5,7 +5,6 @@ extension Solana {
                                              configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
                                              decodedTo: T.Type,
                                              onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> ()) {
-        let configs = RequestConfiguration(encoding: "base64")
         request(parameters: [publicKey, configs]){ (result: Result<[ProgramAccount<T>], Error>) in
             switch result {
             case .success(let programs):

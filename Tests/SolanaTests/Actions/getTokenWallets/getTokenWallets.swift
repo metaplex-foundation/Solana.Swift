@@ -3,22 +3,20 @@ import RxSwift
 import RxBlocking
 @testable import Solana
 
-class closeTokenAccount: XCTestCase {
-    var endpoint = Solana.RpcApiEndPoint.devnetSolana
+class getTokenWallets: XCTestCase {
+    var endpoint = Solana.RpcApiEndPoint.testnetSolana
     var solanaSDK: Solana!
     var account: Solana.Account { solanaSDK.accountStorage.account! }
 
     override func setUpWithError() throws {
-        let wallet: TestsWallet = .devnet
+        let wallet: TestsWallet = .getWallets
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
         let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
     }
     
-    /*func testCloseAccount() throws {
-        let token = "31VJdomzjjKRyezbyBW2Ktf585T7XgWRGPyfoc7B1Q6F"
-        _ = try solanaSDK.closeTokenAccount(
-            tokenPubkey: token
-        ).toBlocking().first()
-    }*/
+    func testsGetTokenWallets() throws {
+        let wallets = try solanaSDK.getTokenWallets().toBlocking().first()
+        XCTAssertNotNil(wallets)
+    }
 }
