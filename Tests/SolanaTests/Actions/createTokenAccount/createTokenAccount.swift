@@ -20,4 +20,10 @@ class createTokenAccount: XCTestCase {
         let account = try solanaSDK.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
         XCTAssertNotNil(account)
     }
+    
+    func testCreateAccountInstruction() throws {
+        let instruction = Solana.SystemProgram.createAccountInstruction(from: Solana.PublicKey.programId, toNewPubkey: Solana.PublicKey.programId, lamports: 2039280, space: 165, programPubkey: Solana.PublicKey.programId)
+        
+        XCTAssertEqual("11119os1e9qSs2u7TsThXqkBSRUo9x7kpbdqtNNbTeaxHGPdWbvoHsks9hpp6mb2ed1NeB", Base58.encode(instruction.data))
+    }
 }

@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 @testable import Solana
 
-class DecodingConfirmedTransactionTests: XCTestCase {
+class TransactionParserTests: XCTestCase {
     let endpoint = Solana.RpcApiEndPoint.mainnetBetaSolana
     var solanaSDK: Solana!
     var parser: Solana.TransactionParser!
@@ -158,6 +158,6 @@ func stubbedResponse(_ filename: String) -> Data {
     @objc class SolanaTests: NSObject { }
     let thisSourceFile = URL(fileURLWithPath: #file)
     let thisDirectory = thisSourceFile.deletingLastPathComponent()
-    let resourceURL = thisDirectory.appendingPathComponent("Resources/\(filename).json")
+    let resourceURL = thisDirectory.appendingPathComponent("../Resources/\(filename).json")
     return try! Data(contentsOf: resourceURL)
 }

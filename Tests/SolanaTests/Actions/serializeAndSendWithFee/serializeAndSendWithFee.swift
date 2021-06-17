@@ -46,4 +46,28 @@ class serializeAndSendWithFee: XCTestCase {
         let transactionId = try solanaSDK.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
+    
+    func testTransferInstruction() throws {
+        let fromPublicKey = try Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")
+        let toPublicKey = try Solana.PublicKey(string: "GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5")
+        
+        let instruction = Solana.SystemProgram.transferInstruction(from: fromPublicKey, to: toPublicKey, lamports: 3000)
+        
+        XCTAssertEqual(Solana.PublicKey.programId, instruction.programId)
+        XCTAssertEqual(2, instruction.keys.count)
+        XCTAssertEqual(toPublicKey, instruction.keys[1].publicKey)
+        XCTAssertEqual([2, 0, 0, 0, 184, 11, 0, 0, 0, 0, 0, 0], instruction.data)
+    }
+    
+    func testInitializeAccountInstruction() throws {
+        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let instruction = Solana.TokenProgram.initializeAccountInstruction(account: publicKey, mint: publicKey, owner: publicKey)
+        XCTAssertEqual("2", Base58.encode(instruction.data))
+    }
+    
+    func testApproveInstruction() throws {
+        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let instruction = Solana.TokenProgram.approveInstruction(tokenProgramId: publicKey, account: publicKey, delegate: publicKey, owner: publicKey, amount: 1000)
+        XCTAssertEqual("4d5tSvUuzUVM", Base58.encode(instruction.data))
+    }
 }
