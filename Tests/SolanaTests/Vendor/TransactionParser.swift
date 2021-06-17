@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 @testable import Solana
 
-class DecodingConfirmedTransactionTests: XCTestCase {
+class TransactionParserTests: XCTestCase {
     let endpoint = Solana.RpcApiEndPoint.mainnetBetaSolana
     var solanaSDK: Solana!
     var parser: Solana.TransactionParser!

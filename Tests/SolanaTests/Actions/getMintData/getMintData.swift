@@ -30,4 +30,9 @@ class getMintData: XCTestCase {
         XCTAssertNotNil(pools)
         XCTAssertNotEqual(pools!.count, 0)
     }
+    func testMintToInstruction() throws {
+        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let instruction = Solana.TokenProgram.mintToInstruction(tokenProgramId: publicKey, mint: publicKey, destination: publicKey, authority: publicKey, amount: 1000000000)
+        XCTAssertEqual("6AsKhot84V8s", Base58.encode(instruction.data))
+    }
 }

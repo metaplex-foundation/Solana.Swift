@@ -14,4 +14,10 @@ class closeTokenAccount: XCTestCase {
         let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
         try solanaSDK.accountStorage.save(account)
     }
+    
+    func testCloseAccountInstruction() throws {
+        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let instruction = Solana.TokenProgram.closeAccountInstruction(tokenProgramId: publicKey, account: publicKey, destination: publicKey, owner: publicKey)
+        XCTAssertEqual("A", Base58.encode(instruction.data))
+    }
 }
