@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 private var mintDatasCache = [Solana.Mint]()
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
@@ -16,22 +15,27 @@ extension Solana {
         var tokenPool: Mint?
     }
     
-    public func getSwapPools() -> Single<[Pool]> {
-        getPools(swapProgramId: swapProgramId)
-            .map {
-                $0.filter {
-                    $0.tokenABalance?.amountInUInt64 != 0 &&
-                        $0.tokenBBalance?.amountInUInt64 != 0
-                }
-            }
+    private func getPool(parsedSwapInfo: ParsedSwapInfo) -> Pool? {
+        guard let address = try? PublicKey(string: parsedSwapInfo.address),
+              let tokenAInfo = parsedSwapInfo.mintDatas?.mintA,
+              let tokenBInfo = parsedSwapInfo.mintDatas?.mintB,
+              let poolTokenMintInfo = parsedSwapInfo.mintDatas?.tokenPool
+        else { return nil }
+        return Pool(
+            address: address,
+            tokenAInfo: tokenAInfo,
+            tokenBInfo: tokenBInfo,
+            poolTokenMint: poolTokenMintInfo,
+            swapData: parsedSwapInfo.info
+        )
     }
     
-    func getPools(swapProgramId: String) -> Single<[Pool]> {
-        getProgramAccounts(publicKey: swapProgramId, decodedTo: TokenSwapInfo.self)
-            .flatMap { programs -> Single<[ParsedSwapInfo]> in
-                
+    func getPools(swapProgramId: String, onComplete: @escaping (Result<[Pool], Error>) -> ()) {
+        getProgramAccounts(publicKey: swapProgramId, decodedTo: TokenSwapInfo.self) { programsResult in
+            switch programsResult {
+            case .success(let programs):
                 // get parsed swap info
-                let result = programs.compactMap {program -> ParsedSwapInfo? in
+                let parseSwapInfo = programs.compactMap { program -> ParsedSwapInfo? in
                     guard let swapData = program.account.data.value else {
                         return nil
                     }
@@ -43,7 +47,7 @@ extension Solana {
                 }
                 
                 // get all mint addresses
-                let mintAddresses = result.reduce([PublicKey](), {
+                let mintAddresses = parseSwapInfo.reduce([PublicKey](), {
                     var result = $0
                     if !result.contains($1.info.mintA) {
                         result.append($1.info.mintA)
@@ -59,68 +63,113 @@ extension Solana {
                 
                 // split array to form multiple requests (max address per request is 100)
                 let requestChunks = mintAddresses.chunked(into: 100)
-                    .map {self.getMultipleMintDatas(mintAddresses: $0)}
-                
-                return Single.zip(requestChunks)
-                    .map {results -> [PublicKey: Mint] in
-                        var joinedResult = [PublicKey: Mint]()
-                        for result in results {
-                            for (key, value) in result {
-                                joinedResult[key] = value
-                            }
-                        }
-                        return joinedResult
+                let dispatchGroup = DispatchGroup()
+                var results: [Result<[PublicKey: Mint], Error>] = []
+                for chunk in requestChunks {
+                    dispatchGroup.enter()
+                    self.getMultipleMintDatas(mintAddresses: chunk) { mintDataResult in
+                        results.append(mintDataResult)
+                        dispatchGroup.leave()
                     }
-                    .map {mintDatas in
-                        var parsedInfo = result
-                        for i in 0..<parsedInfo.count {
-                            let swapInfo = parsedInfo[i].info
-                            parsedInfo[i].mintDatas = .init(
-                                mintA: mintDatas[swapInfo.mintA],
-                                mintB: mintDatas[swapInfo.mintB],
-                                tokenPool: mintDatas[swapInfo.tokenPool]
-                            )
-                        }
-                        return parsedInfo
+                }
+                dispatchGroup.notify(queue: .main) {
+                    guard results.count > 0 else {
+                        onComplete(.failure(SolanaError.nullValue))
+                        return
                     }
+                    if let dispatchGroupError: Error = results.compactMap ({
+                        switch $0{
+                        case .success:
+                            return nil
+                        case .failure(let error):
+                            return error
+                        }
+                    }).compactMap({ $0 }).first {
+                        onComplete(.failure(dispatchGroupError))
+                        return
+                    }
+                    
+                    let dispatchGroupResults: [[PublicKey: Mint]] = results.compactMap ({
+                        switch $0 {
+                        case .success(let keyMint):
+                            return keyMint
+                        case .failure:
+                            return nil
+                        }
+                    }).compactMap({ $0 })
+                    
+                    var mintDatas = [PublicKey: Mint]()
+                    for mintData in dispatchGroupResults {
+                        for (key, value) in mintData {
+                            mintDatas[key] = value
+                        }
+                    }
+                    
+                    var parsedInfo = parseSwapInfo
+                    for i in 0..<parsedInfo.count {
+                        let swapInfo = parsedInfo[i].info
+                        parsedInfo[i].mintDatas = .init(
+                            mintA: mintDatas[swapInfo.mintA],
+                            mintB: mintDatas[swapInfo.mintB],
+                            tokenPool: mintDatas[swapInfo.tokenPool]
+                        )
+                    }
+                    let parsedSwapInfosResult = parsedInfo.map { self.getPool(parsedSwapInfo: $0) }.compactMap { $0 }
+                    onComplete(.success(parsedSwapInfosResult))
+                    return
+                }
                 
+            case .failure(let error):
+                onComplete(.failure(error))
+                return
             }
-            .map { parsedSwapInfos in
-                parsedSwapInfos.map {self.getPool(parsedSwapInfo: $0)}
-                    .compactMap {$0}
-            }
-    }
-    
-    private func getPool(parsedSwapInfo: ParsedSwapInfo) -> Pool? {
-        guard let address = try? PublicKey(string: parsedSwapInfo.address),
-              let tokenAInfo = parsedSwapInfo.mintDatas?.mintA,
-              let tokenBInfo = parsedSwapInfo.mintDatas?.mintB,
-              let poolTokenMintInfo = parsedSwapInfo.mintDatas?.tokenPool
-        else {return nil}
-        return Pool(
-            address: address,
-            tokenAInfo: tokenAInfo,
-            tokenBInfo: tokenBInfo,
-            poolTokenMint: poolTokenMintInfo,
-            swapData: parsedSwapInfo.info
-        )
-    }
-    
-    public func getPoolWithTokenBalances(pool: Pool) -> Single<Pool> {
-        Single.zip(
-            getTokenAccountBalance(pubkey: pool.swapData.tokenAccountA.base58EncodedString),
-            getTokenAccountBalance(pubkey: pool.swapData.tokenAccountB.base58EncodedString)
-        )
-        .map { (tokenABalance, tokenBBalance) in
-            var pool = pool
-            pool.tokenABalance = tokenABalance
-            pool.tokenBBalance = tokenBBalance
-            return pool
+            
         }
     }
+    
+    public func getSwapPools(onComplete: @escaping (Result<[Pool], Error>)-> ()){
+        getPools(swapProgramId: swapProgramId) { result in
+            switch result {
+            case .success(let pools):
+                let pool = pools.filter {
+                    $0.tokenABalance?.amountInUInt64 != 0 &&
+                        $0.tokenBBalance?.amountInUInt64 != 0
+                }
+                onComplete(.success(pool))
+                return
+            case .failure(let error):
+                onComplete(.failure(error))
+                return
+            }
+        }
+    }
+    
+    public func getPoolWithTokenBalances(pool: Pool, onComplete: @escaping (Result<Pool, Error>) -> ()) {
+        self.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountA.base58EncodedString){ tokenAResult in
+            switch tokenAResult {
+            case .success(let tokenABalance):
+                self.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountB.base58EncodedString){ tokenBResult in
+                   switch tokenAResult {
+                   case .success(let tokenBBalance):
+                    var pool = pool
+                    pool.tokenABalance = tokenABalance
+                    pool.tokenBBalance = tokenBBalance
+                    onComplete(.success(pool))
+                   case .failure(let error):
+                       onComplete(.failure(error))
+                       return
+                   }
+                }
+            case .failure(let error):
+                onComplete(.failure(error))
+                return
+            }
+         }
+     }
 }
 
-private extension Array {
+
+extension Array {
     func chunked(into size: Int) -> [[Element]] {
         return stride(from: 0, to: count, by: size).map {
             Array(self[$0 ..< Swift.min($0 + size, count)])
