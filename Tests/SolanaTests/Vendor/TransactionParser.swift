@@ -158,6 +158,6 @@ func stubbedResponse(_ filename: String) -> Data {
     @objc class SolanaTests: NSObject { }
     let thisSourceFile = URL(fileURLWithPath: #file)
     let thisDirectory = thisSourceFile.deletingLastPathComponent()
-    let resourceURL = thisDirectory.appendingPathComponent("Resources/\(filename).json")
+    let resourceURL = thisDirectory.appendingPathComponent("../Resources/\(filename).json")
     return try! Data(contentsOf: resourceURL)
 }
