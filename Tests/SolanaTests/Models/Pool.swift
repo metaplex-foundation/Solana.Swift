@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 @testable import Solana
 
-class PoolsAmountCalculationTests: XCTestCase {
+class Pool: XCTestCase {
     var pool: Solana.Pool!
     override func setUpWithError() throws {
         pool = Solana.Pool(
