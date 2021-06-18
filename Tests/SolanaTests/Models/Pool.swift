@@ -6,7 +6,7 @@ class Pool: XCTestCase {
     var pool: Solana.Pool!
     override func setUpWithError() throws {
         pool = Solana.Pool(
-            address: .init(string: "95DKMPsJWAir7d1K3kSAyyqaad2RoQ4daxFKXS8XshUe")!,
+            address: Solana.PublicKey(string: "95DKMPsJWAir7d1K3kSAyyqaad2RoQ4daxFKXS8XshUe")!,
             tokenAInfo: .init(
                 mintAuthorityOption: 0,
                 mintAuthority: nil,
@@ -27,7 +27,7 @@ class Pool: XCTestCase {
             ),
             poolTokenMint: .init(
                 mintAuthorityOption: 1,
-                mintAuthority: .init(string: "7fR7tU2qpEMH575rC5XejDYbNf8DqVi9ZFq3VGKJypjC")!,
+                mintAuthority: Solana.PublicKey(string: "7fR7tU2qpEMH575rC5XejDYbNf8DqVi9ZFq3VGKJypjC")!,
                 supply: 6693416,
                 decimals: 8,
                 isInitialized: true,
@@ -38,13 +38,13 @@ class Pool: XCTestCase {
                 version: 1,
                 isInitialized: true,
                 nonce: 252,
-                tokenProgramId: .init(string: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")!,
-                tokenAccountA: .init(string: "EFs4FuHmb3bbC4BUD4tu188x4k5UMmxPbm6PZQjDnxL6")!,
-                tokenAccountB: .init(string: "8Vu3KXjZJPUdUf7cRWR9ukXuahoV9vNU5ExEo52SNH4G")!,
-                tokenPool: .init(string: "9JURZeTahE3YZvtkNdSJRLFUcqXqE5yQjYFhuM9cqcm7")!,
-                mintA: .init(string: "So11111111111111111111111111111111111111112")!,
-                mintB: .init(string: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt")!,
-                feeAccount: .init(string: "FuKSC9kecoxjWtvMKWjEHBNq7FiGGke25QfGekrUMwYA")!,
+                tokenProgramId: Solana.PublicKey(string: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")!,
+                tokenAccountA: Solana.PublicKey(string: "EFs4FuHmb3bbC4BUD4tu188x4k5UMmxPbm6PZQjDnxL6")!,
+                tokenAccountB: Solana.PublicKey(string: "8Vu3KXjZJPUdUf7cRWR9ukXuahoV9vNU5ExEo52SNH4G")!,
+                tokenPool: Solana.PublicKey(string: "9JURZeTahE3YZvtkNdSJRLFUcqXqE5yQjYFhuM9cqcm7")!,
+                mintA: Solana.PublicKey(string: "So11111111111111111111111111111111111111112")!,
+                mintB: Solana.PublicKey(string: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt")!,
+                feeAccount: Solana.PublicKey(string: "FuKSC9kecoxjWtvMKWjEHBNq7FiGGke25QfGekrUMwYA")!,
                 tradeFeeNumerator: 25,
                 tradeFeeDenominator: 10000,
                 ownerTradeFeeNumerator: 5,
@@ -54,7 +54,7 @@ class Pool: XCTestCase {
                 hostFeeNumerator: 20,
                 hostFeeDenominator: 100,
                 curveType: 0,
-                payer: .init(string: "11111111111111111111111111111111")!
+                payer: Solana.PublicKey(string: "11111111111111111111111111111111")!
             ),
             tokenABalance: .init(
                 uiAmount: 125.511223013,
