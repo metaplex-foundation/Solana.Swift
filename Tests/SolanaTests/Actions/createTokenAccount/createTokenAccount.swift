@@ -15,13 +15,13 @@ class createTokenAccount: XCTestCase {
         try solanaSDK.accountStorage.save(account)
     }
     
-    func testCreateTokenAccount() throws {
+    func testCreateTokenAccount() {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let account = try solanaSDK.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
+        let account = try! solanaSDK.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
         XCTAssertNotNil(account)
     }
     
-    func testCreateAccountInstruction() throws {
+    func testCreateAccountInstruction() {
         let instruction = Solana.SystemProgram.createAccountInstruction(from: Solana.PublicKey.programId, toNewPubkey: Solana.PublicKey.programId, lamports: 2039280, space: 165, programPubkey: Solana.PublicKey.programId)
         
         XCTAssertEqual("11119os1e9qSs2u7TsThXqkBSRUo9x7kpbdqtNNbTeaxHGPdWbvoHsks9hpp6mb2ed1NeB", Base58.encode(instruction.data))

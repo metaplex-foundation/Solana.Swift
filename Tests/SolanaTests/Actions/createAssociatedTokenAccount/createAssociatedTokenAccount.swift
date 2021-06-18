@@ -15,18 +15,18 @@ class createAssociatedTokenAccount: XCTestCase {
         try solanaSDK.accountStorage.save(account)
     }
     
-    func testGetOrCreateAssociatedTokenAccount() throws {
+    func testGetOrCreateAssociatedTokenAccount() {
         let tokenMint = Solana.PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        let account = try solanaSDK.getOrCreateAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first()
+        let account = try! solanaSDK.getOrCreateAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first()
         XCTAssertNotNil(account)
     }
     
-    func testFailCreateAssociatedTokenAccountItExisted() throws {
+    func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = Solana.PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
         XCTAssertThrowsError(try solanaSDK.createAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first())
     }
-    func testFindAssociatedTokenAddress() throws {
-        let associatedTokenAddress = try Solana.PublicKey.associatedTokenAddress(
+    func testFindAssociatedTokenAddress() {
+        let associatedTokenAddress = try! Solana.PublicKey.associatedTokenAddress(
             walletAddress: Solana.PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!,
             tokenMintAddress: Solana.PublicKey(string: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v")!
         ).get()

@@ -3,9 +3,9 @@ import XCTest
 
 class DecodingTests: XCTestCase {
     
-    func testDecodingMint() throws {
+    func testDecodingMint() {
         let string = #"["AQAAAAYa2dBThxVIU37ePiYYSaPft/0C+rx1siPI5GrbhT0MABCl1OgAAAAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==","base64"]"#
-        let mintLayout = try JSONDecoder().decode(Solana.Buffer<Solana.Mint>.self, from: string.data(using: .utf8)!).value
+        let mintLayout = try! JSONDecoder().decode(Solana.Buffer<Solana.Mint>.self, from: string.data(using: .utf8)!).value
         XCTAssertEqual("QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo", mintLayout?.mintAuthority?.base58EncodedString)
         XCTAssertEqual(1000000000000, mintLayout?.supply)
         XCTAssertEqual(mintLayout?.decimals, 6)
@@ -13,9 +13,9 @@ class DecodingTests: XCTestCase {
         XCTAssertNil(mintLayout?.freezeAuthority)
     }
     
-    func testDecodingAccountInfo() throws {
+    func testDecodingAccountInfo() {
         let string = #"["BhrZ0FOHFUhTft4+JhhJo9+3/QL6vHWyI8jkatuFPQwCqmOzhzy1ve5l2AqL0ottCChJZ1XSIW3k3C7TaBQn7aCGAQAAAAAAAQAAAOt6vNDYdevCbaGxgaMzmz7yoxaVu3q9vGeCc7ytzeWqAQAAAAAAAAAAAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","base64"]"#
-        let accountInfo = try JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string.data(using: .utf8)!).value
+        let accountInfo = try! JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string.data(using: .utf8)!).value
         
         XCTAssertEqual("QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo", accountInfo?.mint.base58EncodedString)
         XCTAssertEqual("BQWWFhzBdw2vKKBUX17NHeFbCoFQHfRARpdztPE2tDJ", accountInfo?.owner.base58EncodedString)
@@ -28,9 +28,9 @@ class DecodingTests: XCTestCase {
         XCTAssertNil(accountInfo?.closeAuthority)
     }
     
-    func testDecodingAccountInfo2() throws {
+    func testDecodingAccountInfo2() {
         let string = #"["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAOt6vNDYdevCbaGxgaMzmz7yoxaVu3q9vGeCc7ytzeWq","base64"]"#
-        let accountInfo = try JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string.data(using: .utf8)!).value
+        let accountInfo = try! JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string.data(using: .utf8)!).value
         
         XCTAssertNil(accountInfo?.delegate)
         XCTAssertEqual(0, accountInfo?.delegatedAmount)
@@ -40,7 +40,7 @@ class DecodingTests: XCTestCase {
         XCTAssertEqual("GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5", accountInfo?.closeAuthority?.base58EncodedString)
         
         let string2 = #"["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAOt6vNDYdevCbaGxgaMzmz7yoxaVu3q9vGeCc7ytzeWq","base64"]"#
-        let accountInfo2 = try JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string2.data(using: .utf8)!).value
+        let accountInfo2 = try! JSONDecoder().decode(Solana.Buffer<Solana.AccountInfo>.self, from: string2.data(using: .utf8)!).value
         
         XCTAssertEqual(true, accountInfo2?.isFrozen)
     }

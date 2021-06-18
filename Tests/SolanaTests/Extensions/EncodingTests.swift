@@ -2,7 +2,7 @@ import XCTest
 @testable import Solana
 
 class EncodingTests: XCTestCase {
-    func testCodingBytesLength() throws {
+    func testCodingBytesLength() {
         let bytes = Data([5, 3, 1, 2, 3, 7, 8, 5, 4])
         XCTAssertEqual(bytes.decodedLength, 5)
         let bytes2 = Data([74, 174, 189, 206, 113, 78, 60, 226, 136, 170])

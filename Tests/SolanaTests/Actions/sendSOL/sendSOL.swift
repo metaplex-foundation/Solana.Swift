@@ -16,34 +16,34 @@ class sendSOL: XCTestCase {
         _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
     }
     
-    func testSendSOLFromBalance() throws {
+    func testSendSOLFromBalance() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try solanaSDK.getBalance().toBlocking().first()
+        let balance = try! solanaSDK.getBalance().toBlocking().first()
         XCTAssertNotNil(balance)
 
-        let transactionId = try solanaSDK.sendSOL(
+        let transactionId = try! solanaSDK.sendSOL(
             to: toPublicKey,
             amount: balance!/10
         ).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
-    func testSendSOL() throws {
+    func testSendSOL() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        let transactionId = try solanaSDK.sendSOL(
+        let transactionId = try! solanaSDK.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
-    func testSendSOLIncorrectDestination() throws {
+    func testSendSOLIncorrectDestination() {
         let toPublicKey = "XX"
         XCTAssertThrowsError(try solanaSDK.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first())
     }
-    func testSendSOLBigAmmount() throws {
+    func testSendSOLBigAmmount() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
         XCTAssertThrowsError(try solanaSDK.sendSOL(
             to: toPublicKey,
