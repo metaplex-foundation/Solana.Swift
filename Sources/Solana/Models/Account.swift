@@ -3,26 +3,17 @@ import TweetNacl
 import CryptoSwift
 
 public extension Solana {
-    struct Account: Codable, Hashable {
+    struct Account {
         public let phrase: [String]
         public let publicKey: PublicKey
         public let secretKey: Data
         
-        /// Create account with seed phrase
-        /// - Parameters:
-        ///   - phrase: secret phrase for an account, leave it empty for new account
-        ///   - network: network in which account should be created
-        /// - Throws: Error if the derivation is not successful
-        public init(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) throws {
-            let mnemonic: Mnemonic
-            var phrase = phrase.filter {!$0.isEmpty}
-            if !phrase.isEmpty {
-                mnemonic = try Mnemonic(phrase: phrase)
-            } else {
-                mnemonic = Mnemonic()
-                phrase = mnemonic.phrase
+        
+        public init?(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) {
+            guard let mnemonic: Mnemonic = Mnemonic(phrase: phrase) ?? Mnemonic() else {
+                return nil
             }
-            self.phrase = phrase
+            self.phrase = mnemonic.phrase
             
             let derivablePath = derivablePath ?? .default
             
@@ -40,29 +31,39 @@ public extension Solana {
                 self.secretKey = keys.secretKey
             #endif
             default:
-                let keys = try Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString())
+                guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()) else {
+                    return nil
+                }
                 
-                let keyPair = try NaclSign.KeyPair.keyPair(fromSeed: keys.key)
+                guard let keyPair = try? NaclSign.KeyPair.keyPair(fromSeed: keys.key) else {
+                    return nil
+                }
                 guard let newKey = PublicKey(data: keyPair.publicKey) else {
-                    throw SolanaError.invalidPublicKey
+                    return nil
                 }
                 self.publicKey = newKey
                 self.secretKey = keyPair.secretKey
             }
         }
         
-        public init(secretKey: Data) throws {
-            let keys = try NaclSign.KeyPair.keyPair(fromSecretKey: secretKey)
+        public init?(secretKey: Data) {
+            guard let keys = try? NaclSign.KeyPair.keyPair(fromSecretKey: secretKey) else {
+                return nil
+            }
             guard let newKey = PublicKey(data: keys.publicKey) else {
-                throw SolanaError.invalidPublicKey
+                return nil
+            }
+            guard let phrase = try? Mnemonic.toMnemonic(secretKey.bytes).get() else {
+                return nil
             }
             self.publicKey = newKey
             self.secretKey = keys.secretKey
-            let phrase = try Mnemonic.toMnemonic(secretKey.bytes)
             self.phrase = phrase
         }
     }
 }
+
+extension Solana.Account: Codable, Hashable { }
 
 public extension Solana.Account {
     struct Meta: Decodable, CustomDebugStringConvertible {

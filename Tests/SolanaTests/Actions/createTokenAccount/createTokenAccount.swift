@@ -11,12 +11,12 @@ class createTokenAccount: XCTestCase {
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
+        let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account)
     }
     
     func testCreateTokenAccount() {
-        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
+        let mintAddress = "96oUA9Zu6hdpp9rv41b8Z6DqRyVQm1VMqVU4cBxQupNJ"
         let account = try! solanaSDK.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
         XCTAssertNotNil(account)
     }

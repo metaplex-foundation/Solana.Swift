@@ -10,7 +10,7 @@ class TransactionParserTests: XCTestCase {
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
+        let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account)
         
         parser = Solana.TransactionParser(solanaSDK: solanaSDK)
@@ -53,7 +53,7 @@ class TransactionParserTests: XCTestCase {
     }
     
     func testDecodingSendSOLTransaction() {
-        let transactionInfo = try! transactionInfoFromJSONFileName("SendSOLTransaction")
+        let transactionInfo = transactionInfoFromJSONFileName("SendSOLTransaction")
         
         let myAccount = "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm"
         let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
@@ -66,7 +66,7 @@ class TransactionParserTests: XCTestCase {
     }
     
     func testDecodingSendSOLTransactionPaidByP2PORG() {
-        let transactionInfo = try! transactionInfoFromJSONFileName("SendSOLTransactionPaidByP2PORG")
+        let transactionInfo = transactionInfoFromJSONFileName("SendSOLTransactionPaidByP2PORG")
         
         let myAccount = "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm"
         let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
