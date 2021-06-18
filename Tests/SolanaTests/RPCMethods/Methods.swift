@@ -197,18 +197,3 @@ class Methods: XCTestCase {
         XCTAssertNotNil(accounts[0])
     }
 }
-
-// RestAPITransactionTests
-extension Methods {
-    // MARK: - Send
-
-    /*func testSendSPLTokenToSolAccountViaAToken() throws {
-        _ = try solanaSDK.sendSPLTokens(
-            mintAddress: "So11111111111111111111111111111111111111112",
-            decimals: 6,
-            from: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx",
-            to: "5Tg8VjmWQPgnEWDLACH5B3WsYAGhsQwsrWgFb4NaTPYZ",
-            amount: 0.001.toLamport(decimals: 6)
-        ).toBlocking().first()
-    }*/
-}
