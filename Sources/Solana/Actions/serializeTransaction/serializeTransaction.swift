@@ -17,23 +17,23 @@ extension Solana {
         let getRecentBlockhashRequest: (Result<String, Error>)->() = { result in
             switch result {
             case .success(let recentBlockhash):
+                
                 var transaction = Transaction(
                     feePayer: feePayer,
                     instructions: instructions,
                     recentBlockhash: recentBlockhash
                 )
-                do {
-                    try transaction.sign(signers: signers)
-                    guard let serializedTransaction = try transaction.serialize().bytes.toBase64() else {
-                        onComplete(.failure(SolanaError.other("Could not serialize transaction")))
-                        return
+                
+                transaction.sign(signers: signers)
+                .flatMap{ transaction.serialize() }
+                .flatMap{
+                    if let base64 = $0.bytes.toBase64() {
+                        return .success(base64)
+                    } else {
+                        return .failure(SolanaError.other("Could not serialize transaction"))
                     }
-                    onComplete(.success(serializedTransaction))
-                    return
-                } catch let signingError{
-                    onComplete(.failure(signingError))
-                    return
                 }
+                .onSuccess { onComplete(.success($0)) }
             case .failure(let error):
                 onComplete(.failure(error))
                 return

@@ -17,8 +17,10 @@ extension Solana {
         }
         
         // MARK: - Methods
-        mutating func sign(signers: [Account]) throws {
-            guard signers.count > 0 else {throw SolanaError.invalidRequest(reason: "No signers")}
+        mutating func sign(signers: [Account]) -> Result<Void, Error> {
+            guard signers.count > 0 else {
+                return .failure(SolanaError.invalidRequest(reason: "No signers"))
+            }
             
             // unique signers
             let signers = signers.reduce([Account](), {signers, signer in
@@ -30,42 +32,41 @@ extension Solana {
             })
             
             // map signatures
-            signatures = signers.map {Signature(signature: nil, publicKey: $0.publicKey)}
+            signatures = signers.map { Signature(signature: nil, publicKey: $0.publicKey) }
             
             // construct message
-            let message = try compile()
-            
-            try partialSign(message: message, signers: signers)
+            return compile().flatMap { message in
+                return partialSign(message: message, signers: signers)
+            }
         }
         
         mutating func serialize(
             requiredAllSignatures: Bool = true,
             verifySignatures: Bool = false
-        ) throws -> Data {
+        ) -> Result<Data, Error> {
             // message
-            let serializedMessage = try serializeMessage()
-            
-            // verification
-            if verifySignatures && !_verifySignatures(serializedMessage: serializedMessage, requiredAllSignatures: requiredAllSignatures) {
-                throw SolanaError.invalidRequest(reason: "Signature verification failed")
+            return serializeMessage().flatMap { serializedMessage in
+                return _verifySignatures(serializedMessage: serializedMessage, requiredAllSignatures: requiredAllSignatures)
+                    .mapError { _ in SolanaError.invalidRequest(reason: "Signature verification failed") }
+                    .flatMap { _ in _serialize(serializedMessage: serializedMessage) }
             }
-            
-            return _serialize(serializedMessage: serializedMessage)
         }
         
         // MARK: - Helpers
-        mutating func addSignature(_ signature: Signature) throws {
-            _ = try compile() // Ensure signatures array is populated
-            
-            try _addSignature(signature)
+        mutating func addSignature(_ signature: Signature) -> Result<Void, Error> {
+            return compile() // Ensure signatures array is populated
+                .flatMap { _ in return _addSignature(signature) }
         }
         
-        mutating func serializeMessage() throws -> Data {
-            try compile().serialize()
+        mutating func serializeMessage() -> Result<Data, Error> {
+            return compile()
+                .flatMap { $0.serialize() }
         }
         
-        mutating func verifySignatures() throws -> Bool {
-            _verifySignatures(serializedMessage: try serializeMessage(), requiredAllSignatures: true)
+        mutating func verifySignatures() -> Result<Bool, Error> {
+            return serializeMessage().flatMap {
+                _verifySignatures(serializedMessage:  $0, requiredAllSignatures: true)
+            }
         }
         
         func findSignature(pubkey: PublicKey) -> Signature? {
@@ -73,52 +74,58 @@ extension Solana {
         }
         
         // MARK: - Signing
-        private mutating func partialSign(message: Message, signers: [Account]) throws {
-            let signData = try message.serialize()
-            
-            for signer in signers {
-                let data = try NaclSign.signDetached(message: signData, secretKey: signer.secretKey)
-                try _addSignature(Signature(signature: data, publicKey: signer.publicKey))
+        private mutating func partialSign(message: Message, signers: [Account]) -> Result<Void, Error> {
+            message.serialize()
+            .flatMap { signData in
+                for signer in signers {
+                    do {
+                        let data = try NaclSign.signDetached(message: signData, secretKey: signer.secretKey)
+                        try _addSignature(Signature(signature: data, publicKey: signer.publicKey)).get()
+                    } catch let error {
+                        return .failure(error)
+                    }
+                }
+                return .success(())
             }
         }
         
-        private mutating func _addSignature(_ signature: Signature) throws {
+        private mutating func _addSignature(_ signature: Signature) -> Result<Void, Error> {
             guard let data = signature.signature,
                   data.count == 64,
                   let index = signatures.firstIndex(where: {$0.publicKey == signature.publicKey})
             else {
-                throw SolanaError.other("Signer not valid: \(signature.publicKey.base58EncodedString)")
+                return .failure(SolanaError.other("Signer not valid: \(signature.publicKey.base58EncodedString)"))
             }
             
             signatures[index] = signature
+            return .success(())
         }
         
         // MARK: - Compiling
-        private mutating func compile() throws -> Message {
-            let message = try compileMessage()
-            let signedKeys = message.accountKeys.filter {$0.isSigner}
-            
-            if signatures.count == signedKeys.count {
-                var isValid = true
-                for (index, signature) in signatures.enumerated() {
-                    if signedKeys[index].publicKey != signature.publicKey {
-                        isValid = false
-                        break
+        private mutating func compile() -> Result<Message, Error> {
+            compileMessage().map { message in
+                let signedKeys = message.accountKeys.filter { $0.isSigner }
+                if signatures.count == signedKeys.count {
+                    var isValid = true
+                    for (index, signature) in signatures.enumerated() {
+                        if signedKeys[index].publicKey != signature.publicKey {
+                            isValid = false
+                            break
+                        }
+                    }
+                    if isValid {
+                        return message
                     }
                 }
-                if isValid {
-                    return message
-                }
+                signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
+                return message
             }
-            
-            signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
-            return message
         }
         
-        private func compileMessage() throws -> Message {
+        private func compileMessage() -> Result<Message, Error> {
             // verify instructions
             guard instructions.count > 0 else {
-                throw SolanaError.other("No instructions provided")
+                return .failure(SolanaError.other("No instructions provided"))
             }
             
             // programIds & accountMetas
@@ -166,14 +173,14 @@ extension Solana {
             
             // verify signers
             for signature in signatures {
-                if let index = try? accountMetas.index(ofElementWithPublicKey: signature.publicKey) {
+                if let index = try? accountMetas.index(ofElementWithPublicKey: signature.publicKey).get() {
                     if !accountMetas[index].isSigner {
                         //                        accountMetas[index].isSigner = true
                         //                        Logger.log(message: "Transaction references a signature that is unnecessary, only the fee payer and instruction signer accounts should sign a transaction. This behavior is deprecated and will throw an error in the next major version release.", event: .warning)
-                        throw SolanaError.invalidRequest(reason: "Transaction references a signature that is unnecessary")
+                        return .failure(SolanaError.invalidRequest(reason: "Transaction references a signature that is unnecessary"))
                     }
                 } else {
-                    throw SolanaError.invalidRequest(reason: "Unknown signer: \(signature.publicKey.base58EncodedString)")
+                    return .failure(SolanaError.invalidRequest(reason: "Unknown signer: \(signature.publicKey.base58EncodedString)"))
                 }
             }
             
@@ -206,34 +213,34 @@ extension Solana {
             
             accountMetas = signedKeys + unsignedKeys
             
-            return Message(
+            return .success(Message(
                 accountKeys: accountMetas,
                 recentBlockhash: recentBlockhash,
                 programInstructions: instructions
-            )
+            ))
         }
         
         // MARK: - Verifying
         private mutating func _verifySignatures(
             serializedMessage: Data,
             requiredAllSignatures: Bool
-        ) -> Bool {
+        ) -> Result<Bool, Error> {
             for signature in signatures {
                 if signature.signature == nil {
                     if requiredAllSignatures {
-                        return false
+                        return .success(false)
                     }
                 } else {
                     if (try? NaclSign.signDetachedVerify(message: serializedMessage, sig: signature.signature!, publicKey: signature.publicKey.data)) != true {
-                        return false
+                        return .success(false)
                     }
                 }
             }
-            return true
+            return .success(true)
         }
         
         // MARK: - Serializing
-        private mutating func _serialize(serializedMessage: Data) -> Data {
+        private mutating func _serialize(serializedMessage: Data) -> Result<Data, Error> {
             // signature length
             var signaturesLength = signatures.count
             
@@ -255,7 +262,7 @@ extension Solana {
             data.append(encodedSignatureLength)
             data.append(signaturesData)
             data.append(serializedMessage)
-            return data
+            return .success(data)
         }
     }
 }

@@ -11,19 +11,7 @@ extension Solana.Transaction {
         //        var instructions: [Transaction.Instruction]
         var programInstructions: [Solana.TransactionInstruction]
         
-        func serialize() throws -> Data {
-            // Header
-            let header = encodeHeader()
-            
-            // Account keys
-            let accountKeys = encodeAccountKeys()
-            
-            // RecentBlockHash
-            let recentBlockhash = encodeRecentBlockhash()
-            
-            // Compiled instruction
-            let compiledInstruction = try encodeInstructions()
-            
+        func serialize() -> Result<Data, Error> {
             // Construct data
             //            let bufferSize: Int =
             //                Header.LENGTH // header
@@ -35,16 +23,15 @@ extension Solana.Transaction {
             
             var data = Data(/*capacity: bufferSize*/)
             
-            // Append data
-            data.append(header)
-            data.append(accountKeys)
-            data.append(recentBlockhash)
-            data.append(compiledInstruction)
-            
-            return data
+            // Compiled instruction
+            return encodeHeader().map { data.append($0) }
+                .flatMap { _ in return encodeAccountKeys().map { data.append($0) } }
+                .flatMap { _ in return encodeRecentBlockhash().map { data.append($0) }}
+                .flatMap { _ in return encodeInstructions().map { data.append($0) }}
+                .map { data }
         }
         
-        private func encodeHeader() -> Data {
+        private func encodeHeader() -> Result<Data, Error> {
             var header = Header()
             for meta in accountKeys {
                 if meta.isSigner {
@@ -62,34 +49,33 @@ extension Solana.Transaction {
                     }
                 }
             }
-            return Data(header.bytes)
+            return .success(Data(header.bytes))
         }
         
-        private func encodeAccountKeys() -> Data {
+        private func encodeAccountKeys() -> Result<Data, Error> {
             // length
-            let keyCount = encodeLength(accountKeys.count)
-            
-            // construct data
-            var data = Data(capacity: keyCount.count + accountKeys.count * Solana.PublicKey.LENGTH)
-            
-            // sort
-            let signedKeys = accountKeys.filter {$0.isSigner}
-            let unsignedKeys = accountKeys.filter {!$0.isSigner}
-            let accountKeys = signedKeys + unsignedKeys
-            
-            // append data
-            data.append(keyCount)
-            for meta in accountKeys {
-                data.append(meta.publicKey.data)
+            return encodeLength(accountKeys.count).map { keyCount in
+                // construct data
+                var data = Data(capacity: keyCount.count + accountKeys.count * Solana.PublicKey.LENGTH)
+                // sort
+                let signedKeys = accountKeys.filter {$0.isSigner}
+                let unsignedKeys = accountKeys.filter {!$0.isSigner}
+                let accountKeys = signedKeys + unsignedKeys
+                
+                // append data
+                data.append(keyCount)
+                for meta in accountKeys {
+                    data.append(meta.publicKey.data)
+                }
+                return data
             }
-            return data
         }
         
-        private func encodeRecentBlockhash() -> Data {
-            Data(Base58.decode(recentBlockhash))
+        private func encodeRecentBlockhash() -> Result<Data, Error> {
+            return .success(Data(Base58.decode(recentBlockhash)))
         }
         
-        private func encodeInstructions() throws -> Data {
+        private func encodeInstructions() -> Result<Data, Error> {
             var compiledInstructions = [CompiledInstruction]()
             
             for instruction in programInstructions {
@@ -98,28 +84,35 @@ extension Solana.Transaction {
                 
                 var keyIndices = Data()
                 for i in 0..<keysSize {
-                    let index = try accountKeys.index(ofElementWithPublicKey: instruction.keys[i].publicKey)
-                    keyIndices.append(UInt8(index))
+                    do {
+                        let index = try accountKeys.index(ofElementWithPublicKey: instruction.keys[i].publicKey).get()
+                        keyIndices.append(UInt8(index))
+                    } catch let error {
+                        return .failure(error)
+                    }
                 }
                 
-                let compiledInstruction = CompiledInstruction(
-                    programIdIndex: UInt8(try accountKeys.index(ofElementWithPublicKey: instruction.programId)),
-                    keyIndicesCount: [UInt8](Data.encodeLength(keysSize)),
-                    keyIndices: [UInt8](keyIndices),
-                    dataLength: [UInt8](Data.encodeLength(instruction.data.count)),
-                    data: instruction.data
-                )
-                
-                compiledInstructions.append(compiledInstruction)
+                do {
+                    let compiledInstruction = CompiledInstruction(
+                        programIdIndex: UInt8(try accountKeys.index(ofElementWithPublicKey: instruction.programId).get()),
+                        keyIndicesCount: [UInt8](Data.encodeLength(keysSize)),
+                        keyIndices: [UInt8](keyIndices),
+                        dataLength: [UInt8](Data.encodeLength(instruction.data.count)),
+                        data: instruction.data
+                    )
+                    compiledInstructions.append(compiledInstruction)
+                } catch let error {
+                    return .failure(error)
+                }
             }
             
-            let instructionsLength = encodeLength(compiledInstructions.count)
-            
-            return instructionsLength + compiledInstructions.reduce(Data(), {$0 + $1.serializedData})
+            return encodeLength(compiledInstructions.count).flatMap { instructionsLength in
+                .success(instructionsLength + compiledInstructions.reduce(Data(), {$0 + $1.serializedData}))
+            }
         }
         
-        private func encodeLength(_ length: Int) -> Data {
-            Data.encodeLength(length)
+        private func encodeLength(_ length: Int) -> Result<Data, Error> {
+            return .success(Data.encodeLength(length))
         }
     }
 }
