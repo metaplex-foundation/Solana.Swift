@@ -15,8 +15,6 @@ enum TestsWallet{
             return "siege amazing camp income refuse struggle feed kingdom lawn champion velvet crystal stomach trend hen uncover roast nasty until hidden crumble city bag minute"
         case .getWallets:
             return "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side"
-        default:
-            fatalError("unsupported")
         }
     }
 }

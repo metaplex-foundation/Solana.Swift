@@ -1,10 +1,3 @@
-//
-//  Wordlists.swift
-//  
-//
-//  Created by Liu Pengpeng on 2019/10/10.
-//
-
 import Foundation
 
 public struct Wordlists {

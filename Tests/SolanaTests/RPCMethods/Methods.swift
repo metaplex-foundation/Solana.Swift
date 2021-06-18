@@ -68,7 +68,7 @@ class Methods: XCTestCase {
         XCTAssertEqual(result?.count, 10)
     }
     func testGetConfirmedTransaction() throws {
-        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "5dxrTLhZGwPzaYyE7xpTh5HgQdyV6hnseKGDHuhKAeTapw2TbTHtNh1aA2ecrbbGM2ZQ5gD6G7jzcd98Vro5L1DU").toBlocking().first()
+        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth").toBlocking().first()
         XCTAssertNotNil(result)
     }
     func testGetEpochInfo() throws {
@@ -196,19 +196,4 @@ class Methods: XCTestCase {
         let accounts = try solanaSDK.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
         XCTAssertNotNil(accounts[0])
     }
-}
-
-// RestAPITransactionTests
-extension Methods {
-    // MARK: - Send
-
-    /*func testSendSPLTokenToSolAccountViaAToken() throws {
-        _ = try solanaSDK.sendSPLTokens(
-            mintAddress: "So11111111111111111111111111111111111111112",
-            decimals: 6,
-            from: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx",
-            to: "5Tg8VjmWQPgnEWDLACH5B3WsYAGhsQwsrWgFb4NaTPYZ",
-            amount: 0.001.toLamport(decimals: 6)
-        ).toBlocking().first()
-    }*/
 }

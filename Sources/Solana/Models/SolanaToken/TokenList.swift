@@ -1,10 +1,3 @@
-//
-//  TokenList.swift
-//  Alamofire
-//
-//  Created by Chung Tran on 22/04/2021.
-//
-
 import Foundation
 
 extension Solana {
