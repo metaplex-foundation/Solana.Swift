@@ -16,7 +16,7 @@ extension Solana {
     }
     
     private func getPool(parsedSwapInfo: ParsedSwapInfo) -> Pool? {
-        guard let address = try? PublicKey(string: parsedSwapInfo.address),
+        guard let address = PublicKey(string: parsedSwapInfo.address),
               let tokenAInfo = parsedSwapInfo.mintDatas?.mintA,
               let tokenBInfo = parsedSwapInfo.mintDatas?.mintB,
               let poolTokenMintInfo = parsedSwapInfo.mintDatas?.tokenPool

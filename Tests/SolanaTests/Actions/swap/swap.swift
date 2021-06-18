@@ -7,7 +7,7 @@ class swap: XCTestCase {
     var endpoint = Solana.RpcApiEndPoint.devnetSolana
     var solanaSDK: Solana!
     var account: Solana.Account { solanaSDK.accountStorage.account! }
-    let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+    let publicKey = Solana.PublicKey(string: "11111111111111111111111111111111")!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet

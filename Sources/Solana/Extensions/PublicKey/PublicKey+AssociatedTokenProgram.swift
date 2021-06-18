@@ -70,7 +70,10 @@ extension Solana.PublicKey {
         if isOnCurve(publicKeyBytes: publicKeyBytes).toBool() {
             throw Solana.SolanaError.other("Invalid seeds, address must fall off the curve")
         }
-        return try Solana.PublicKey(data: publicKeyBytes)
+        guard let newKey = Solana.PublicKey(data: publicKeyBytes) else {
+            throw Solana.SolanaError.invalidPublicKey
+        }
+        return newKey
     }
 
     private static func isOnCurve(publicKeyBytes: Data) -> Int {

@@ -286,7 +286,7 @@ public extension Solana {
             // get source
             var sourcePubkey: PublicKey?
             if let sourceString = sourceInfo?.source {
-                sourcePubkey = try? PublicKey(string: sourceString)
+                sourcePubkey = PublicKey(string: sourceString)
                 requests.append(
                     getAccountInfo(account: sourceString, retryWithAccount: sourceInfo?.destination)
                 )
@@ -294,7 +294,7 @@ public extension Solana {
             
             var destinationPubkey: PublicKey?
             if let destinationString = destinationInfo?.destination {
-                destinationPubkey = try? PublicKey(string: destinationString)
+                destinationPubkey = PublicKey(string: destinationString)
                 requests.append(
                     getAccountInfo(account: destinationString, retryWithAccount: destinationInfo?.source)
                 )

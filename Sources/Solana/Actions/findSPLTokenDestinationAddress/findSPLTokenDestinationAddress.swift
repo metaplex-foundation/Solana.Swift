@@ -22,11 +22,11 @@ extension Solana {
                     
                 } else if info.owner == PublicKey.programId.base58EncodedString {
                     // detect if destination address is a SOL address
-                    guard let owner = try? PublicKey(string: destinationAddress) else {
+                    guard let owner = PublicKey(string: destinationAddress) else {
                         onComplete(.failure(SolanaError.invalidPublicKey))
                         return
                     }
-                    guard let tokenMint = try? PublicKey(string: mintAddress) else {
+                    guard let tokenMint = PublicKey(string: mintAddress) else {
                         onComplete(.failure(SolanaError.invalidPublicKey))
                         return
                     }
@@ -42,7 +42,7 @@ extension Solana {
                     toPublicKeyString = address.base58EncodedString
                 }
                 
-                guard let toPublicKey = try? PublicKey(string: toPublicKeyString) else {
+                guard let toPublicKey = PublicKey(string: toPublicKeyString) else {
                     onComplete(.failure(SolanaError.invalidPublicKey))
                     return
                 }

@@ -6,37 +6,37 @@ import RxBlocking
 class PublicKeyTests: XCTestCase {
     
     func testKey() {
-        let key = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let key = Solana.PublicKey(string: "11111111111111111111111111111111")!
         XCTAssertNotNil(key)
     }
     
     func testKeyInvalidKey() {
-        XCTAssertThrowsError(try Solana.PublicKey(string: "XX"))
-        XCTAssertThrowsError(try Solana.PublicKey(bytes: nil))
-        XCTAssertThrowsError(try Solana.PublicKey(data: Data(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])))
+        XCTAssertNil(Solana.PublicKey(string: "XX"))
+        XCTAssertNil(Solana.PublicKey(bytes: nil))
+        XCTAssertNil(Solana.PublicKey(data: Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])))
     }
     
     func testKeyBytes() {
-        let key = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let key = Solana.PublicKey(string: "11111111111111111111111111111111")!
         XCTAssertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], key.bytes)
-        let keyB = try! Solana.PublicKey(string: "11111111111111111111111111111112")
+        let keyB = Solana.PublicKey(string: "11111111111111111111111111111112")!
         XCTAssertNotEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], keyB.bytes)
         
-        let keyC = try! Solana.PublicKey(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        let keyC = Solana.PublicKey(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])!
         XCTAssertEqual(key, keyC)
 
     }
     
     func testKeyData() {
-        let key = try! Solana.PublicKey(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        XCTAssertEqual(Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), key.data)
+        let key = Solana.PublicKey(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        XCTAssertEqual(Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), key?.data)
         
-        let keyB = try! Solana.PublicKey(data: Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        let keyB = Solana.PublicKey(data: Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))!
         XCTAssertEqual(keyB, key)
     }
     
     func testKeyEncode() {
-        let key = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let key = Solana.PublicKey(string: "11111111111111111111111111111111")!
         let encoder = JSONEncoder()
         let jsonData = try! encoder.encode(key)
         XCTAssertEqual(Data([34, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 34]), jsonData)
@@ -44,7 +44,7 @@ class PublicKeyTests: XCTestCase {
     
     func testKeyDecode() {
         let keyString = "11111111111111111111111111111111"
-        let targetKey = try! Solana.PublicKey(string: keyString)
+        let targetKey = Solana.PublicKey(string: keyString)!
         let decoder = JSONDecoder()
         let jsonData = "\"\(keyString)\"".data(using: .utf8)!
         let key = try! decoder.decode(Solana.PublicKey.self, from: jsonData)
@@ -53,14 +53,14 @@ class PublicKeyTests: XCTestCase {
     
     func testKeyShort() {
         let keyString = "11111111111111111111111111111111"
-        let key = try! Solana.PublicKey(string: keyString)
+        let key = Solana.PublicKey(string: keyString)!
         
         XCTAssertEqual("1111...1111", key.short())
     }
     
     func testKeyBase58EncodedString() {
         let keyString = "11111111111111111111111111111111"
-        let key = try! Solana.PublicKey(string: keyString)
+        let key = Solana.PublicKey(string: keyString)!
         
         XCTAssertEqual("11111111111111111111111111111111", key.base58EncodedString)
     }
@@ -84,27 +84,27 @@ class PublicKeyTests: XCTestCase {
     }
     
     func testPublicKeyFromString() throws {
-        let fromPublicKey = try Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")
+        let fromPublicKey = Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")!
         XCTAssertEqual(fromPublicKey.bytes, [6, 26, 217, 208, 83, 135, 21, 72, 83, 126, 222, 62, 38, 24, 73, 163, 223, 183, 253, 2, 250, 188, 117, 178, 35, 200, 228, 106, 219, 133, 61, 12])
         
-        let toPublicKey = try Solana.PublicKey(string: "GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5")
+        let toPublicKey = Solana.PublicKey(string: "GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5")!
         XCTAssertEqual(toPublicKey.bytes, [235, 122, 188, 208, 216, 117, 235, 194, 109, 161, 177, 129, 163, 51, 155, 62, 242, 163, 22, 149, 187, 122, 189, 188, 103, 130, 115, 188, 173, 205, 229, 170])
         
-        let programPubkey = try Solana.PublicKey(string: "11111111111111111111111111111111")
+        let programPubkey = Solana.PublicKey(string: "11111111111111111111111111111111")!
         XCTAssertEqual(programPubkey.bytes, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     }
     
     func testPublicKeyToString() throws {
-        let key = try Solana.PublicKey(data: Data([3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        let key = Solana.PublicKey(data: Data([3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))!
         XCTAssertEqual("CiDwVBFgWV9E5MvXWoLgnEgn2hK7rJikbvfWavzAQz3", key.base58EncodedString)
         
-        let key1 = try Solana.PublicKey(string: "CiDwVBFgWV9E5MvXWoLgnEgn2hK7rJikbvfWavzAQz3")
+        let key1 = Solana.PublicKey(string: "CiDwVBFgWV9E5MvXWoLgnEgn2hK7rJikbvfWavzAQz3")!
         XCTAssertEqual("CiDwVBFgWV9E5MvXWoLgnEgn2hK7rJikbvfWavzAQz3", key1.base58EncodedString)
         
-        let key2 = try Solana.PublicKey(string: "11111111111111111111111111111111")
+        let key2 = Solana.PublicKey(string: "11111111111111111111111111111111")!
         XCTAssertEqual("11111111111111111111111111111111", key2.base58EncodedString)
         
-        let key3 = try Solana.PublicKey(data: Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]))
+        let key3 = Solana.PublicKey(data: Data([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]))!
         XCTAssertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], key3.bytes)
     }
     

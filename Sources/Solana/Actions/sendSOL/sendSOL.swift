@@ -40,7 +40,7 @@ extension Solana {
                 onComplete(.failure(SolanaError.other("Invalid account info")))
                 return
             }
-            guard let to = try? PublicKey(string: destination) else {
+            guard let to = PublicKey(string: destination) else {
                 onComplete(.failure(SolanaError.invalidPublicKey))
                 return
             }

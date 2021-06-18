@@ -43,14 +43,20 @@ public extension Solana {
                 let keys = try Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString())
                 
                 let keyPair = try NaclSign.KeyPair.keyPair(fromSeed: keys.key)
-                self.publicKey = try PublicKey(data: keyPair.publicKey)
+                guard let newKey = PublicKey(data: keyPair.publicKey) else {
+                    throw SolanaError.invalidPublicKey
+                }
+                self.publicKey = newKey
                 self.secretKey = keyPair.secretKey
             }
         }
         
         public init(secretKey: Data) throws {
             let keys = try NaclSign.KeyPair.keyPair(fromSecretKey: secretKey)
-            self.publicKey = try PublicKey(data: keys.publicKey)
+            guard let newKey = PublicKey(data: keys.publicKey) else {
+                throw SolanaError.invalidPublicKey
+            }
+            self.publicKey = newKey
             self.secretKey = keys.secretKey
             let phrase = try Mnemonic.toMnemonic(secretKey.bytes)
             self.phrase = phrase
@@ -71,7 +77,10 @@ public extension Solana.Account {
         
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
-            publicKey = try Solana.PublicKey(string: try values.decode(String.self, forKey: .pubkey))
+            guard let newKey = Solana.PublicKey(string: try values.decode(String.self, forKey: .pubkey)) else {
+                throw Solana.SolanaError.invalidPublicKey
+            }
+            publicKey = newKey
             isSigner = try values.decode(Bool.self, forKey: .signer)
             isWritable = try values.decode(Bool.self, forKey: .writable)
         }

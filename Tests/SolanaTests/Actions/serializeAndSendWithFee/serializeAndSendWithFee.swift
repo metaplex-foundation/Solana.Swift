@@ -23,7 +23,7 @@ class serializeAndSendWithFee: XCTestCase {
 
         let instruction = Solana.SystemProgram.transferInstruction(
             from: account.publicKey,
-            to: try Solana.PublicKey(string: toPublicKey),
+            to: Solana.PublicKey(string: toPublicKey)!,
             lamports: 0.001.toLamport(decimals: 9)
         )
         
@@ -39,7 +39,7 @@ class serializeAndSendWithFee: XCTestCase {
 
         let instruction = Solana.SystemProgram.transferInstruction(
             from: account.publicKey,
-            to: try Solana.PublicKey(string: toPublicKey),
+            to: Solana.PublicKey(string: toPublicKey)!,
             lamports: 0.001.toLamport(decimals: 9)
         )
         
@@ -48,8 +48,8 @@ class serializeAndSendWithFee: XCTestCase {
     }
     
     func testTransferInstruction() throws {
-        let fromPublicKey = try Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")
-        let toPublicKey = try Solana.PublicKey(string: "GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5")
+        let fromPublicKey = Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")!
+        let toPublicKey = Solana.PublicKey(string: "GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5")!
         
         let instruction = Solana.SystemProgram.transferInstruction(from: fromPublicKey, to: toPublicKey, lamports: 3000)
         
@@ -60,13 +60,13 @@ class serializeAndSendWithFee: XCTestCase {
     }
     
     func testInitializeAccountInstruction() throws {
-        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let publicKey = Solana.PublicKey(string: "11111111111111111111111111111111")!
         let instruction = Solana.TokenProgram.initializeAccountInstruction(account: publicKey, mint: publicKey, owner: publicKey)
         XCTAssertEqual("2", Base58.encode(instruction.data))
     }
     
     func testApproveInstruction() throws {
-        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let publicKey = Solana.PublicKey(string: "11111111111111111111111111111111")!
         let instruction = Solana.TokenProgram.approveInstruction(tokenProgramId: publicKey, account: publicKey, delegate: publicKey, owner: publicKey, amount: 1000)
         XCTAssertEqual("4d5tSvUuzUVM", Base58.encode(instruction.data))
     }

@@ -27,7 +27,7 @@ extension Solana {
                     return
                 }
                 
-                guard let fromPublicKey = try? PublicKey(string: fromPublicKey) else {
+                guard let fromPublicKey = PublicKey(string: fromPublicKey) else {
                     onComplete(.failure( SolanaError.invalidPublicKey))
                     return
                 }
@@ -35,11 +35,11 @@ extension Solana {
                 
                 // create associated token address
                 if isUnregisteredAsocciatedToken {
-                    guard let mint = try? PublicKey(string: mintAddress) else {
+                    guard let mint = PublicKey(string: mintAddress) else {
                         onComplete(.failure(SolanaError.invalidPublicKey))
                         return
                     }
-                    guard let owner = try? PublicKey(string: destinationAddress) else {
+                    guard let owner = PublicKey(string: destinationAddress) else {
                         onComplete(.failure(SolanaError.invalidPublicKey))
                         return
                     }

@@ -152,7 +152,7 @@ extension Solana {
                 )
             )
             
-            guard let swapProgramId = try? PublicKey(string: swapProgramId) else {
+            guard let swapProgramId = PublicKey(string: swapProgramId) else {
                 return .failure(SolanaError.invalidPublicKey)
             }
             // swap
