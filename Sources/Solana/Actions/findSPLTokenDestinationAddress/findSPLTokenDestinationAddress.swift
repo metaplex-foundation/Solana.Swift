@@ -29,13 +29,13 @@ extension Solana {
                 }
                 
                 // create associated token address
-                guard let address = try? PublicKey.associatedTokenAddress(
+                guard case let .success(address) = PublicKey.associatedTokenAddress(
                     walletAddress: owner,
                     tokenMintAddress: tokenMint
                 ) else {
                     return .failure(SolanaError.invalidPublicKey)
-                    
                 }
+                
                 toPublicKeyString = address.base58EncodedString
             }
             
