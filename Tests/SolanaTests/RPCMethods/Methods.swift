@@ -80,7 +80,7 @@ class Methods: XCTestCase {
         XCTAssertNotNil(epoch)
     }
     func testGetFeeCalculatorForBlockhashExpired() {
-        XCTAssertThrowsError(try! solanaSDK.getFeeCalculatorForBlockhash(blockhash: "3pkUeCqmzESag2V2upuvxsFqbAmejBerWNMCSvUTeTQt").toBlocking().first())
+        XCTAssertThrowsError(try solanaSDK.getFeeCalculatorForBlockhash(blockhash: "3pkUeCqmzESag2V2upuvxsFqbAmejBerWNMCSvUTeTQt").toBlocking().first())
     }
     func testGetFeeRateGovernor() {
         let fee = try! solanaSDK.getFeeRateGovernor().toBlocking().first()
