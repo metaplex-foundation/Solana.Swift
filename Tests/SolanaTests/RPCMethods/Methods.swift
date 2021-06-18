@@ -68,7 +68,7 @@ class Methods: XCTestCase {
         XCTAssertEqual(result?.count, 10)
     }
     func testGetConfirmedTransaction() throws {
-        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "5dxrTLhZGwPzaYyE7xpTh5HgQdyV6hnseKGDHuhKAeTapw2TbTHtNh1aA2ecrbbGM2ZQ5gD6G7jzcd98Vro5L1DU").toBlocking().first()
+        let result = try solanaSDK.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth").toBlocking().first()
         XCTAssertNotNil(result)
     }
     func testGetEpochInfo() throws {
