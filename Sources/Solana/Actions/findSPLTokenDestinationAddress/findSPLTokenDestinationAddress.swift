@@ -19,7 +19,6 @@ extension Solana {
             if mintAddress == toTokenMint {
                 // detect if destination address is already a SPLToken address
                 toPublicKeyString = destinationAddress
-                
             } else if info.owner == PublicKey.programId.base58EncodedString {
                 // detect if destination address is a SOL address
                 guard let owner = PublicKey(string: destinationAddress) else {

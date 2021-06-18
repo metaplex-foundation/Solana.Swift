@@ -29,7 +29,7 @@ class createAssociatedTokenAccount: XCTestCase {
         let associatedTokenAddress = try Solana.PublicKey.associatedTokenAddress(
             walletAddress: Solana.PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!,
             tokenMintAddress: Solana.PublicKey(string: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v")!
-        )
+        ).get()
         
         XCTAssertEqual(associatedTokenAddress.base58EncodedString, "3uetDDizgTtadDHZzyy9BqxrjQcozMEkxzbKhfZF4tG3")
     }

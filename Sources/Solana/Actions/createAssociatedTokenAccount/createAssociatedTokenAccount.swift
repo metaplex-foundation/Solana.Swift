@@ -8,7 +8,7 @@ extension Solana {
         tokenMint: PublicKey,
         onComplete: @escaping (Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>) -> ()
     ) {
-        guard let associatedAddress = try? PublicKey.associatedTokenAddress(
+        guard case let .success(associatedAddress) = PublicKey.associatedTokenAddress(
             walletAddress: owner,
             tokenMintAddress: tokenMint
         ) else {
@@ -58,7 +58,7 @@ extension Solana {
             return onComplete(.failure(SolanaError.unauthorized))
         }
         
-            guard let associatedAddress = try? PublicKey.associatedTokenAddress(
+        guard case let .success(associatedAddress) = PublicKey.associatedTokenAddress(
                 walletAddress: owner,
                 tokenMintAddress: tokenMint
             ) else {
