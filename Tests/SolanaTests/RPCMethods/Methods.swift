@@ -202,28 +202,6 @@ class Methods: XCTestCase {
 extension Methods {
     // MARK: - Send
 
-    /*func testSwapToken() throws {
-        let USDCWallet = "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8"
-        let USDTWallet = "EJwZgeZrdC8TXTQbQBoL6bfuAnFUUy1PVCMB4DYPzVaS"
-
-        let USDCMintAddress = "2ST2CedQ1QT7f2G31Qws9n7GFj7C56fKnhbxnvLymFwU"
-        let USDTMintAddress = "E9ySnfyR467236FjUQKswrXq1qmHmS7WyjbiWo7Fnmgo"
-        
-        let source = try Solana.PublicKey(string: USDCWallet)
-        let sourceMint = try Solana.PublicKey(string: USDCMintAddress)
-        let destination = try Solana.PublicKey(string: USDTWallet)
-        let destinationMint = try Solana.PublicKey(string: USDTMintAddress)
-
-        _ = try solanaSDK.swap(
-            source: source,
-            sourceMint: sourceMint,
-            destination: destination,
-            destinationMint: destinationMint,
-            slippage: 0.5,
-            amount: 0.001.toLamport(decimals: 9)
-        ).toBlocking().first()
-    }*/
-
     /*func testSendSPLTokenToSolAccountViaAToken() throws {
         _ = try solanaSDK.sendSPLTokens(
             mintAddress: "So11111111111111111111111111111111111111112",
