@@ -16,7 +16,7 @@ class swap: XCTestCase {
         try solanaSDK.accountStorage.save(account)
     }
 
-    /*func testSwapToken() throws {
+    /*func testSwapToken() {
         let USDCWallet = "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8"
         let USDTWallet = "EJwZgeZrdC8TXTQbQBoL6bfuAnFUUy1PVCMB4DYPzVaS"
 
@@ -38,7 +38,7 @@ class swap: XCTestCase {
         ).toBlocking().first()
     }*/
     
-    func testSwapInstruction() throws {
+    func testSwapInstruction() {
         let instruction = Solana.TokenSwapProgram.swapInstruction(
             tokenSwap: publicKey,
             authority: publicKey,
@@ -59,7 +59,7 @@ class swap: XCTestCase {
         XCTAssertEqual(Base58.decode("tSBHVn49GSCW4DNB1EYv9M"), instruction.data)
     }
     
-    func testDepositInstruction() throws {
+    func testDepositInstruction() {
         let instruction = Solana.TokenSwapProgram.depositInstruction(
             tokenSwap: publicKey,
             authority: publicKey,
@@ -79,7 +79,7 @@ class swap: XCTestCase {
         XCTAssertEqual(Base58.decode("22WQQtPPUknk68tx2dUGRL1Q4Vj2mkg6Hd"), instruction.data)
     }
     
-    func testWithdrawInstruction() throws {
+    func testWithdrawInstruction() {
         let instruction = Solana.TokenSwapProgram.withdrawInstruction(
             tokenSwap: publicKey,
             authority: publicKey,

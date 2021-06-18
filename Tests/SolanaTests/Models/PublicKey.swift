@@ -65,7 +65,7 @@ class PublicKeyTests: XCTestCase {
         XCTAssertEqual("11111111111111111111111111111111", key.base58EncodedString)
     }
     
-    func testPubkeyRegex() throws {
+    func testPubkeyRegex() {
         let regex = NSRegularExpression.publicKey
         XCTAssertTrue(regex.matches("3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"))
         XCTAssertTrue(regex.matches("5iqF9UNh6AB7hPkJiGFLixJuPeMqp9VVq7iJ9t8c3ZF"))
@@ -83,7 +83,7 @@ class PublicKeyTests: XCTestCase {
         XCTAssertFalse(regex.matches("41r5NV6uj386xwXm-KwQ8V6mTH6Y4+outh5yQzeReFJt"))
     }
     
-    func testPublicKeyFromString() throws {
+    func testPublicKeyFromString() {
         let fromPublicKey = Solana.PublicKey(string: "QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo")!
         XCTAssertEqual(fromPublicKey.bytes, [6, 26, 217, 208, 83, 135, 21, 72, 83, 126, 222, 62, 38, 24, 73, 163, 223, 183, 253, 2, 250, 188, 117, 178, 35, 200, 228, 106, 219, 133, 61, 12])
         
@@ -94,7 +94,7 @@ class PublicKeyTests: XCTestCase {
         XCTAssertEqual(programPubkey.bytes, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     }
     
-    func testPublicKeyToString() throws {
+    func testPublicKeyToString() {
         let key = Solana.PublicKey(data: Data([3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))!
         XCTAssertEqual("CiDwVBFgWV9E5MvXWoLgnEgn2hK7rJikbvfWavzAQz3", key.base58EncodedString)
         
@@ -108,18 +108,18 @@ class PublicKeyTests: XCTestCase {
         XCTAssertEqual([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], key3.bytes)
     }
     
-    func testCreateAccountFromSecretKey() throws {
+    func testCreateAccountFromSecretKey() {
         let secretKey = Base58.decode("4Z7cXSyeFR8wNGMVXUE1TwtKn5D5Vu7FzEv69dokLv7KrQk7h6pu4LF8ZRR9yQBhc7uSM6RTTZtU1fmaxiNrxXrs")
         XCTAssertNotNil(secretKey)
         
-        let account = try Solana.Account(secretKey: Data(secretKey))
+        let account = try! Solana.Account(secretKey: Data(secretKey))
         
         XCTAssertEqual("QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo", account.publicKey.base58EncodedString)
         XCTAssertEqual(64, account.secretKey.count)
     }
     
     #if canImport(UIKit)
-    func testDerivedKeychain() throws {
+    func testDerivedKeychain() {
         var keychain = try Keychain(seedString: "miracle pizza supply useful steak border same again youth silver access hundred", network: "mainnet-beta")
         
         keychain = try keychain.derivedKeychain(at: "m/501'/0'/0/0")
@@ -130,15 +130,15 @@ class PublicKeyTests: XCTestCase {
     }
     #endif
     
-    func testRestoreAccountFromSeedPhrase() throws {
+    func testRestoreAccountFromSeedPhrase() {
         let phrase12 = "miracle pizza supply useful steak border same again youth silver access hundred"
             .components(separatedBy: " ")
-        let account12 = try Solana.Account(phrase: phrase12, network: .mainnetBeta)
+        let account12 = try! Solana.Account(phrase: phrase12, network: .mainnetBeta)
         XCTAssertEqual(account12.publicKey.base58EncodedString, "HnXJX1Bvps8piQwDYEYC6oea9GEkvQvahvRj3c97X9xr")
         
         let phrase24 = "budget resource fluid mutual ankle salt demise long burst sting doctor ozone risk magic wrap clap post pole jungle great update air interest abandon"
             .components(separatedBy: " ")
-        let account24 = try Solana.Account(phrase: phrase24, network: .mainnetBeta)
+        let account24 = try! Solana.Account(phrase: phrase24, network: .mainnetBeta)
         XCTAssertEqual(account24.publicKey.base58EncodedString, "9avcmC97zLPwHKXiDz6GpXyjvPn9VcN3ggqM5gsRnjvv")
     }
 }

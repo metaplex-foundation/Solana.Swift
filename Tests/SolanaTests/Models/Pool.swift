@@ -71,7 +71,7 @@ class Pool: XCTestCase {
         )
     }
     
-    func testAmountCalculation() throws {
+    func testAmountCalculation() {
         let inputAmount: Double = 1
         let expectedEstimatedAmount = 5.352587
         

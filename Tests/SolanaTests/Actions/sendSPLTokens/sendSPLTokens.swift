@@ -16,12 +16,12 @@ class sendSPLTokens: XCTestCase {
         _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
     }
     
-    func testSendSPLTokenWithFee() throws {
+    func testSendSPLTokenWithFee() {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
         let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
         let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
 
-        let transactionId = try solanaSDK.sendSPLTokens(
+        let transactionId = try! solanaSDK.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: source,
@@ -30,7 +30,7 @@ class sendSPLTokens: XCTestCase {
         ).toBlocking().first()
         XCTAssertNotNil(transactionId)
         
-        let transactionIdB = try solanaSDK.sendSPLTokens(
+        let transactionIdB = try! solanaSDK.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: destination,
