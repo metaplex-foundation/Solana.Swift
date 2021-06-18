@@ -13,70 +13,61 @@ extension Solana {
             return onComplete(.failure(SolanaError.unauthorized))
         }
         
-        findSPLTokenDestinationAddress(
-            mintAddress: mintAddress,
-            destinationAddress: destinationAddress
-        ) { splTokeenAddressResult in
-            switch splTokeenAddressResult {
-            case .success((let destination, let isUnregisteredAsocciatedToken)):
-                let toPublicKey = destination
-                
-                // catch error
-                guard fromPublicKey != toPublicKey.base58EncodedString else {
-                    onComplete(.failure(SolanaError.invalidPublicKey))
-                    return
-                }
-                
-                guard let fromPublicKey = PublicKey(string: fromPublicKey) else {
-                    onComplete(.failure( SolanaError.invalidPublicKey))
-                    return
-                }
-                var instructions = [TransactionInstruction]()
-                
-                // create associated token address
-                if isUnregisteredAsocciatedToken {
-                    guard let mint = PublicKey(string: mintAddress) else {
-                        onComplete(.failure(SolanaError.invalidPublicKey))
-                        return
-                    }
-                    guard let owner = PublicKey(string: destinationAddress) else {
-                        onComplete(.failure(SolanaError.invalidPublicKey))
-                        return
-                    }
-                    
-                    let createATokenInstruction = AssociatedTokenProgram.createAssociatedTokenAccountInstruction(
-                        mint: mint,
-                        associatedAccount: toPublicKey,
-                        owner: owner,
-                        payer: account.publicKey
-                    )
-                    instructions.append(createATokenInstruction)
-                }
-                
-                // send instruction
-                let sendInstruction = TokenProgram.transferInstruction(
-                    tokenProgramId: .tokenProgramId,
-                    source: fromPublicKey,
-                    destination: toPublicKey,
-                    owner: account.publicKey,
-                    amount: amount
-                )
-                
-                instructions.append(sendInstruction)
-                
-                self.serializeAndSendWithFee(instructions: instructions, signers: [account]) { transactionResult in
-                    switch transactionResult {
-                    case .success(let transaction):
-                        onComplete(.success(transaction))
-                    case .failure(let error):
-                        onComplete(.failure(error))
-                    }
-                }
-                
-            case .failure(let error):
-                onComplete(.failure(error))
-                return
+        ContResult.init { cb in
+            self.findSPLTokenDestinationAddress(
+                mintAddress: mintAddress,
+                destinationAddress: destinationAddress
+            ){ cb($0) }
+        }.flatMap { (destination, isUnregisteredAsocciatedToken) in
+            
+            let toPublicKey = destination
+            
+            // catch error
+            guard fromPublicKey != toPublicKey.base58EncodedString else {
+                return .failure(SolanaError.invalidPublicKey)
             }
-        }
+            
+            guard let fromPublicKey = PublicKey(string: fromPublicKey) else {
+                return .failure( SolanaError.invalidPublicKey)
+            }
+            var instructions = [TransactionInstruction]()
+            
+            // create associated token address
+            if isUnregisteredAsocciatedToken {
+                guard let mint = PublicKey(string: mintAddress) else {
+                    return .failure(SolanaError.invalidPublicKey)
+                }
+                guard let owner = PublicKey(string: destinationAddress) else {
+                    return .failure(SolanaError.invalidPublicKey)
+                }
+                
+                let createATokenInstruction = AssociatedTokenProgram.createAssociatedTokenAccountInstruction(
+                    mint: mint,
+                    associatedAccount: toPublicKey,
+                    owner: owner,
+                    payer: account.publicKey
+                )
+                instructions.append(createATokenInstruction)
+            }
+            
+            // send instruction
+            let sendInstruction = TokenProgram.transferInstruction(
+                tokenProgramId: .tokenProgramId,
+                source: fromPublicKey,
+                destination: toPublicKey,
+                owner: account.publicKey,
+                amount: amount
+            )
+            
+            instructions.append(sendInstruction)
+            return .success((instructions: instructions, account: account))
+            
+        }.flatMap { (instructions, account) in
+            ContResult.init { cb in
+                self.serializeAndSendWithFee(instructions: instructions, signers: [account]) {
+                    cb($0)
+                }
+            }
+        }.run(onComplete)
     }
 }
