@@ -7,72 +7,62 @@ extension Solana {
         destinationAddress: String,
         onComplete: @escaping (Result<SPLTokenDestinationAddress, Error>) -> ()
     ) {
-        getAccountInfo(
-            account: destinationAddress,
-            decodedTo: Solana.AccountInfo.self
-        ){ getAccountInfoResult in
-            switch getAccountInfoResult {
-            case .success(let info):
-                let toTokenMint = info.data.value?.mint.base58EncodedString
-
-                var toPublicKeyString: String = ""
-                if mintAddress == toTokenMint {
-                    // detect if destination address is already a SPLToken address
-                    toPublicKeyString = destinationAddress
-                    
-                } else if info.owner == PublicKey.programId.base58EncodedString {
-                    // detect if destination address is a SOL address
-                    guard let owner = PublicKey(string: destinationAddress) else {
-                        onComplete(.failure(SolanaError.invalidPublicKey))
-                        return
-                    }
-                    guard let tokenMint = PublicKey(string: mintAddress) else {
-                        onComplete(.failure(SolanaError.invalidPublicKey))
-                        return
-                    }
-                    
-                    // create associated token address
-                    guard let address = try? PublicKey.associatedTokenAddress(
-                        walletAddress: owner,
-                        tokenMintAddress: tokenMint
-                    ) else {
-                        onComplete(.failure(SolanaError.invalidPublicKey))
-                        return
-                    }
-                    toPublicKeyString = address.base58EncodedString
+        
+        ContResult<BufferInfo<Solana.AccountInfo>, Error>.init { cb in
+            self.getAccountInfo(
+                account: destinationAddress,
+                decodedTo: Solana.AccountInfo.self
+            ){ cb($0) }
+        }.flatMap { info in
+            let toTokenMint = info.data.value?.mint.base58EncodedString
+            var toPublicKeyString: String = ""
+            if mintAddress == toTokenMint {
+                // detect if destination address is already a SPLToken address
+                toPublicKeyString = destinationAddress
+                
+            } else if info.owner == PublicKey.programId.base58EncodedString {
+                // detect if destination address is a SOL address
+                guard let owner = PublicKey(string: destinationAddress) else {
+                    return .failure(SolanaError.invalidPublicKey)
+                }
+                guard let tokenMint = PublicKey(string: mintAddress) else {
+                    return .failure(SolanaError.invalidPublicKey)
                 }
                 
-                guard let toPublicKey = PublicKey(string: toPublicKeyString) else {
-                    onComplete(.failure(SolanaError.invalidPublicKey))
-                    return
+                // create associated token address
+                guard let address = try? PublicKey.associatedTokenAddress(
+                    walletAddress: owner,
+                    tokenMintAddress: tokenMint
+                ) else {
+                    return .failure(SolanaError.invalidPublicKey)
+                    
                 }
-                
-                if destinationAddress != toPublicKey.base58EncodedString {
-                    // check if associated address is already registered
+                toPublicKeyString = address.base58EncodedString
+            }
+            
+            guard let toPublicKey = PublicKey(string: toPublicKeyString) else {
+                return .failure(SolanaError.invalidPublicKey)
+            }
+            
+            if destinationAddress != toPublicKey.base58EncodedString {
+                // check if associated address is already registered
+                return ContResult.init { cb in
                     self.getAccountInfo(
                         account: toPublicKey.base58EncodedString,
                         decodedTo: AccountInfo.self
-                    ) { accountInfoResult in
-                        switch accountInfoResult {
-                        case .success(let info):
-                            var isUnregisteredAsocciatedToken = true
-                            // if associated token account has been registered
-                            if info.owner == PublicKey.tokenProgramId.base58EncodedString &&
-                                info.data.value != nil {
-                                isUnregisteredAsocciatedToken = false
-                            }
-                            onComplete(.success((destination: toPublicKey, isUnregisteredAsocciatedToken: isUnregisteredAsocciatedToken)))
-                        case .failure(let error):
-                            onComplete(.failure(error))
-                        }
+                    ) { cb($0)}
+                }.flatMap { info1 in
+                    var isUnregisteredAsocciatedToken = true
+                    // if associated token account has been registered
+                    if info1.owner == PublicKey.tokenProgramId.base58EncodedString &&
+                        info.data.value != nil {
+                        isUnregisteredAsocciatedToken = false
                     }
-                } else {
-                    onComplete(.success((destination: toPublicKey, isUnregisteredAsocciatedToken: false)))
+                    return .success((destination: toPublicKey, isUnregisteredAsocciatedToken: isUnregisteredAsocciatedToken))
                 }
-                
-            case .failure(let error):
-                onComplete(.failure(error))
+            } else {
+                return .success((destination: toPublicKey, isUnregisteredAsocciatedToken: false))
             }
-        }
+        }.run(onComplete)
     }
 }

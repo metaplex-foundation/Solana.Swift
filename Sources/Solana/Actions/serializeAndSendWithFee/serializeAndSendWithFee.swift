@@ -34,30 +34,36 @@ extension Solana {
         numberOfTries: Int = 0,
         onComplete: @escaping ((Result<String, Error>) -> ())
     ){
-        serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers){ result in
-            switch result {
-            case .success(let transaction):
+        
+        ContResult.init{ cb in
+            self.serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers) {
+                cb($0)
+            }
+        }.flatMap { transaction in
+            return ContResult.init { cb in
                 self.sendTransaction(serializedTransaction: transaction) {
-                    switch $0{
-                    case .success(let hash):
-                        onComplete(.success(hash))
-                        return
-                    case .failure(let error):
-                        self.retryOrError(instructions: instructions,
-                                                 recentBlockhash: recentBlockhash,
-                                                 signers: signers,
-                                                 maxAttemps: maxAttemps,
-                                                 numberOfTries: numberOfTries,
-                                                 error: error,
-                                                 onComplete: onComplete)
-                        return
+                    cb($0)
+                }
+            }
+        }.recover { error in
+            var numberOfTries = numberOfTries
+            if numberOfTries <= maxAttemps,
+               let error = error as? SolanaError
+            {
+                if case SolanaError.blockHashNotFound = error {
+                    numberOfTries += 1
+                    return ContResult.init { cb in
+                        self.serializeAndSendWithFee(instructions: instructions,
+                                                     signers: signers,
+                                                     maxAttemps: maxAttemps,
+                                                     numberOfTries: numberOfTries,
+                                                     onComplete: cb)
                     }
                 }
-            case .failure(let error):
-                onComplete(.failure(error))
-                return
             }
+            return .failure(error)
         }
+        .run(onComplete)
     }
 }
 extension Solana {
