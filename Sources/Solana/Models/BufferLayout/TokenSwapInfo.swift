@@ -52,13 +52,13 @@ extension Solana {
             guard let version = keys["version"]?.first,
                   let isInitialized = keys["isInitialized"]?.first,
                   let nonce = keys["nonce"]?.first,
-                  let tokenProgramId = try? PublicKey(bytes: keys["tokenProgramId"]),
-                  let tokenAccountA = try? PublicKey(bytes: keys["tokenAccountA"]),
-                  let tokenAccountB = try? PublicKey(bytes: keys["tokenAccountB"]),
-                  let tokenPool = try? PublicKey(bytes: keys["tokenPool"]),
-                  let mintA = try? PublicKey(bytes: keys["mintA"]),
-                  let mintB = try? PublicKey(bytes: keys["mintB"]),
-                  let feeAccount = try? PublicKey(bytes: keys["feeAccount"]),
+                  let tokenProgramId = PublicKey(bytes: keys["tokenProgramId"]),
+                  let tokenAccountA = PublicKey(bytes: keys["tokenAccountA"]),
+                  let tokenAccountB = PublicKey(bytes: keys["tokenAccountB"]),
+                  let tokenPool = PublicKey(bytes: keys["tokenPool"]),
+                  let mintA = PublicKey(bytes: keys["mintA"]),
+                  let mintB = PublicKey(bytes: keys["mintB"]),
+                  let feeAccount = PublicKey(bytes: keys["feeAccount"]),
                   let tradeFeeNumerator = keys["tradeFeeNumerator"]?.toUInt64(),
                   let tradeFeeDenominator = keys["tradeFeeDenominator"]?.toUInt64(),
                   let ownerTradeFeeNumerator = keys["ownerTradeFeeNumerator"]?.toUInt64(),
@@ -68,7 +68,7 @@ extension Solana {
                   let hostFeeNumerator = keys["hostFeeNumerator"]?.toUInt64(),
                   let hostFeeDenominator = keys["hostFeeDenominator"]?.toUInt64(),
                   let curveType = keys["curveType"]?.first,
-                  let payer = try? PublicKey(bytes: keys["payer"])
+                  let payer = PublicKey(bytes: keys["payer"])
             else {
                 return nil
             }

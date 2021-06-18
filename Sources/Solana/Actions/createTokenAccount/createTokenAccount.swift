@@ -59,7 +59,7 @@ extension Solana {
                           minBalance: UInt64,
                           onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> ())) {
         
-        guard let mintAddress = try? PublicKey(string: mintAddress) else {
+        guard let mintAddress = PublicKey(string: mintAddress) else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }

@@ -19,17 +19,17 @@ extension Solana {
         public var closeAuthority: PublicKey?
         
         public init?(_ keys: [String: [UInt8]]) {
-            guard let mint = try? PublicKey(bytes: keys["mint"]),
-                  let owner = try? PublicKey(bytes: keys["owner"]),
+            guard let mint = PublicKey(bytes: keys["mint"]),
+                  let owner = PublicKey(bytes: keys["owner"]),
                   let amount = keys["lamports"]?.toUInt64(),
                   let delegateOption = keys["delegateOption"]?.toUInt32(),
-                  let delegate = try? PublicKey(bytes: keys["delegate"]),
+                  let delegate = PublicKey(bytes: keys["delegate"]),
                   let state = keys["state"]?.first,
                   let isNativeOption = keys["isNativeOption"]?.toUInt32(),
                   let isNativeRaw = keys["isNativeRaw"]?.toUInt64(),
                   let delegatedAmount = keys["delegatedAmount"]?.toUInt64(),
                   let closeAuthorityOption = keys["closeAuthorityOption"]?.toUInt32(),
-                  let closeAuthority = try? PublicKey(bytes: keys["closeAuthority"])
+                  let closeAuthority = PublicKey(bytes: keys["closeAuthority"])
             else {
                 return nil
             }

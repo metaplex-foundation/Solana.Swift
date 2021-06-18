@@ -16,12 +16,12 @@ class getMintData: XCTestCase {
     }
     
     func testGetMintData() throws {
-        let data = try solanaSDK.getMintData(mintAddress: Solana.PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")).toBlocking().first()
+        let data = try solanaSDK.getMintData(mintAddress: Solana.PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!).toBlocking().first()
         XCTAssertNotNil(data)
     }
     
     func testGetMultipleMintDatas() throws {
-        let datas = try solanaSDK.getMultipleMintDatas(mintAddresses: [Solana.PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")]).toBlocking().first()
+        let datas = try solanaSDK.getMultipleMintDatas(mintAddresses: [Solana.PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!]).toBlocking().first()
         XCTAssertNotNil(datas)
     }
     
@@ -31,7 +31,7 @@ class getMintData: XCTestCase {
         XCTAssertNotEqual(pools!.count, 0)
     }
     func testMintToInstruction() throws {
-        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let publicKey = Solana.PublicKey(string: "11111111111111111111111111111111")!
         let instruction = Solana.TokenProgram.mintToInstruction(tokenProgramId: publicKey, mint: publicKey, destination: publicKey, authority: publicKey, amount: 1000000000)
         XCTAssertEqual("6AsKhot84V8s", Base58.encode(instruction.data))
     }

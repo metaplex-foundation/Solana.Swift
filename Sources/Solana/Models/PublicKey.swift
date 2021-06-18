@@ -1,31 +1,30 @@
 import Foundation
 
 public extension Solana {
-    struct PublicKey: Equatable, CustomStringConvertible, Hashable {
+    struct PublicKey{
+        
         public static let LENGTH = 32
         public let bytes: [UInt8]
         
-        public init(string: String?) throws {
-            guard let string = string, string.utf8.count >= Solana.PublicKey.LENGTH
-            else {
-                throw SolanaError.invalidPublicKey
-            }
-            let bytes = Base58.decode(string)
-            self.bytes = bytes
-        }
-        
-        public init(data: Data) throws {
-            guard data.count <= Solana.PublicKey.LENGTH else {
-                throw SolanaError.invalidPublicKey
-            }
-            self.bytes = [UInt8](data)
-        }
-        
-        public init(bytes: [UInt8]?) throws {
+        init?(bytes: [UInt8]?) {
             guard let bytes = bytes, bytes.count <= PublicKey.LENGTH else {
-                throw SolanaError.invalidPublicKey
+                return nil
             }
             self.bytes = bytes
+        }
+        
+        init?(string: String) {
+            guard string.utf8.count >= Solana.PublicKey.LENGTH else {
+                return nil
+            }
+            self.init(bytes: Base58.decode(string))
+        }
+        
+        init?(data: Data) {
+            guard data.count <= Solana.PublicKey.LENGTH else {
+                return nil
+            }
+            self.init(bytes: [UInt8](data))
         }
         
         public var base58EncodedString: String {
@@ -36,14 +35,23 @@ public extension Solana {
             Data(bytes)
         }
         
-        public var description: String {
-            base58EncodedString
-        }
         
         public func short(numOfSymbolsRevealed: Int = 4) -> String {
             let pubkey = base58EncodedString
             return pubkey.prefix(numOfSymbolsRevealed) + "..." + pubkey.suffix(numOfSymbolsRevealed)
         }
+    }
+}
+
+extension Solana.PublicKey: Equatable, CustomStringConvertible, Hashable {
+    public var description: String {
+        base58EncodedString
+    }
+}
+
+public extension Solana.PublicKey {
+    enum PublicKeyError: Error {
+        case invalidPublicKey
     }
 }
 
@@ -56,6 +64,9 @@ extension Solana.PublicKey: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
-        try self.init(string: string)
+        guard string.utf8.count >= Solana.PublicKey.LENGTH else {
+            throw PublicKeyError.invalidPublicKey
+        }
+        self.bytes = Base58.decode(string)
     }
 }

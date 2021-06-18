@@ -16,7 +16,7 @@ class closeTokenAccount: XCTestCase {
     }
     
     func testCloseAccountInstruction() throws {
-        let publicKey = try! Solana.PublicKey(string: "11111111111111111111111111111111")
+        let publicKey = Solana.PublicKey(string: "11111111111111111111111111111111")!
         let instruction = Solana.TokenProgram.closeAccountInstruction(tokenProgramId: publicKey, account: publicKey, destination: publicKey, owner: publicKey)
         XCTAssertEqual("A", Base58.encode(instruction.data))
     }
