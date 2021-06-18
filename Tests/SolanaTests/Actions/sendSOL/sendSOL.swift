@@ -38,14 +38,14 @@ class sendSOL: XCTestCase {
     }
     func testSendSOLIncorrectDestination() {
         let toPublicKey = "XX"
-        XCTAssertThrowsError(try! solanaSDK.sendSOL(
+        XCTAssertThrowsError(try solanaSDK.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first())
     }
     func testSendSOLBigAmmount() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        XCTAssertThrowsError(try! solanaSDK.sendSOL(
+        XCTAssertThrowsError(try solanaSDK.sendSOL(
             to: toPublicKey,
             amount: 9223372036854775808
         ).toBlocking().first())

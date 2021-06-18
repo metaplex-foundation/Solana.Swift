@@ -23,7 +23,7 @@ class createAssociatedTokenAccount: XCTestCase {
     
     func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = Solana.PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        XCTAssertThrowsError(try! solanaSDK.createAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first())
+        XCTAssertThrowsError(try solanaSDK.createAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first())
     }
     func testFindAssociatedTokenAddress() {
         let associatedTokenAddress = try! Solana.PublicKey.associatedTokenAddress(
