@@ -10,9 +10,11 @@ public extension Solana {
     
     enum RPCError: Error{
         case httpError
+        case httpErrorCode(Int)
         case invalidResponseNoData
         case invalidResponse(ResponseError)
         case unknownResponse
+        case retry
     }
     
     func request<T: Decodable>(
@@ -30,53 +32,77 @@ public extension Solana {
         
         Logger.log(message: "\(method.rawValue) \(bcMethod) [id=\(requestAPI.id)] \(params.map(EncodableWrapper.init(wrapped:)).jsonString ?? "")", event: .request, apiMethod: bcMethod)
         
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = method.rawValue
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
-        } catch let ecodingError {
-            onComplete(.failure(ecodingError))
-            return
-        }
-        
-        let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
-            Logger.log(message: String(data: data ?? Data(), encoding: .utf8) ?? "", event: .response, apiMethod: bcMethod)
-            
-            if let error = error {
-                onComplete(.failure(error))
-                return
-            }
-            
-            guard let response = response, let httpURLResponse = response as? HTTPURLResponse,
-                  (200..<300).contains(httpURLResponse.statusCode) else {
-                onComplete(.failure(RPCError.httpError))
-                return
-            }
-            
-            guard let responseData = data else {
-                onComplete(.failure(RPCError.invalidResponseNoData))
-                return
-            }
+        ContResult<URLRequest, Error>.init { cb in
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = method.rawValue
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
             do {
-                let decoded = try JSONDecoder().decode(Response<T>.self, from: responseData)
-                if let result = decoded.result {
-                    onComplete(.success(result))
-                    return
-                } else if let responseError = decoded.error {
-                    onComplete(.failure(RPCError.invalidResponse(responseError)))
-                    return
-                } else {
-                    onComplete(.failure(RPCError.unknownResponse))
-                    return
-                }
-            } catch let serializeError {
-                onComplete(.failure(serializeError))
+                urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
+                cb(.success(urlRequest))
+                return
+            } catch let ecodingError {
+                cb(.failure(ecodingError))
                 return
             }
+            
         }
-        task.resume()
+        .flatMap { urlRequest in
+            ContResult<(data:Data?, response: URLResponse?), Error>.init { cb in
+                let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
+                    if let error = error {
+                        cb(.failure(error))
+                        return
+                    }
+                    cb(.success((data: data, response: response)))
+                    return
+                }
+                task.resume()
+            }
+            .onSuccess { (data: Data?, response: URLResponse?) in
+                Logger.log(message: String(data: data ?? Data(), encoding: .utf8) ?? "", event: .response, apiMethod: bcMethod)
+            }
+        }
+        .flatMap {
+            if let httpURLResponse = $0.response as? HTTPURLResponse {
+                return .success((data: $0.data, httpURLResponse: httpURLResponse))
+            } else {
+                return .failure(RPCError.httpError)
+            }
+        }
+        .flatMap { (data: Data?, httpURLResponse: HTTPURLResponse) in
+            if (200..<300).contains(httpURLResponse.statusCode) {
+                return .success((data: data, httpURLResponse: httpURLResponse))
+            } else if httpURLResponse.statusCode == 429 {
+                // TODO: Retry
+                return .failure(RPCError.retry)
+            } else {
+                return .failure(RPCError.httpErrorCode(httpURLResponse.statusCode))
+            }
+        }
+        .flatMap { (data: Data?, httpURLResponse: HTTPURLResponse) in
+            guard let responseData = data else {
+                return .failure(RPCError.invalidResponseNoData)
+            }
+            return .success((responseData, httpURLResponse))
+        }
+        .flatMap { (responseData: Data, httpURLResponse: HTTPURLResponse) in
+            do {
+                let decoded = try JSONDecoder().decode(Response<T>.self, from: responseData)
+                return .success(decoded)
+            } catch let error {
+                return .failure(error)
+            }
+        }
+        .flatMap { (decoded: Response<T>) in
+            if let result = decoded.result {
+                return .success(result)
+            } else if let responseError = decoded.error {
+                return .failure(RPCError.invalidResponse(responseError))
+            } else {
+                return .failure(RPCError.unknownResponse)
+            }
+        }
+        .run(onComplete)
     }
 }
