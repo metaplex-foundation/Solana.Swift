@@ -1,20 +1,20 @@
 import Foundation
 
 extension Solana {
-    
-    public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> ()) {
+
+    public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         getMinimumBalanceForRentExemption(dataLength: AccountInfo.span, onComplete: onComplete)
     }
-        
+
     public func createTokenAccount(
         mintAddress: String,
-        onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> ())
+        onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
         guard let payer = self.accountStorage.account else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }
-        
+
         self.getRecentBlockhash { resultBlockhash in
             switch resultBlockhash {
             case .success(let recentBlockhash):
@@ -29,12 +29,12 @@ extension Solana {
             }
         }
     }
-    
+
     fileprivate func callGetCreateTokenAccountFee(
-        mintAddress:String,
+        mintAddress: String,
         payer: Solana.Account,
         recentBlockhash: String,
-        onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> ())
+        onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
         self.getCreatingTokenAccountFee { resultFee in
             switch resultFee {
@@ -52,13 +52,13 @@ extension Solana {
             }
         }
     }
-    
+
     fileprivate func signAndSend(mintAddress: String,
                           payer: Solana.Account,
                           recentBlockhash: String,
                           minBalance: UInt64,
-                          onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> ())) {
-        
+                          onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)) {
+
         guard let mintAddress = PublicKey(string: mintAddress) else {
             onComplete(.failure(SolanaError.unauthorized))
             return
@@ -68,31 +68,31 @@ extension Solana {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }
-        
+
         // instructions
         let createAccountInstruction = SystemProgram.createAccountInstruction(
             from: payer.publicKey,
             toNewPubkey: newAccount.publicKey,
             lamports: minBalance
         )
-        
+
         let initializeAccountInstruction = TokenProgram.initializeAccountInstruction(
             account: newAccount.publicKey,
             mint: mintAddress,
             owner: payer.publicKey
         )
-        
+
         // forming transaction
         let instructions = [
             createAccountInstruction,
             initializeAccountInstruction
         ]
-        
+
         self.serializeAndSendWithFee(
             instructions: instructions,
             recentBlockhash: recentBlockhash,
             signers: [payer, newAccount]
-        ){ result in
+        ) { result in
             switch result {
             case .success(let transaction):
                 onComplete(.success((transaction, newAccount.publicKey.base58EncodedString)))

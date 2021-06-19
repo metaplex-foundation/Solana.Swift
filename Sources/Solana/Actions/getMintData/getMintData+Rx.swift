@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 
 public extension Solana {
-    
+
     func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId) -> Single<Mint> {
         Single.create { emitter in
             self.getMintData(mintAddress: mintAddress, programId: programId) { result in
@@ -16,7 +16,7 @@ public extension Solana {
             return Disposables.create()
         }
     }
-    
+
     func getMultipleMintDatas(mintAddresses: [PublicKey], programId: PublicKey = .tokenProgramId) -> Single<[PublicKey: Mint]> {
         Single.create { emitter in
             self.getMultipleMintDatas(mintAddresses: mintAddresses, programId: programId) { result in

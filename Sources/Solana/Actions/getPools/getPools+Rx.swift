@@ -4,7 +4,7 @@ import RxSwift
 private var mintDatasCache = [Solana.Mint]()
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
 extension Solana {
-    
+
     public func getSwapPools() -> Single<[Pool]> {
         getPools(swapProgramId: swapProgramId)
             .map {
@@ -14,7 +14,7 @@ extension Solana {
                 }
             }
     }
-    
+
     func getPools(swapProgramId: String) -> Single<[Pool]> {
         Single.create { emitter in
             self.getPools(swapProgramId: swapProgramId) { result in
@@ -28,7 +28,7 @@ extension Solana {
             return Disposables.create()
         }
     }
-    
+
     public func getPoolWithTokenBalances(pool: Pool) -> Single<Pool> {
         Single.create { emitter in
             self.getPoolWithTokenBalances(pool: pool) { result in

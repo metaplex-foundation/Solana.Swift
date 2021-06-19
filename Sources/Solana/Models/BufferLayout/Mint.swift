@@ -11,7 +11,7 @@ extension Solana {
             self.freezeAuthorityOption = freezeAuthorityOption
             self.freezeAuthority = freezeAuthority
         }
-        
+
         public let mintAuthorityOption: UInt32
         public let mintAuthority: PublicKey?
         public let supply: UInt64
@@ -34,7 +34,7 @@ extension Solana {
             } else {
                 self.mintAuthority = mintAuthority
             }
-            
+
             self.supply = supply
             self.decimals = decimals
             self.isInitialized = isInitialized != 0
@@ -45,7 +45,7 @@ extension Solana {
                 self.freezeAuthority = freezeAuthority
             }
         }
-        
+
         public static func layout()  -> [(key: String?, length: Int)] {
             [
                 (key: "mintAuthorityOption", length: 4),

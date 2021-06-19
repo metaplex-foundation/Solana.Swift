@@ -4,13 +4,13 @@ extension Solana.Transaction {
     struct Message {
         // MARK: - Constants
         private static let RECENT_BLOCK_HASH_LENGTH = 32
-        
+
         // MARK: - Properties
         var accountKeys: [Solana.Account.Meta]
         var recentBlockhash: String
         //        var instructions: [Transaction.Instruction]
         var programInstructions: [Solana.TransactionInstruction]
-        
+
         func serialize() -> Result<Data, Error> {
             // Construct data
             //            let bufferSize: Int =
@@ -20,9 +20,9 @@ extension Solana.Transaction {
             //                + RECENT_BLOCK_HASH_LENGTH // recent block hash
             //                + instructionsLength.count
             //                + compiledInstructionsLength
-            
+
             var data = Data(/*capacity: bufferSize*/)
-            
+
             // Compiled instruction
             return encodeHeader().map { data.append($0) }
                 .flatMap { _ in return encodeAccountKeys().map { data.append($0) } }
@@ -30,14 +30,14 @@ extension Solana.Transaction {
                 .flatMap { _ in return encodeInstructions().map { data.append($0) }}
                 .map { data }
         }
-        
+
         private func encodeHeader() -> Result<Data, Error> {
             var header = Header()
             for meta in accountKeys {
                 if meta.isSigner {
                     // signed
                     header.numRequiredSignatures += 1
-                    
+
                     // signed & readonly
                     if !meta.isWritable {
                         header.numReadonlySignedAccounts += 1
@@ -51,7 +51,7 @@ extension Solana.Transaction {
             }
             return .success(Data(header.bytes))
         }
-        
+
         private func encodeAccountKeys() -> Result<Data, Error> {
             // length
             return encodeLength(accountKeys.count).map { keyCount in
@@ -61,7 +61,7 @@ extension Solana.Transaction {
                 let signedKeys = accountKeys.filter {$0.isSigner}
                 let unsignedKeys = accountKeys.filter {!$0.isSigner}
                 let accountKeys = signedKeys + unsignedKeys
-                
+
                 // append data
                 data.append(keyCount)
                 for meta in accountKeys {
@@ -70,18 +70,18 @@ extension Solana.Transaction {
                 return data
             }
         }
-        
+
         private func encodeRecentBlockhash() -> Result<Data, Error> {
             return .success(Data(Base58.decode(recentBlockhash)))
         }
-        
+
         private func encodeInstructions() -> Result<Data, Error> {
             var compiledInstructions = [CompiledInstruction]()
-            
+
             for instruction in programInstructions {
-                
+
                 let keysSize = instruction.keys.count
-                
+
                 var keyIndices = Data()
                 for i in 0..<keysSize {
                     do {
@@ -91,7 +91,7 @@ extension Solana.Transaction {
                         return .failure(error)
                     }
                 }
-                
+
                 do {
                     let compiledInstruction = CompiledInstruction(
                         programIdIndex: UInt8(try accountKeys.index(ofElementWithPublicKey: instruction.programId).get()),
@@ -105,12 +105,12 @@ extension Solana.Transaction {
                     return .failure(error)
                 }
             }
-            
+
             return encodeLength(compiledInstructions.count).flatMap { instructionsLength in
                 .success(instructionsLength + compiledInstructions.reduce(Data(), {$0 + $1.serializedData}))
             }
         }
-        
+
         private func encodeLength(_ length: Int) -> Result<Data, Error> {
             return .success(Data.encodeLength(length))
         }
@@ -125,23 +125,23 @@ extension Solana.Transaction.Message {
         var numRequiredSignatures: UInt8 = 0
         var numReadonlySignedAccounts: UInt8 = 0
         var numReadonlyUnsignedAccounts: UInt8 = 0
-        
+
         var bytes: [UInt8] {
             [numRequiredSignatures, numReadonlySignedAccounts, numReadonlyUnsignedAccounts]
         }
     }
-    
+
     struct CompiledInstruction {
         let programIdIndex: UInt8
         let keyIndicesCount: [UInt8]
         let keyIndices: [UInt8]
         let dataLength: [UInt8]
         let data: [UInt8]
-        
+
         var length: Int {
             1 + keyIndicesCount.count + keyIndices.count + dataLength.count + data.count
         }
-        
+
         var serializedData: Data {
             Data([programIdIndex] + keyIndicesCount + keyIndices + dataLength + data)
         }

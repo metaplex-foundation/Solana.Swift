@@ -18,7 +18,7 @@ extension Solana {
             return Disposables.create()
         }
     }
-    
+
     func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,

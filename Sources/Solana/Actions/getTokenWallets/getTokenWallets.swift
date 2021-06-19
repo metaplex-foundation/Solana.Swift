@@ -1,29 +1,29 @@
 import Foundation
 
 extension Solana {
-    public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> ())){
-        
+    public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
+
         guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString else {
             return onComplete(.failure(SolanaError.unauthorized))
         }
-        
+
         let memcmp = EncodableWrapper(
             wrapped:
                 ["offset": EncodableWrapper(wrapped: 32),
                  "bytes": EncodableWrapper(wrapped: account)]
         )
-        
+
         let configs = RequestConfiguration(commitment: "recent", encoding: "base64", dataSlice: nil, filters: [
             ["memcmp": memcmp],
             ["dataSize": .init(wrapped: 165)]
         ])
-        
+
         ContResult.init { cb in
             self.getProgramAccounts(
                 publicKey: PublicKey.tokenProgramId.base58EncodedString,
                 configs: configs,
                 decodedTo: AccountInfo.self
-            ){ cb($0) }
+            ) { cb($0) }
         }.map { accounts in
             let accountsValues = accounts.compactMap { $0.account.data.value != nil ? $0: nil }
             let pubkeyValue = accountsValues.map { ($0.pubkey, $0.account.data.value!) }

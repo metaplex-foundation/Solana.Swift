@@ -4,8 +4,8 @@ extension Solana {
     func getProgramAccounts<T: BufferLayout>(publicKey: String,
                                              configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
                                              decodedTo: T.Type,
-                                             onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> ()) {
-        router.request(parameters: [publicKey, configs]){ (result: Result<[ProgramAccount<T>], Error>) in
+                                             onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) {
+        router.request(parameters: [publicKey, configs]) { (result: Result<[ProgramAccount<T>], Error>) in
             switch result {
             case .success(let programs):
                 onComplete(.success(programs))

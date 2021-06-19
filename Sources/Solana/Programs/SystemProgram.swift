@@ -6,7 +6,7 @@ public extension Solana {
             static let create: UInt32 = 0
             static let transfer: UInt32 = 2
         }
-        
+
         public static func createAccountInstruction(
             from fromPublicKey: PublicKey,
             toNewPubkey newPubkey: PublicKey,
@@ -14,7 +14,7 @@ public extension Solana {
             space: UInt64 = AccountInfo.span,
             programPubkey: PublicKey = PublicKey.tokenProgramId
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
@@ -24,13 +24,13 @@ public extension Solana {
                 data: [Index.create, lamports, space, programPubkey]
             )
         }
-        
+
         public static func transferInstruction(
             from fromPublicKey: PublicKey,
             to toPublicKey: PublicKey,
             lamports: UInt64
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
@@ -40,7 +40,7 @@ public extension Solana {
                 data: [Index.transfer, lamports]
             )
         }
-        
+
         public static func assertOwnerInstruction(
             destinationAccount: PublicKey
         ) -> TransactionInstruction {

@@ -1,8 +1,8 @@
 import Foundation
 
 extension Solana {
-    func getLargestAccounts(onComplete: @escaping(Result<[LargestAccount], Error>)->()) {
-        router.request() { (result:Result<Rpc<[LargestAccount]?>, Error>) in
+    func getLargestAccounts(onComplete: @escaping(Result<[LargestAccount], Error>)->Void) {
+        router.request { (result: Result<Rpc<[LargestAccount]?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {

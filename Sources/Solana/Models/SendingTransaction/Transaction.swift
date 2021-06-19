@@ -8,20 +8,20 @@ extension Solana {
         var instructions = [TransactionInstruction]()
         let recentBlockhash: String
         //        TODO: nonceInfo
-        
+
         init(signatures: [Solana.Transaction.Signature] = [Signature](), feePayer: Solana.PublicKey, instructions: [Solana.TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
             self.signatures = signatures
             self.feePayer = feePayer
             self.instructions = instructions
             self.recentBlockhash = recentBlockhash
         }
-        
+
         // MARK: - Methods
         mutating func sign(signers: [Account]) -> Result<Void, Error> {
             guard signers.count > 0 else {
                 return .failure(SolanaError.invalidRequest(reason: "No signers"))
             }
-            
+
             // unique signers
             let signers = signers.reduce([Account](), {signers, signer in
                 var uniqueSigners = signers
@@ -30,16 +30,16 @@ extension Solana {
                 }
                 return uniqueSigners
             })
-            
+
             // map signatures
             signatures = signers.map { Signature(signature: nil, publicKey: $0.publicKey) }
-            
+
             // construct message
             return compile().flatMap { message in
                 return partialSign(message: message, signers: signers)
             }
         }
-        
+
         mutating func serialize(
             requiredAllSignatures: Bool = true,
             verifySignatures: Bool = false
@@ -51,28 +51,28 @@ extension Solana {
                     .flatMap { _ in _serialize(serializedMessage: serializedMessage) }
             }
         }
-        
+
         // MARK: - Helpers
         mutating func addSignature(_ signature: Signature) -> Result<Void, Error> {
             return compile() // Ensure signatures array is populated
                 .flatMap { _ in return _addSignature(signature) }
         }
-        
+
         mutating func serializeMessage() -> Result<Data, Error> {
             return compile()
                 .flatMap { $0.serialize() }
         }
-        
+
         mutating func verifySignatures() -> Result<Bool, Error> {
             return serializeMessage().flatMap {
-                _verifySignatures(serializedMessage:  $0, requiredAllSignatures: true)
+                _verifySignatures(serializedMessage: $0, requiredAllSignatures: true)
             }
         }
-        
+
         func findSignature(pubkey: PublicKey) -> Signature? {
             signatures.first(where: {$0.publicKey == pubkey})
         }
-        
+
         // MARK: - Signing
         private mutating func partialSign(message: Message, signers: [Account]) -> Result<Void, Error> {
             message.serialize()
@@ -88,7 +88,7 @@ extension Solana {
                 return .success(())
             }
         }
-        
+
         private mutating func _addSignature(_ signature: Signature) -> Result<Void, Error> {
             guard let data = signature.signature,
                   data.count == 64,
@@ -96,11 +96,11 @@ extension Solana {
             else {
                 return .failure(SolanaError.other("Signer not valid: \(signature.publicKey.base58EncodedString)"))
             }
-            
+
             signatures[index] = signature
             return .success(())
         }
-        
+
         // MARK: - Compiling
         private mutating func compile() -> Result<Message, Error> {
             compileMessage().map { message in
@@ -121,37 +121,37 @@ extension Solana {
                 return message
             }
         }
-        
+
         private func compileMessage() -> Result<Message, Error> {
             // verify instructions
             guard instructions.count > 0 else {
                 return .failure(SolanaError.other("No instructions provided"))
             }
-            
+
             // programIds & accountMetas
             var programIds = [PublicKey]()
             var accountMetas = [Account.Meta]()
-            
+
             for instruction in instructions {
                 accountMetas.append(contentsOf: instruction.keys)
                 if !programIds.contains(instruction.programId) {
                     programIds.append(instruction.programId)
                 }
             }
-            
+
             for programId in programIds {
                 accountMetas.append(
                     .init(publicKey: programId, isSigner: false, isWritable: false)
                 )
             }
-            
+
             // sort accountMetas, first by signer, then by writable
             accountMetas.sort { (x, y) -> Bool in
                 if x.isSigner != y.isSigner {return x.isSigner}
                 if x.isWritable != y.isWritable {return x.isWritable}
                 return false
             }
-            
+
             // filterOut duplicate account metas, keeps writable one
             accountMetas = accountMetas.reduce([Account.Meta](), {result, accountMeta in
                 var uniqueMetas = result
@@ -163,14 +163,14 @@ extension Solana {
                 }
                 return uniqueMetas
             })
-            
+
             // move fee payer to front
             accountMetas.removeAll(where: {$0.publicKey == feePayer})
             accountMetas.insert(
                 Account.Meta(publicKey: feePayer, isSigner: true, isWritable: true),
                 at: 0
             )
-            
+
             // verify signers
             for signature in signatures {
                 if let index = try? accountMetas.index(ofElementWithPublicKey: signature.publicKey).get() {
@@ -183,43 +183,43 @@ extension Solana {
                     return .failure(SolanaError.invalidRequest(reason: "Unknown signer: \(signature.publicKey.base58EncodedString)"))
                 }
             }
-            
+
             // header
             var header = Message.Header()
-            
+
             var signedKeys = [Account.Meta]()
             var unsignedKeys = [Account.Meta]()
-            
+
             for accountMeta in accountMetas {
                 // signed keys
                 if accountMeta.isSigner {
                     signedKeys.append(accountMeta)
                     header.numRequiredSignatures += 1
-                    
+
                     if !accountMeta.isWritable {
                         header.numReadonlySignedAccounts += 1
                     }
                 }
-                
+
                 // unsigned keys
                 else {
                     unsignedKeys.append(accountMeta)
-                    
+
                     if !accountMeta.isWritable {
                         header.numReadonlyUnsignedAccounts += 1
                     }
                 }
             }
-            
+
             accountMetas = signedKeys + unsignedKeys
-            
+
             return .success(Message(
                 accountKeys: accountMetas,
                 recentBlockhash: recentBlockhash,
                 programInstructions: instructions
             ))
         }
-        
+
         // MARK: - Verifying
         private mutating func _verifySignatures(
             serializedMessage: Data,
@@ -238,12 +238,12 @@ extension Solana {
             }
             return .success(true)
         }
-        
+
         // MARK: - Serializing
         private mutating func _serialize(serializedMessage: Data) -> Result<Data, Error> {
             // signature length
             var signaturesLength = signatures.count
-            
+
             // signature data
             let signaturesData = signatures.reduce(Data(), {result, signature in
                 var data = result
@@ -254,9 +254,9 @@ extension Solana {
                 }
                 return data
             })
-            
+
             let encodedSignatureLength = Data.encodeLength(signaturesLength)
-            
+
             // transaction length
             var data = Data(capacity: encodedSignatureLength.count + signaturesData.count + serializedMessage.count)
             data.append(encodedSignatureLength)

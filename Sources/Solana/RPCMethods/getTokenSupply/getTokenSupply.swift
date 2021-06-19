@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Solana {
-    func getTokenSupply(pubkey: String, commitment: Commitment? = nil, onComplete: @escaping (Result<TokenAmount, Error>) -> ()){
+    func getTokenSupply(pubkey: String, commitment: Commitment? = nil, onComplete: @escaping (Result<TokenAmount, Error>) -> Void) {
         router.request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<TokenAmount?>, Error>) in
             switch result {
             case .success(let rpc):

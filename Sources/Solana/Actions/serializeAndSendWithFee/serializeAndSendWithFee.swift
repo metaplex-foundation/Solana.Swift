@@ -7,11 +7,10 @@ extension Solana {
                                   maxAttemps: Int = 3,
                                   numberOfTries: Int = 0,
                                   error: Error,
-                                  onComplete: @escaping ((Result<String, Error>) -> ())) {
+                                  onComplete: @escaping ((Result<String, Error>) -> Void)) {
         var numberOfTries = numberOfTries
         if numberOfTries <= maxAttemps,
-           let error = error as? SolanaError
-        {
+           let error = error as? SolanaError {
             if case SolanaError.blockHashNotFound = error {
                 numberOfTries += 1
                 self.serializeAndSendWithFee(instructions: instructions,
@@ -25,17 +24,17 @@ extension Solana {
         onComplete(.failure(error))
         return
     }
-    
+
     func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
         maxAttemps: Int = 3,
         numberOfTries: Int = 0,
-        onComplete: @escaping ((Result<String, Error>) -> ())
-    ){
-        
-        ContResult.init{ cb in
+        onComplete: @escaping ((Result<String, Error>) -> Void)
+    ) {
+
+        ContResult.init { cb in
             self.serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers) {
                 cb($0)
             }
@@ -48,8 +47,7 @@ extension Solana {
         }.recover { error in
             var numberOfTries = numberOfTries
             if numberOfTries <= maxAttemps,
-               let error = error as? SolanaError
-            {
+               let error = error as? SolanaError {
                 if case SolanaError.blockHashNotFound = error {
                     numberOfTries += 1
                     return ContResult.init { cb in
@@ -73,11 +71,10 @@ extension Solana {
                                           maxAttemps: Int = 3,
                                           numberOfTries: Int = 0,
                                           error: (Error),
-                                          onComplete: @escaping ((Result<String, Error>) -> ())) {
+                                          onComplete: @escaping ((Result<String, Error>) -> Void)) {
         var numberOfTries = numberOfTries
         if numberOfTries <= maxAttemps,
-           let error = error as? SolanaError
-        {
+           let error = error as? SolanaError {
             if case SolanaError.blockHashNotFound = error {
                 numberOfTries += 1
                 self.serializeAndSendWithFeeSimulation(instructions: instructions,
@@ -91,16 +88,16 @@ extension Solana {
         onComplete(.failure(error))
         return
     }
-    
+
     func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
         maxAttemps: Int = 3,
         numberOfTries: Int = 0,
-        onComplete: @escaping((Result<String, Error>) -> ())
+        onComplete: @escaping((Result<String, Error>) -> Void)
     ) {
-        serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers){ result in
+        serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers) { result in
             switch result {
             case .success(let transaction):
                 self.simulateTransaction(transaction: transaction) {
@@ -118,7 +115,7 @@ extension Solana {
                                                     maxAttemps: maxAttemps,
                                                     numberOfTries: numberOfTries,
                                                     error: error,
-                                                    onComplete:onComplete)
+                                                    onComplete: onComplete)
                         return
                     }
                 }

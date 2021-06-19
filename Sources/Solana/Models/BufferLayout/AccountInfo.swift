@@ -6,7 +6,7 @@ extension Solana {
         public let owner: PublicKey
         public let lamports: UInt64
         public let delegateOption: UInt32
-        public var delegate: PublicKey?
+        public weak var delegate: PublicKey?
         public let isInitialized: Bool
         public let isFrozen: Bool
         public let state: UInt8
@@ -17,7 +17,7 @@ extension Solana {
         public var delegatedAmount: UInt64
         public let closeAuthorityOption: UInt32
         public var closeAuthority: PublicKey?
-        
+
         public init?(_ keys: [String: [UInt8]]) {
             guard let mint = PublicKey(bytes: keys["mint"]),
                   let owner = PublicKey(bytes: keys["owner"]),
@@ -33,7 +33,7 @@ extension Solana {
             else {
                 return nil
             }
-            
+
             self.mint = mint
             self.owner = owner
             self.lamports = amount
@@ -45,15 +45,15 @@ extension Solana {
             self.delegatedAmount = delegatedAmount
             self.closeAuthorityOption = closeAuthorityOption
             self.closeAuthority = closeAuthority
-            
+
             if delegateOption == 0 {
                 self.delegate = nil
                 self.delegatedAmount = 0
             }
-            
+
             self.isInitialized = state != 0
             self.isFrozen = state == 2
-            
+
             if isNativeOption == 1 {
                 self.rentExemptReserve = isNativeRaw
                 self.isNative = true
@@ -61,12 +61,12 @@ extension Solana {
                 self.rentExemptReserve = nil
                 isNative = false
             }
-            
+
             if closeAuthorityOption == 0 {
                 self.closeAuthority = nil
             }
         }
-        
+
         public static func layout() -> [(key: String?, length: Int)] {
             [
                 (key: "mint", length: PublicKey.LENGTH),

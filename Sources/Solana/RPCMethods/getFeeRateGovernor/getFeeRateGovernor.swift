@@ -1,8 +1,8 @@
 import Foundation
 
 public extension Solana {
-    func getFeeRateGovernor(onComplete: @escaping (Result<Fee, Error>) -> ()){
-        router.request() { (result: Result<Rpc<Fee?>, Error>) in
+    func getFeeRateGovernor(onComplete: @escaping (Result<Fee, Error>) -> Void) {
+        router.request { (result: Result<Rpc<Fee?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {

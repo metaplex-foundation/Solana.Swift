@@ -13,7 +13,7 @@ func getInt32(_ value: Int64) -> Int32 {
 }
 
 struct NaclLowLevel {
-    
+
     // MARK: - Constants
     static var D = gf( [0x78a3, 0x1359, 0x4dca, 0x75eb,
                         0xd8ab, 0x4141, 0x0a4d, 0x0070,
@@ -23,12 +23,12 @@ struct NaclLowLevel {
                         0xe478, 0xad2f, 0x1806, 0x2f43,
                         0xd7a7, 0x3dfb, 0x0099, 0x2b4d,
                         0xdf0b, 0x4fc1, 0x2480, 0x2b83] )
-    
+
     // MARK: - Methods
     static func gf() -> [Int64] {
         return gf([0])
     }
-    
+
     static func gf(_ ai: [Int64]) -> [Int64] {
         var r = [Int64](repeating: 0, count: 16)
         for i in 0..<ai.count {
@@ -36,34 +36,34 @@ struct NaclLowLevel {
         }
         return r
     }
-    
+
     static func unpack25519(_ o:inout [Int64], _ n: [UInt8]) {
         for i in 0..<16 {
             o[i] = Int64(n[2*i]) + ( Int64(n[2*i+1]) << 8) // *** R
         }
         o[15] = o[15] & 0x7fff
     }
-    
+
     static func A(_ o:inout [Int64], _ a: [Int64], _ b: [Int64]) {
         for i in 0..<16 {
             o[i] = a[i] + b[i]
         }
     }
-    
+
     static func Z(_ o:inout [Int64], _ a: [Int64], _ b: [Int64]) {
         for i in 0..<16 {
             o[i] = a[i] - b[i]
         }
     }
-    
+
     static func M(_ o:inout [Int64], _ a: [Int64], _ b: [Int64]) {
         var at = [Int64](repeating: 0, count: 32)
         var ab = [Int64](repeating: 0, count: 16)
-        
+
         for i in 0..<16 {
             ab[i] = b[i]
         }
-        
+
         var v: Int64
         for i in 0..<16 {
             v = a[i]
@@ -71,7 +71,7 @@ struct NaclLowLevel {
                 at[j+i] += v * ab[j]
             }
         }
-        
+
         for i in 0..<15 {
             at[i] += 38 * at[i+16]
         }
@@ -84,7 +84,7 @@ struct NaclLowLevel {
             at[i] = v - c * 65536
         }
         at[0] += c-1 + 37 * (c-1)
-        
+
         // second car
         c = 1
         for i in 0..<16 {
@@ -93,17 +93,17 @@ struct NaclLowLevel {
             at[i] = v - c * 65536
         }
         at[0] += c-1 + 37 * (c-1)
-        
+
         for i in 0..<16 {
             o[i] = at[i]
         }
-        
+
     }
-    
+
     static func S(_ o:inout [Int64], _ a: [Int64]) {
         M(&o, a, a)
     }
-    
+
     static func pow2523(_ o:inout [Int64], _ i: [Int64]) {
         var c = gf()
         for a in 0..<16 {
@@ -119,7 +119,7 @@ struct NaclLowLevel {
             o[a] = c[a]
         }
     }
-    
+
     static func vn(_ x: [UInt8], _ xi: Int, _ y: [UInt8], _ yi: Int, _ n: Int) -> Int {
         var d: UInt8 = 0
         for i in 0..<n {
@@ -127,17 +127,17 @@ struct NaclLowLevel {
         }
         return (1 & ( ( Int(d) - 1 ) >>> 8 ) ) - 1
     }
-    
+
     static func crypto_verify_32(_ x: [UInt8], _ xi: Int, _ y: [UInt8], _ yi: Int) -> Int {
         return vn(x, xi, y, yi, 32)
     }
-    
+
     static func set25519(_ r:inout [Int64], _ a: [Int64]) {
         for i in 0..<16 {
             r[i] = a[i] | 0
         }
     }
-    
+
     static func car25519(_ o:inout [Int64]) {
         var v: Int64
         var c = 1
@@ -148,7 +148,7 @@ struct NaclLowLevel {
         }
         o[0] += Int64( c-1 + 37 * (c-1) )
     }
-    
+
     static func sel25519(_ p:inout [Int64], _ q:inout [Int64], _ b: Int) {
         var t: Int64
         let c = Int64( ~(b-1) )
@@ -158,19 +158,19 @@ struct NaclLowLevel {
             q[i] = q[i] ^ t
         }
     }
-    
+
     static func pack25519(_ o:inout [UInt8], _ n: [Int64]) {
         var b: Int64
         var m = gf()
         var t = gf()
-        
+
         for i in 0..<16 {
             t[i] = n[i]
         }
         car25519(&t)
         car25519(&t)
         car25519(&t)
-        
+
         for _ in 0...1 {
             m[0] = t[0] - 0xffed
             for i in 1...14 {
@@ -187,7 +187,7 @@ struct NaclLowLevel {
             o[2*i+1] = UInt8(t[i] >> 8 ) // *** R
         }
     }
-    
+
     static func neq25519(_ a: [Int64], _ b: [Int64]) -> Int {
         var c = [UInt8](repeating: 0, count: 32)
         var d = [UInt8](repeating: 0, count: 32)

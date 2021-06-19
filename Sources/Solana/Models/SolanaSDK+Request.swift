@@ -10,19 +10,19 @@ extension Solana {
             result.append(Data.encodeLength(keyIndeces.count)) // key size
             result.append(contentsOf: keyIndeces) // keyIndeces
             result.append(UInt8(12))   // FIXME transfer data size
-            
+
             result += UInt32(2).bytes // Program Index
-            
+
             let lamports = 3000
             result += UInt64(lamports).bytes
-            
+
             return result
         }
     }
-    
+
     // MARK: - Public
     public typealias Commitment = String
-    
+
     public struct RequestConfiguration: Encodable {
         public let commitment: Commitment?
         public let encoding: String?
@@ -31,7 +31,7 @@ extension Solana {
         public let limit: Int?
         public let before: String?
         public let until: String?
-        
+
         public init?(commitment: Commitment? = nil, encoding: String? = nil, dataSlice: DataSlice? = nil, filters: [[String: EncodableWrapper]]? = nil, limit: Int? = nil, before: String? = nil, until: String? = nil) {
             if commitment == nil && encoding == nil && dataSlice == nil && filters == nil && limit == nil && before == nil && until == nil {
                 return nil
@@ -45,7 +45,7 @@ extension Solana {
             self.until = until
         }
     }
-    
+
     public struct DataSlice: Encodable {
         public let offset: Int
         public let length: Int

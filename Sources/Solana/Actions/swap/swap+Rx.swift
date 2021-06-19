@@ -3,7 +3,7 @@ import RxSwift
 
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
 extension Solana {
-    
+
     public func swap(
         account: Account? = nil,
         pool: Pool? = nil,
@@ -35,7 +35,7 @@ extension Solana {
             return Disposables.create()
         }
     }
-    
+
     private func getAccountInfoData(account: String, tokenProgramId: PublicKey) -> Single<AccountInfo> {
         Single.create { emitter in
             self.getAccountInfoData(account: account, tokenProgramId: tokenProgramId) {

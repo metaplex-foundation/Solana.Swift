@@ -6,14 +6,14 @@ public extension Solana {
     typealias TransactionID = String
     typealias Lamports = UInt64
     typealias Decimals = UInt8
-    
+
     struct Response<T: Decodable>: Decodable {
         public let jsonrpc: String
         public let id: String?
         public let result: T?
         public let error: ResponseError?
         public let method: String?
-        
+
         // socket
         public let params: SocketParams<T>?
     }
@@ -117,7 +117,7 @@ public extension Solana {
         public let account: BufferInfo<T>
         public let pubkey: String
     }
-    
+
     struct BufferInfo<T: BufferLayout>: Decodable {
         public let lamports: Lamports
         public let owner: String
@@ -125,7 +125,7 @@ public extension Solana {
         public let executable: Bool
         public let rentEpoch: UInt64
     }
-    
+
     struct PerformanceSample: Decodable {
         public let numSlots: UInt64
         public let numTransactions: UInt64
@@ -137,7 +137,7 @@ public extension Solana {
         public let slot: UInt64?
         public let err: TransactionError?
         public let memo: String?
-        
+
         public init(signature: String) {
             self.signature = signature
             self.slot = nil
@@ -173,7 +173,7 @@ public extension Solana {
         public let preTokenBalances: [TokenBalance]?
     }
     struct TransactionError: Decodable, Hashable {
-        
+
     }
     struct InnerInstruction: Decodable {
         let index: UInt32
@@ -206,12 +206,12 @@ public extension Solana {
             self.decimals = decimals
             self.uiAmountString = uiAmountString
         }
-        
+
         public let uiAmount: Float64?
         public let amount: String
         public let decimals: UInt8?
         public let uiAmountString: String?
-        
+
         public var amountInUInt64: UInt64? {
             return UInt64(amount)
         }
@@ -228,7 +228,7 @@ public extension Solana {
     }
     struct Version: Decodable {
         public let solanaCore: String
-        
+
         private enum CodingKeys: String, CodingKey {
             case solanaCore = "solana-core"
         }
