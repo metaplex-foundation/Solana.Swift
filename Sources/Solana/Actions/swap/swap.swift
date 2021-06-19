@@ -7,7 +7,7 @@ extension Solana {
         public let transactionId: String
         public let newWalletPubkey: String?
     }
-    
+
     public func swap(
         account: Account? = nil,
         pool: Pool? = nil,
@@ -17,14 +17,14 @@ extension Solana {
         destinationMint: PublicKey,
         slippage: Double,
         amount: UInt64,
-        onComplete: @escaping(Result<SwapResponse, Error>) -> ()
+        onComplete: @escaping(Result<SwapResponse, Error>) -> Void
     ) {
         // verify account
         guard let owner = account ?? accountStorage.account else {
              onComplete(.failure(SolanaError.unauthorized))
             return
         }
-        
+
         // reduce pools
         var getPoolRequest: ContResult<Pool, Error>
         if let pool = pool {
@@ -32,7 +32,7 @@ extension Solana {
         } else {
             getPoolRequest = ContResult<Pool, Error>.init { cb in
                 self.getSwapPools { poolsResult in
-                    switch poolsResult{
+                    switch poolsResult {
                     case .success(let pools):
                         if let matchPool = pools.matchedPool(
                             sourceMint: sourceMint.base58EncodedString,
@@ -47,7 +47,7 @@ extension Solana {
                         cb(.failure(error))
                         return
                     }
-                    
+
                 }
             }
         }
@@ -62,18 +62,18 @@ extension Solana {
                 }
             }
         }
-        
+
         let balanceCall = ContResult<UInt64, Error>.init { cb in
             self.getMinimumBalanceForRentExemption(dataLength: UInt64(AccountInfo.BUFFER_LENGTH)) {
                 cb($0)
             }
         }
-        
+
         getPoolRequest.flatMap { pool in
-            return ContResult<(accountInfo: AccountInfo, balance :UInt64), Error>.flatMap2(accountInfoCall(pool), balanceCall, f: { account, balance in
+            return ContResult<(accountInfo: AccountInfo, balance: UInt64), Error>.flatMap2(accountInfoCall(pool), balanceCall, f: { account, balance in
                 return  .success((account, balance))
             })
-        }.flatMap { (accountInfo: AccountInfo, balance :UInt64) -> ContResult<SwapResponse, Error> in
+        }.flatMap { (accountInfo: AccountInfo, balance: UInt64) -> ContResult<SwapResponse, Error> in
             guard let pool = pool,
                   let poolAuthority = pool.authority,
                   let estimatedAmount = pool.estimatedAmount(forInputAmount: amount, includeFees: true),
@@ -81,28 +81,28 @@ extension Solana {
                 return .failure(SolanaError.other("Swap pool is not valid"))
             }
             // get variables
-            
+
             let tokenAInfo = accountInfo
             let minimumBalanceForRentExemption = balance
-            
+
             let minAmountIn = pool.minimumReceiveAmount(estimatedAmount: estimatedAmount, slippage: slippage)
-            
+
             // find account
             var source = source
             var destination = destination
-            
+
             // add userTransferAuthority
             guard let userTransferAuthority = Account(network: self.router.endpoint.network) else {
                 return .failure(SolanaError.other("Unsupported swapping tokens"))
             }
-            
+
             // form signers
             var signers = [owner, userTransferAuthority]
-            
+
             // form instructions
             var instructions = [TransactionInstruction]()
             var cleanupInstructions = [TransactionInstruction]()
-            
+
             // create fromToken if it is native
             if tokenAInfo.isNative {
                 guard let newAccount = try? self.createWrappedSolAccount(
@@ -116,13 +116,13 @@ extension Solana {
                 ).get() else {
                     return .failure(SolanaError.other("Could not create Wrapped SolAccount"))
                 }
-                
+
                 source = newAccount.publicKey
             }
-            
+
             // check toToken
             var newWalletPubkey: String?
-            
+
             let isMintBWSOL = destinationMint == .wrappedSOLMint
             if destination == nil || isMintBWSOL {
                 // create toToken if it doesn't exist
@@ -136,11 +136,11 @@ extension Solana {
                 ).get() else {
                     return .failure(SolanaError.other("Could not create Wrapped SolAccount"))
                 }
-                
+
                 destination = newAccount.publicKey
                 newWalletPubkey = destination?.base58EncodedString
             }
-            
+
             // approve
             instructions.append(
                 TokenProgram.approveInstruction(
@@ -151,7 +151,7 @@ extension Solana {
                     amount: amount
                 )
             )
-            
+
             guard let swapProgramId = PublicKey(string: swapProgramId) else {
                 return .failure(SolanaError.invalidPublicKey)
             }
@@ -174,7 +174,7 @@ extension Solana {
                     minimumAmountOut: minAmountIn
                 )
             )
-            
+
             return ContResult<String, Error>.init { cb in
                 self.serializeAndSendWithFee(
                     instructions: instructions + cleanupInstructions,
@@ -187,24 +187,24 @@ extension Solana {
             }
         }.run(onComplete)
     }
-    
+
     func getAccountInfoData(account: String,
                                     tokenProgramId: PublicKey,
-                                    onComplete: @escaping (Result<AccountInfo, Error>)-> ()) {
+                                    onComplete: @escaping (Result<AccountInfo, Error>)-> Void) {
         getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in
             switch accountInfoResult {
             case .success(let account):
-                
+
                 if account.owner != tokenProgramId.base58EncodedString {
                     onComplete(.failure(SolanaError.other("Invalid account owner")))
                     return
                 }
-                
+
                 if let info = account.data.value {
                     onComplete(.success(info))
                     return
                 }
-                
+
                 onComplete(.failure(SolanaError.other("Invalid data")))
                 return
             case .failure(let error):
@@ -212,7 +212,7 @@ extension Solana {
             }
         }
     }
-    
+
     private func createWrappedSolAccount(
         fromAccount: PublicKey,
         amount: UInt64,
@@ -225,7 +225,7 @@ extension Solana {
         guard let newAccount = Account(network: self.router.endpoint.network) else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
-        
+
         instructions.append(
             SystemProgram.createAccountInstruction(
                 from: fromAccount,
@@ -233,7 +233,7 @@ extension Solana {
                 lamports: amount + minimumBalanceForRentExemption
             )
         )
-        
+
         instructions.append(
             TokenProgram.initializeAccountInstruction(
                 account: newAccount.publicKey,
@@ -241,7 +241,7 @@ extension Solana {
                 owner: payer
             )
         )
-        
+
         cleanupInstructions.append(
             TokenProgram.closeAccountInstruction(
                 account: newAccount.publicKey,
@@ -249,12 +249,12 @@ extension Solana {
                 owner: payer
             )
         )
-        
+
         signers.append(newAccount)
-        
+
         return .success(newAccount)
     }
-    
+
     private func createAccountByMint(
         owner: PublicKey,
         mint: PublicKey,
@@ -266,7 +266,7 @@ extension Solana {
         guard let newAccount = Account(network: self.router.endpoint.network) else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
-        
+
         instructions.append(
             SystemProgram.createAccountInstruction(
                 from: owner,
@@ -274,7 +274,7 @@ extension Solana {
                 lamports: minimumBalanceForRentExemption
             )
         )
-        
+
         instructions.append(
             TokenProgram.initializeAccountInstruction(
                 account: newAccount.publicKey,
@@ -282,7 +282,7 @@ extension Solana {
                 owner: owner
             )
         )
-        
+
         if mint == .wrappedSOLMint {
             cleanupInstructions.append(
                 TokenProgram.closeAccountInstruction(
@@ -292,7 +292,7 @@ extension Solana {
                 )
             )
         }
-        
+
         signers.append(newAccount)
         return .success(newAccount)
     }

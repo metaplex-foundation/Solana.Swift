@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Solana {    
+extension Solana {
     public func findSPLTokenDestinationAddress(
         mintAddress: String,
         destinationAddress: String

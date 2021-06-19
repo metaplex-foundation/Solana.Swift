@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Solana {
-    func getBlockCommitment(block: UInt64, onComplete: @escaping(Result<BlockCommitment, Error>) -> ()){
+    func getBlockCommitment(block: UInt64, onComplete: @escaping(Result<BlockCommitment, Error>) -> Void) {
         router.request(parameters: [block]) { (result: Result<BlockCommitment, Error>) in
             switch result {
             case .success(let blockCommitment):

@@ -26,7 +26,7 @@ extension Solana.PublicKey {
             programId: .splAssociatedTokenAccountProgramId
         ).map { $0.0 }
     }
-    
+
     // MARK: - Helpers
     private static func findProgramAddress(
         seeds: [Data],
@@ -41,7 +41,7 @@ extension Solana.PublicKey {
         }
         return .failure(Solana.SolanaError.notFoundProgramAddress)
     }
-    
+
     private static func createProgramAddress(
         seeds: [Data],
         programId: Solana.PublicKey
@@ -56,11 +56,11 @@ extension Solana.PublicKey {
         }
         data.append(programId.data)
         data.append("ProgramDerivedAddress".data(using: .utf8)!)
-        
+
         // hash it
         let hash = data.sha256()
         let publicKeyBytes = Bignum(number: hash.hexString, withBase: 16).data
-        
+
         // check it
         if isOnCurve(publicKeyBytes: publicKeyBytes).toBool() {
             return .failure(Solana.SolanaError.other("Invalid seeds, address must fall off the curve"))
@@ -70,10 +70,10 @@ extension Solana.PublicKey {
         }
         return .success(newKey)
     }
-    
+
     private static func isOnCurve(publicKeyBytes: Data) -> Int {
         var r = [[Int64]](repeating: NaclLowLevel.gf(), count: 4)
-        
+
         var t = NaclLowLevel.gf(),
             chk = NaclLowLevel.gf(),
             num = NaclLowLevel.gf(),
@@ -81,35 +81,35 @@ extension Solana.PublicKey {
             den2 = NaclLowLevel.gf(),
             den4 = NaclLowLevel.gf(),
             den6 = NaclLowLevel.gf()
-        
+
         NaclLowLevel.set25519(&r[2], gf1)
         NaclLowLevel.unpack25519(&r[1], publicKeyBytes.bytes)
         NaclLowLevel.S(&num, r[1])
         NaclLowLevel.M(&den, num, NaclLowLevel.D)
         NaclLowLevel.Z(&num, num, r[2])
         NaclLowLevel.A(&den, r[2], den)
-        
+
         NaclLowLevel.S(&den2, den)
         NaclLowLevel.S(&den4, den2)
         NaclLowLevel.M(&den6, den4, den2)
         NaclLowLevel.M(&t, den6, num)
         NaclLowLevel.M(&t, t, den)
-        
+
         NaclLowLevel.pow2523(&t, t)
         NaclLowLevel.M(&t, t, num)
         NaclLowLevel.M(&t, t, den)
         NaclLowLevel.M(&t, t, den)
         NaclLowLevel.M(&r[0], t, den)
-        
+
         NaclLowLevel.S(&chk, r[0])
         NaclLowLevel.M(&chk, chk, den)
         if NaclLowLevel.neq25519(chk, num).toBool() {
             NaclLowLevel.M(&r[0], r[0], NaclLowLevel.I)
         }
-        
+
         NaclLowLevel.S(&chk, r[0])
         NaclLowLevel.M(&chk, chk, den)
-        
+
         if NaclLowLevel.neq25519(chk, num).toBool() {
             return 0
         }

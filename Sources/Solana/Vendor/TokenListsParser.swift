@@ -7,10 +7,10 @@ public extension Solana {
             // get json file
             let path = Bundle.module.url(forResource: network + ".tokens", withExtension: "json")?.path
             let jsonData = try Data(contentsOf: URL(fileURLWithPath: path!))
-            
+
             // parse json
             var list = try JSONDecoder().decode(TokensList.self, from: jsonData)
-            
+
             // map tags
             list.tokens = list.tokens.map {
                 var item = $0
@@ -19,7 +19,7 @@ public extension Solana {
                 }
                 return item
             }
-            
+
             // return list with mapped tags
             return list.tokens.reduce([Token]()) { (result, token) -> [Token] in
                 var result = result

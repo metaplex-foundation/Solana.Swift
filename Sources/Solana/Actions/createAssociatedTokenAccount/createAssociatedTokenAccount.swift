@@ -2,11 +2,11 @@ import Foundation
 import RxSwift
 
 extension Solana {
-    
+
     public func getOrCreateAssociatedTokenAccount(
         owner: PublicKey,
         tokenMint: PublicKey,
-        onComplete: @escaping (Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>) -> ()
+        onComplete: @escaping (Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>) -> Void
     ) {
         guard case let .success(associatedAddress) = PublicKey.associatedTokenAddress(
             walletAddress: owner,
@@ -15,7 +15,7 @@ extension Solana {
             onComplete(.failure(SolanaError.other("Could not create associated token account")))
             return
         }
-        
+
         getAccountInfo(
             account: associatedAddress.base58EncodedString,
             decodedTo: AccountInfo.self
@@ -46,18 +46,18 @@ extension Solana {
             }
         }
     }
-    
+
     func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
         payer: Account? = nil,
-        onComplete: @escaping ((Result<TransactionID, Error>) -> ())
+        onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
         // get account
         guard let payer = payer ?? accountStorage.account else {
             return onComplete(.failure(SolanaError.unauthorized))
         }
-        
+
         guard case let .success(associatedAddress) = PublicKey.associatedTokenAddress(
                 walletAddress: owner,
                 tokenMintAddress: tokenMint
@@ -65,7 +65,7 @@ extension Solana {
                 onComplete(.failure(SolanaError.other("Could not create associated token account")))
                 return
             }
-            
+
             // create instruction
             let instruction = AssociatedTokenProgram
                 .createAssociatedTokenAccountInstruction(
@@ -74,13 +74,13 @@ extension Solana {
                     owner: owner,
                     payer: payer.publicKey
                 )
-            
+
             // send transaction
             serializeAndSendWithFee(
                 instructions: [instruction],
                 signers: [payer]
             ) { serializeResult in
-                switch serializeResult{
+                switch serializeResult {
                 case .success(let reesult):
                     onComplete(.success(reesult))
                 case .failure(let error):

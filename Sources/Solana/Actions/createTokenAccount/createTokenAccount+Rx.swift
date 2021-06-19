@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Solana {    
+extension Solana {
     public func createTokenAccount(
         mintAddress: String
     ) -> Single<(signature: String, newPubkey: String)> {
@@ -17,7 +17,7 @@ extension Solana {
             return Disposables.create()
         }
     }
-    
+
     public func getCreatingTokenAccountFee() -> Single<UInt64> {
         Single.create { emitter in
             self.getCreatingTokenAccountFee {

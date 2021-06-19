@@ -4,7 +4,7 @@ import RxSwift
 public extension Solana {
     func getFeeRateGovernor() -> Single<Fee> {
         Single.create { emitter in
-            self.getFeeRateGovernor() {
+            self.getFeeRateGovernor {
                 switch $0 {
                 case .success(let value):
                     emitter(.success(value))

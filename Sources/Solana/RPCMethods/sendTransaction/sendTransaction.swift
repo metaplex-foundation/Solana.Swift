@@ -3,8 +3,8 @@ import Foundation
 extension Solana {
     func sendTransaction(serializedTransaction: String,
                          configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!,
-                         onComplete: @escaping(Result<TransactionID, Error>)->()) {
-        router.request(parameters: [serializedTransaction, configs]) { (result:Result<TransactionID, Error>) in
+                         onComplete: @escaping(Result<TransactionID, Error>)->Void) {
+        router.request(parameters: [serializedTransaction, configs]) { (result: Result<TransactionID, Error>) in
             switch result {
             case .success(let transaction):
                 onComplete(.success(transaction))
@@ -19,7 +19,7 @@ extension Solana {
             }
         }
     }
-    
+
     fileprivate func handleError(error: SolanaError) -> Error {
         if case .invalidResponse(let response) = error,
            response.message != nil {

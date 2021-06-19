@@ -1,10 +1,10 @@
 import Foundation
 
 public extension Solana {
-    func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type, onComplete: @escaping(Result<BufferInfo<T>, Error>) -> ()) {
+    func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type, onComplete: @escaping(Result<BufferInfo<T>, Error>) -> Void) {
         let configs = RequestConfiguration(encoding: "base64")
         router.request(parameters: [account, configs]) {  (result: Result<Rpc<BufferInfo<T>?>, Error>) in
-            switch result{
+            switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {
                     onComplete(.failure(SolanaError.nullValue))
@@ -17,4 +17,3 @@ public extension Solana {
         }
     }
 }
-

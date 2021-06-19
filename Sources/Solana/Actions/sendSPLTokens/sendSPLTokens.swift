@@ -7,31 +7,31 @@ extension Solana {
         from fromPublicKey: String,
         to destinationAddress: String,
         amount: UInt64,
-        onComplete: @escaping (Result<TransactionID, Error>) -> ()
+        onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
         guard let account = self.accountStorage.account else {
             return onComplete(.failure(SolanaError.unauthorized))
         }
-        
+
         ContResult.init { cb in
             self.findSPLTokenDestinationAddress(
                 mintAddress: mintAddress,
                 destinationAddress: destinationAddress
-            ){ cb($0) }
+            ) { cb($0) }
         }.flatMap { (destination, isUnregisteredAsocciatedToken) in
-            
+
             let toPublicKey = destination
-            
+
             // catch error
             guard fromPublicKey != toPublicKey.base58EncodedString else {
                 return .failure(SolanaError.invalidPublicKey)
             }
-            
+
             guard let fromPublicKey = PublicKey(string: fromPublicKey) else {
                 return .failure( SolanaError.invalidPublicKey)
             }
             var instructions = [TransactionInstruction]()
-            
+
             // create associated token address
             if isUnregisteredAsocciatedToken {
                 guard let mint = PublicKey(string: mintAddress) else {
@@ -40,7 +40,7 @@ extension Solana {
                 guard let owner = PublicKey(string: destinationAddress) else {
                     return .failure(SolanaError.invalidPublicKey)
                 }
-                
+
                 let createATokenInstruction = AssociatedTokenProgram.createAssociatedTokenAccountInstruction(
                     mint: mint,
                     associatedAccount: toPublicKey,
@@ -49,7 +49,7 @@ extension Solana {
                 )
                 instructions.append(createATokenInstruction)
             }
-            
+
             // send instruction
             let sendInstruction = TokenProgram.transferInstruction(
                 tokenProgramId: .tokenProgramId,
@@ -58,10 +58,10 @@ extension Solana {
                 owner: account.publicKey,
                 amount: amount
             )
-            
+
             instructions.append(sendInstruction)
             return .success((instructions: instructions, account: account))
-            
+
         }.flatMap { (instructions, account) in
             ContResult.init { cb in
                 self.serializeAndSendWithFee(instructions: instructions, signers: [account]) {

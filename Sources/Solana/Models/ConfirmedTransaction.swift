@@ -34,34 +34,35 @@ public extension Solana {
                 let account: String?
                 let source: String?
                 let destination: String?
-                
+
                 // create account
                 let lamports: UInt64?
                 let newAccount: String?
                 let space: UInt64?
-                
+
                 // initialize account
                 let mint: String?
                 let rentSysvar: String?
-                
+
                 // approve
                 let amount: String?
+                // swiftlint:disable all
                 var delegate: String?
-                
+
                 // transfer
                 let authority: String?
-                
+
                 // transferChecked
                 let tokenAmount: TokenAccountBalance?
             }
             let info: Info
             let type: String?
         }
-        
+
         let program: String?
         let programId: String?
         let parsed: Parsed?
-        
+
         // swap
         public let data: String?
         let accounts: [String]?
@@ -73,34 +74,35 @@ public extension Solana {
                 let account: String?
                 let source: String?
                 let destination: String?
-                
+
                 // create account
                 let lamports: UInt64?
                 let newAccount: String?
                 let space: UInt64?
-                
+
                 // initialize account
                 let mint: String?
                 let rentSysvar: String?
-                
+
                 // approve
                 let amount: String?
+                // swiftlint:disable all
                 var delegate: String?
-                
+
                 // transfer
                 let authority: String?
-                
+
                 // transferChecked
                 let tokenAmount: TokenAccountBalance?
             }
             let info: Info
             let type: String?
         }
-        
+
         let program: String?
         let programId: String?
         let parsed: Parsed?
-        
+
         // swap
         public let data: String?
         let accounts: [UInt64]?

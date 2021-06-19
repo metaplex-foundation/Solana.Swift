@@ -5,14 +5,14 @@ extension Solana {
     public func findSPLTokenDestinationAddress(
         mintAddress: String,
         destinationAddress: String,
-        onComplete: @escaping (Result<SPLTokenDestinationAddress, Error>) -> ()
+        onComplete: @escaping (Result<SPLTokenDestinationAddress, Error>) -> Void
     ) {
-        
+
         ContResult<BufferInfo<Solana.AccountInfo>, Error>.init { cb in
             self.getAccountInfo(
                 account: destinationAddress,
                 decodedTo: Solana.AccountInfo.self
-            ){ cb($0) }
+            ) { cb($0) }
         }.flatMap { info in
             let toTokenMint = info.data.value?.mint.base58EncodedString
             var toPublicKeyString: String = ""
@@ -27,7 +27,7 @@ extension Solana {
                 guard let tokenMint = PublicKey(string: mintAddress) else {
                     return .failure(SolanaError.invalidPublicKey)
                 }
-                
+
                 // create associated token address
                 guard case let .success(address) = PublicKey.associatedTokenAddress(
                     walletAddress: owner,
@@ -35,14 +35,14 @@ extension Solana {
                 ) else {
                     return .failure(SolanaError.invalidPublicKey)
                 }
-                
+
                 toPublicKeyString = address.base58EncodedString
             }
-            
+
             guard let toPublicKey = PublicKey(string: toPublicKeyString) else {
                 return .failure(SolanaError.invalidPublicKey)
             }
-            
+
             if destinationAddress != toPublicKey.base58EncodedString {
                 // check if associated address is already registered
                 return ContResult.init { cb in

@@ -12,7 +12,7 @@ public extension Solana {
             static let closeAccount: UInt8 = 9
             static let transferChecked: UInt8 = 12
         }
-        
+
         // MARK: - Instructions
         public static func initializeMintInstruction(
             tokenProgramId: PublicKey,
@@ -21,7 +21,7 @@ public extension Solana {
             authority: PublicKey,
             freezeAuthority: PublicKey?
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
@@ -37,14 +37,14 @@ public extension Solana {
                 ]
             )
         }
-        
+
         public static func initializeAccountInstruction(
             programId: PublicKey = PublicKey.tokenProgramId,
             account: PublicKey,
             mint: PublicKey,
             owner: PublicKey
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: account, isSigner: false, isWritable: true),
@@ -56,7 +56,7 @@ public extension Solana {
                 data: [Index.initializeAccount]
             )
         }
-        
+
         public static func transferInstruction(
             tokenProgramId: PublicKey,
             source: PublicKey,
@@ -74,7 +74,7 @@ public extension Solana {
                 data: [Index.transfer, amount]
             )
         }
-        
+
         public static func approveInstruction(
             tokenProgramId: PublicKey,
             account: PublicKey,
@@ -87,7 +87,7 @@ public extension Solana {
                 Account.Meta(publicKey: account, isSigner: false, isWritable: true),
                 Account.Meta(publicKey: delegate, isSigner: false, isWritable: false)
             ]
-            
+
             if multiSigners.isEmpty {
                 keys.append(
                     Account.Meta(publicKey: owner, isSigner: true, isWritable: false)
@@ -96,21 +96,21 @@ public extension Solana {
                 keys.append(
                     Account.Meta(publicKey: owner, isSigner: false, isWritable: false)
                 )
-                
+
                 for signer in multiSigners {
                     keys.append(
                         Account.Meta(publicKey: signer.publicKey, isSigner: true, isWritable: false)
                     )
                 }
             }
-            
+
             return TransactionInstruction(
                 keys: keys,
                 programId: tokenProgramId,
                 data: [Index.approve, amount]
             )
         }
-        
+
         public static func mintToInstruction(
             tokenProgramId: PublicKey,
             mint: PublicKey,
@@ -118,7 +118,7 @@ public extension Solana {
             authority: PublicKey,
             amount: UInt64
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
@@ -129,14 +129,14 @@ public extension Solana {
                 data: [Index.mintTo, amount]
             )
         }
-        
+
         public static func closeAccountInstruction(
             tokenProgramId: PublicKey = .tokenProgramId,
             account: PublicKey,
             destination: PublicKey,
             owner: PublicKey
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: account, isSigner: false, isWritable: true),
@@ -147,7 +147,7 @@ public extension Solana {
                 data: [Index.closeAccount]
             )
         }
-        
+
         public static func transferCheckedInstruction(
             programId: PublicKey,
             source: PublicKey,
@@ -163,7 +163,7 @@ public extension Solana {
                 Account.Meta(publicKey: mint, isSigner: false, isWritable: false),
                 Account.Meta(publicKey: destination, isSigner: false, isWritable: true)
             ]
-            
+
             if multiSigners.count == 0 {
                 keys.append(.init(publicKey: owner, isSigner: true, isWritable: false))
             } else {
@@ -172,7 +172,7 @@ public extension Solana {
                     keys.append(.init(publicKey: signer.publicKey, isSigner: true, isWritable: false))
                 }
             }
-            
+
             return .init(
                 keys: keys,
                 programId: programId,

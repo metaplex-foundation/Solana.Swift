@@ -1,13 +1,13 @@
 import Foundation
 
-public enum HTTPMethod: String{
+public enum HTTPMethod: String {
     case post = "POST"
     case get = "GET"
     case put = "PUT"
     case delete = "DELETE"
 }
 
-public enum RPCError: Error{
+public enum RPCError: Error {
     case httpError
     case httpErrorCode(Int)
     case invalidResponseNoData
@@ -17,33 +17,33 @@ public enum RPCError: Error{
 }
 
 public class NetworkingRouter {
-    
+
     let endpoint: RPCEndpoint
     private let urlSession: URLSession
     init(endpoint: RPCEndpoint, session: URLSession = .shared) {
         self.endpoint = endpoint
         self.urlSession = session
     }
-    
+
     func request<T: Decodable>(
         method: HTTPMethod = .post,
         bcMethod: String = #function,
         parameters: [Encodable?] = [],
-        onComplete: @escaping (Result<T, Error>) -> ()
+        onComplete: @escaping (Result<T, Error>) -> Void
     ) {
         let url = endpoint.url
         let params = parameters.compactMap {$0}
-        
+
         let bcMethod = bcMethod.replacingOccurrences(of: "\\([\\w\\s:]*\\)", with: "", options: .regularExpression)
         let requestAPI = SolanaRequest(method: bcMethod, params: params)
-        
+
         Logger.log(message: "\(method.rawValue) \(bcMethod) [id=\(requestAPI.id)] \(params.map(EncodableWrapper.init(wrapped:)).jsonString ?? "")", event: .request, apiMethod: bcMethod)
-        
+
         ContResult<URLRequest, Error>.init { cb in
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = method.rawValue
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
+
             do {
                 urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
                 cb(.success(urlRequest))
@@ -52,10 +52,10 @@ public class NetworkingRouter {
                 cb(.failure(ecodingError))
                 return
             }
-            
+
         }
         .flatMap { urlRequest in
-            ContResult<(data:Data?, response: URLResponse?), Error>.init { cb in
+            ContResult<(data: Data?, response: URLResponse?), Error>.init { cb in
                 let task = self.urlSession.dataTask(with: urlRequest) { (data, response, error) in
                     if let error = error {
                         cb(.failure(error))
@@ -93,7 +93,7 @@ public class NetworkingRouter {
             }
             return .success((responseData, httpURLResponse))
         }
-        .flatMap { (responseData: Data, httpURLResponse: HTTPURLResponse) in
+        .flatMap { (responseData: Data, _: HTTPURLResponse) in
             do {
                 let decoded = try JSONDecoder().decode(Solana.Response<T>.self, from: responseData)
                 return .success(decoded)

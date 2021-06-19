@@ -9,7 +9,7 @@ public extension Solana {
             case deposit = 2
             case withdraw = 3
         }
-        
+
         // MARK: - Swap
         public static func swapInstruction(
             tokenSwap: PublicKey,
@@ -39,18 +39,18 @@ public extension Solana {
                 Account.Meta(publicKey: feeAccount, isSigner: false, isWritable: true),
                 Account.Meta(publicKey: tokenProgramId, isSigner: false, isWritable: false)
             ]
-            
+
             if let hostFeeAccount = hostFeeAccount {
                 keys.append(Account.Meta(publicKey: hostFeeAccount, isSigner: false, isWritable: true))
             }
-            
+
             return TransactionInstruction(
                 keys: keys,
                 programId: swapProgramId,
                 data: [Index.swap, amountIn, minimumAmountOut]
             )
         }
-        
+
         // MARK: - Deposit
         public static func depositInstruction(
             tokenSwap: PublicKey,
@@ -67,7 +67,7 @@ public extension Solana {
             maximumTokenA: UInt64,
             maximumTokenB: UInt64
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: tokenSwap, isSigner: false, isWritable: false),
@@ -84,7 +84,7 @@ public extension Solana {
                 data: [Index.deposit, poolTokenAmount, maximumTokenA, maximumTokenB]
             )
         }
-        
+
         // MARK: - Withdraw
         public static func withdrawInstruction(
             tokenSwap: PublicKey,
@@ -102,7 +102,7 @@ public extension Solana {
             minimumTokenA: UInt64,
             minimumTokenB: UInt64
         ) -> TransactionInstruction {
-            
+
             TransactionInstruction(
                 keys: [
                     Account.Meta(publicKey: tokenSwap, isSigner: false, isWritable: false),
@@ -119,7 +119,7 @@ public extension Solana {
                 programId: swapProgramId,
                 data: [Index.withdraw, poolTokenAmount, minimumTokenA, minimumTokenB])
         }
-        
+
         //        public static func initialize(
         //            tokenSwapAccount: PublicKey,
         //            authority: PublicKey,
