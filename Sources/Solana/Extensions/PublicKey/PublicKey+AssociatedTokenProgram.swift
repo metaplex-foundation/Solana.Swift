@@ -12,15 +12,15 @@ private extension Int {
     }
 }
 
-extension Solana.PublicKey {
+extension PublicKey {
     public static func associatedTokenAddress(
-        walletAddress: Solana.PublicKey,
-        tokenMintAddress: Solana.PublicKey
-    ) -> Result<Solana.PublicKey, Error> {
+        walletAddress: PublicKey,
+        tokenMintAddress: PublicKey
+    ) -> Result<PublicKey, Error> {
         return findProgramAddress(
             seeds: [
                 walletAddress.data,
-                Solana.PublicKey.tokenProgramId.data,
+                PublicKey.tokenProgramId.data,
                 tokenMintAddress.data
             ],
             programId: .splAssociatedTokenAccountProgramId
@@ -39,18 +39,18 @@ extension Solana.PublicKey {
                 programId: programId
             ).map {($0, nonce) }
         }
-        return .failure(Solana.SolanaError.notFoundProgramAddress)
+        return .failure(SolanaError.notFoundProgramAddress)
     }
 
     private static func createProgramAddress(
         seeds: [Data],
-        programId: Solana.PublicKey
-    ) ->  Result<Solana.PublicKey, Error> {
+        programId: PublicKey
+    ) ->  Result<PublicKey, Error> {
         // construct data
         var data = Data()
         for seed in seeds {
             if seed.bytes.count > maxSeedLength {
-                return .failure(Solana.SolanaError.other("Max seed length exceeded"))
+                return .failure(SolanaError.other("Max seed length exceeded"))
             }
             data.append(seed)
         }
@@ -63,10 +63,10 @@ extension Solana.PublicKey {
 
         // check it
         if isOnCurve(publicKeyBytes: publicKeyBytes).toBool() {
-            return .failure(Solana.SolanaError.other("Invalid seeds, address must fall off the curve"))
+            return .failure(SolanaError.other("Invalid seeds, address must fall off the curve"))
         }
-        guard let newKey = Solana.PublicKey(data: publicKeyBytes) else {
-            return .failure(Solana.SolanaError.invalidPublicKey)
+        guard let newKey = PublicKey(data: publicKeyBytes) else {
+            return .failure(SolanaError.invalidPublicKey)
         }
         return .success(newKey)
     }

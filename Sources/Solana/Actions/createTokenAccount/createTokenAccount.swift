@@ -32,7 +32,7 @@ extension Solana {
 
     fileprivate func callGetCreateTokenAccountFee(
         mintAddress: String,
-        payer: Solana.Account,
+        payer: Account,
         recentBlockhash: String,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
@@ -54,7 +54,7 @@ extension Solana {
     }
 
     fileprivate func signAndSend(mintAddress: String,
-                          payer: Solana.Account,
+                          payer: Account,
                           recentBlockhash: String,
                           minBalance: UInt64,
                           onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)) {

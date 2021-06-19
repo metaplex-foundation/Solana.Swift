@@ -2,7 +2,7 @@ import Foundation
 
 extension Solana {
     public func closeTokenAccount(
-        account: Solana.Account? = nil,
+        account: Account? = nil,
         tokenPubkey: String,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {

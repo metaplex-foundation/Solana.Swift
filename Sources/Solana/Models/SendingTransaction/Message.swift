@@ -1,15 +1,15 @@
 import Foundation
 
-extension Solana.Transaction {
+extension Transaction {
     struct Message {
         // MARK: - Constants
         private static let RECENT_BLOCK_HASH_LENGTH = 32
 
         // MARK: - Properties
-        var accountKeys: [Solana.Account.Meta]
+        var accountKeys: [Account.Meta]
         var recentBlockhash: String
         //        var instructions: [Transaction.Instruction]
-        var programInstructions: [Solana.TransactionInstruction]
+        var programInstructions: [TransactionInstruction]
 
         func serialize() -> Result<Data, Error> {
             // Construct data
@@ -56,7 +56,7 @@ extension Solana.Transaction {
             // length
             return encodeLength(accountKeys.count).map { keyCount in
                 // construct data
-                var data = Data(capacity: keyCount.count + accountKeys.count * Solana.PublicKey.LENGTH)
+                var data = Data(capacity: keyCount.count + accountKeys.count * PublicKey.LENGTH)
                 // sort
                 let signedKeys = accountKeys.filter {$0.isSigner}
                 let unsignedKeys = accountKeys.filter {!$0.isSigner}
@@ -117,7 +117,7 @@ extension Solana.Transaction {
     }
 }
 
-extension Solana.Transaction.Message {
+extension Transaction.Message {
     // MARK: - Nested type
     public struct Header: Decodable {
         static let LENGTH = 3
