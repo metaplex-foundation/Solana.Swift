@@ -1,5 +1,4 @@
 import Foundation
-import TweetNacl
 
 extension Solana {
     struct AssociatedTokenProgram {

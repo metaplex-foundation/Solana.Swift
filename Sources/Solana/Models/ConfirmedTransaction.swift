@@ -1,5 +1,4 @@
 import Foundation
-import TweetNacl
 
 public extension Solana {
     struct ConfirmedTransaction: Decodable {
