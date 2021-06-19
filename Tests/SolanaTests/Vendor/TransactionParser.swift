@@ -3,13 +3,13 @@ import XCTest
 @testable import Solana
 
 class TransactionParserTests: XCTestCase {
-    let endpoint = Solana.RpcApiEndPoint.mainnetBetaSolana
+    let endpoint = RPCEndpoint.mainnetBetaSolana
     var solanaSDK: Solana!
     var parser: Solana.TransactionParser!
     
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
+        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account).get()
         

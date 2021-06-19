@@ -2,7 +2,7 @@ import Foundation
 
 public extension Solana {
     func getTokenAccountBalance(pubkey: String, commitment: Commitment? = nil, onComplete: @escaping (Result<TokenAccountBalance, Error>) -> ()){
-        request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]){ (result: Result<Rpc<TokenAccountBalance?>, Error>) in
+        router.request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]){ (result: Result<Rpc<TokenAccountBalance?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {

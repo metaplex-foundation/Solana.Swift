@@ -1,24 +1,31 @@
 import Foundation
 
-public extension Solana {
-    enum HTTPMethod: String{
-        case post = "POST"
-        case get = "GET"
-        case put = "PUT"
-        case delete = "DELETE"
-    }
+public enum HTTPMethod: String{
+    case post = "POST"
+    case get = "GET"
+    case put = "PUT"
+    case delete = "DELETE"
+}
+
+public enum RPCError: Error{
+    case httpError
+    case httpErrorCode(Int)
+    case invalidResponseNoData
+    case invalidResponse(Solana.ResponseError)
+    case unknownResponse
+    case retry
+}
+
+public class NetworkingRouter {
     
-    enum RPCError: Error{
-        case httpError
-        case httpErrorCode(Int)
-        case invalidResponseNoData
-        case invalidResponse(ResponseError)
-        case unknownResponse
-        case retry
+    let endpoint: RPCEndpoint
+    private let urlSession: URLSession
+    init(endpoint: RPCEndpoint, session: URLSession = .shared) {
+        self.endpoint = endpoint
+        self.urlSession = session
     }
     
     func request<T: Decodable>(
-        urlSession: URLSession = URLSession.shared,
         method: HTTPMethod = .post,
         bcMethod: String = #function,
         parameters: [Encodable?] = [],
@@ -49,7 +56,7 @@ public extension Solana {
         }
         .flatMap { urlRequest in
             ContResult<(data:Data?, response: URLResponse?), Error>.init { cb in
-                let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
+                let task = self.urlSession.dataTask(with: urlRequest) { (data, response, error) in
                     if let error = error {
                         cb(.failure(error))
                         return
@@ -88,13 +95,13 @@ public extension Solana {
         }
         .flatMap { (responseData: Data, httpURLResponse: HTTPURLResponse) in
             do {
-                let decoded = try JSONDecoder().decode(Response<T>.self, from: responseData)
+                let decoded = try JSONDecoder().decode(Solana.Response<T>.self, from: responseData)
                 return .success(decoded)
             } catch let error {
                 return .failure(error)
             }
         }
-        .flatMap { (decoded: Response<T>) in
+        .flatMap { (decoded: Solana.Response<T>) in
             if let result = decoded.result {
                 return .success(result)
             } else if let responseError = decoded.error {

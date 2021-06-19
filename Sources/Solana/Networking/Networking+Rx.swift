@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-public extension Solana {
+public extension NetworkingRouter {
     func request<T: Decodable>(
         method: HTTPMethod = .post,
         bcMethod: String = #function,

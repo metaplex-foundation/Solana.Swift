@@ -8,7 +8,7 @@ public extension Solana {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }
-        request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64?>, Error>) in
+        router.request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {

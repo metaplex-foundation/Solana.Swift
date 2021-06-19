@@ -2,7 +2,7 @@ import Foundation
 
 public extension Solana {
     func getFees(commitment: Commitment? = nil, onComplete: @escaping (Result<Fee, Error>) -> ()){
-        request(parameters: [RequestConfiguration(commitment: commitment)]){ (result: Result<Rpc<Fee?>, Error>) in
+        router.request(parameters: [RequestConfiguration(commitment: commitment)]){ (result: Result<Rpc<Fee?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {
