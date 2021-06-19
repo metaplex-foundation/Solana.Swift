@@ -16,8 +16,9 @@ public extension Solana {
         public init(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) throws {
             let mnemonic: Mnemonic
             var phrase = phrase.filter {!$0.isEmpty}
-            if !phrase.isEmpty {
-                mnemonic = try Mnemonic(phrase: phrase)
+            if !phrase.isEmpty,
+               let newMnemonic = Mnemonic(phrase: phrase) {
+                mnemonic = newMnemonic
             } else {
                 mnemonic = Mnemonic()
                 phrase = mnemonic.phrase
@@ -58,7 +59,7 @@ public extension Solana {
             }
             self.publicKey = newKey
             self.secretKey = keys.secretKey
-            let phrase = try Mnemonic.toMnemonic(secretKey.bytes)
+            let phrase = try Mnemonic.toMnemonic(secretKey.bytes).get()
             self.phrase = phrase
         }
     }

@@ -1,9 +1,9 @@
 import Foundation
 
 public protocol SolanaAccountStorage {
-    func save(_ account: Solana.Account) throws
+    func save(_ account: Solana.Account) -> Result<Void, Error>
     var account: Solana.Account? {get}
-    func clear()
+    func clear() -> Result<Void, Error>
 }
 
 public class Solana {

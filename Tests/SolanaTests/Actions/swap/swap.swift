@@ -13,7 +13,7 @@ class swap: XCTestCase {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
         let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
-        try solanaSDK.accountStorage.save(account)
+        try solanaSDK.accountStorage.save(account).get()
     }
 
     /*func testSwapToken() {
