@@ -13,5 +13,6 @@ public extension Solana {
         case couldNotRetriveBalance
         case blockHashNotFound
         case invalidPublicKey
+        case invalidMNemonic
     }
 }
