@@ -4,13 +4,13 @@ import RxBlocking
 @testable import Solana
 
 class getTokenWallets: XCTestCase {
-    var endpoint = Solana.RpcApiEndPoint.testnetSolana
+    var endpoint = RPCEndpoint.testnetSolana
     var solanaSDK: Solana!
     var account: Solana.Account { solanaSDK.accountStorage.account! }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .getWallets
-        solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
+        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account)
     }

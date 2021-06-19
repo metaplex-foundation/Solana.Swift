@@ -2,7 +2,7 @@ import Foundation
 
 extension Solana {
     func getVoteAccounts(commitment: Commitment? = nil, onComplete: @escaping(Result<VoteAccounts, Error>)->()) {
-        request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<VoteAccounts, Error>) in
+        router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<VoteAccounts, Error>) in
             switch result {
             case .success(let accounts):
                 onComplete(.success(accounts))

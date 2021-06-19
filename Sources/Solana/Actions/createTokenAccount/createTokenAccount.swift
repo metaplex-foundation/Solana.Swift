@@ -64,7 +64,7 @@ extension Solana {
             return
         }
         // create new account for token
-        guard let newAccount = Account(network: self.endpoint.network) else {
+        guard let newAccount = Account(network: self.router.endpoint.network) else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }

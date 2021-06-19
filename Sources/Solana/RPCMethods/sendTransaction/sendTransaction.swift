@@ -4,7 +4,7 @@ extension Solana {
     func sendTransaction(serializedTransaction: String,
                          configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!,
                          onComplete: @escaping(Result<TransactionID, Error>)->()) {
-        request(parameters: [serializedTransaction, configs]) { (result:Result<TransactionID, Error>) in
+        router.request(parameters: [serializedTransaction, configs]) { (result:Result<TransactionID, Error>) in
             switch result {
             case .success(let transaction):
                 onComplete(.success(transaction))

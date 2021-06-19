@@ -7,15 +7,15 @@ public protocol SolanaAccountStorage {
 }
 
 public class Solana {
-    let endpoint: RpcApiEndPoint
+    let router: NetworkingRouter
     public let accountStorage: SolanaAccountStorage
     public private(set) var supportedTokens = [Token]()
 
-    public init(endpoint: RpcApiEndPoint, accountStorage: SolanaAccountStorage) {
-        self.endpoint = endpoint
+    public init(router: NetworkingRouter, accountStorage: SolanaAccountStorage) {
+        self.router = router
         self.accountStorage = accountStorage
 
         let parser = TokensListParser()
-        supportedTokens = (try? parser.parse(network: endpoint.network.cluster)) ?? []
+        supportedTokens = (try? parser.parse(network: router.endpoint.network.cluster)) ?? []
     }
 }

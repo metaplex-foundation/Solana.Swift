@@ -92,7 +92,7 @@ extension Solana {
             var destination = destination
             
             // add userTransferAuthority
-            guard let userTransferAuthority = Account(network: self.endpoint.network) else {
+            guard let userTransferAuthority = Account(network: self.router.endpoint.network) else {
                 return .failure(SolanaError.other("Unsupported swapping tokens"))
             }
             
@@ -222,7 +222,7 @@ extension Solana {
         signers: inout [Account],
         minimumBalanceForRentExemption: UInt64
     ) -> Result<Account, Error> {
-        guard let newAccount = Account(network: endpoint.network) else {
+        guard let newAccount = Account(network: self.router.endpoint.network) else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
         
@@ -263,7 +263,7 @@ extension Solana {
         signers: inout [Account],
         minimumBalanceForRentExemption: UInt64
     ) -> Result<Account, Error> {
-        guard let newAccount = Account(network: endpoint.network) else {
+        guard let newAccount = Account(network: self.router.endpoint.network) else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
         
