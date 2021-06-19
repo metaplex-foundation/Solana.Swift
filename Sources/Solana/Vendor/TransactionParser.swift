@@ -313,8 +313,8 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             }
         }
         // get token account info
-        ContResult<[AccountInfo?], Error>.flatMap2(request1, request2) { result1, result2 in
-            .success([result1, result2])
+        ContResult<[AccountInfo?], Error>.map2(request1, request2) { result1, result2 in
+            return [result1, result2]
         }.map { params -> SwapTransaction in
             // get source, destination account info
             let sourceAccountInfo = params[0]
@@ -368,22 +368,21 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         
         guard let account = account else { return onComplete(.success(nil)) }
         
-        ContResult<BufferInfo<AccountInfo>, Error>.init { cb in
+        ContResult.init { cb in
             solanaSDK.getAccountInfo(
                 account: account,
                 decodedTo: AccountInfo.self
             ) { cb($0) }
-        }.map {
-            $0.data.value
-        }.flatMap{
-            if $0 == nil,
-               let retryAccount = retryAccount {
-                return ContResult<AccountInfo?, Error>.init{
-                    return self.getAccountInfo(account: retryAccount, retryWithAccount: nil, onComplete: $0)
+        }.map { $0.data.value }
+        .recover {
+            if case SolanaError.nullValue = $0, let retryAccount = retryAccount{
+                return ContResult<AccountInfo?, Error>.init{ cb in
+                    self.getAccountInfo(account: retryAccount, retryWithAccount: nil)  { cb($0) }
                 }
             }
-            return .success($0)
-        }.run(onComplete)
+            return .failure($0)
+        }
+        .run(onComplete)
     }
 }
 
