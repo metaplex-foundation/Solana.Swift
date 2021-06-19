@@ -11,8 +11,8 @@ class sendSPLTokens: XCTestCase {
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
-        try solanaSDK.accountStorage.save(account)
+        let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        try solanaSDK.accountStorage.save(account).get()
         _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
     }
     
