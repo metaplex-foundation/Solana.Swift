@@ -11,7 +11,7 @@ class closeTokenAccount: XCTestCase {
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(endpoint: endpoint, accountStorage: InMemoryAccountStorage())
-        let account = try Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)
+        let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account).get()
     }
     

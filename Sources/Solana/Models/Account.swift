@@ -13,7 +13,7 @@ public extension Solana {
         ///   - phrase: secret phrase for an account, leave it empty for new account
         ///   - network: network in which account should be created
         /// - Throws: Error if the derivation is not successful
-        public init(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) throws {
+        public init?(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) {
             let mnemonic: Mnemonic
             var phrase = phrase.filter {!$0.isEmpty}
             if !phrase.isEmpty,
@@ -30,36 +30,53 @@ public extension Solana {
             switch derivablePath.type {
             #if canImport(UIKit)
             case .deprecated:
-                let keychain = try Keychain(seedString: phrase.joined(separator: " "), network: network.cluster)
-                guard let seed = try keychain.derivedKeychain(at: derivablePath.rawValue).privateKey else {
-                    throw SolanaError.other("Could not derivate private key")
+                guard let keychain = try? Keychain(seedString: phrase.joined(separator: " "), network: network.cluster) else {
+                    return nil
+                }
+                guard let seed = try? keychain.derivedKeychain(at: derivablePath.rawValue).privateKey else {
+                    return nil
                 }
                 
-                let keys = try NaclSign.KeyPair.keyPair(fromSeed: seed)
+                guard let keys = try? NaclSign.KeyPair.keyPair(fromSeed: seed) else {
+                    return nil
+                }
                 
-                self.publicKey = try PublicKey(data: keys.publicKey)
+                guard let newKey = PublicKey(data: keyPair.publicKey) else {
+                    return nil
+                }
+                
+                self.publicKey = newKey
                 self.secretKey = keys.secretKey
             #endif
             default:
-                let keys = try Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString())
+                guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()) else {
+                    return nil
+                }
                 
-                let keyPair = try NaclSign.KeyPair.keyPair(fromSeed: keys.key)
+                guard let keyPair = try? NaclSign.KeyPair.keyPair(fromSeed: keys.key) else {
+                    return nil
+                }
                 guard let newKey = PublicKey(data: keyPair.publicKey) else {
-                    throw SolanaError.invalidPublicKey
+                    return nil
                 }
                 self.publicKey = newKey
                 self.secretKey = keyPair.secretKey
             }
         }
         
-        public init(secretKey: Data) throws {
-            let keys = try NaclSign.KeyPair.keyPair(fromSecretKey: secretKey)
+        public init?(secretKey: Data) {
+            guard let keys = try? NaclSign.KeyPair.keyPair(fromSecretKey: secretKey) else {
+                return nil
+            }
             guard let newKey = PublicKey(data: keys.publicKey) else {
-                throw SolanaError.invalidPublicKey
+                return  nil
+            }
+            guard let phrase = try? Mnemonic.toMnemonic(secretKey.bytes).get() else {
+                return  nil
             }
             self.publicKey = newKey
             self.secretKey = keys.secretKey
-            let phrase = try Mnemonic.toMnemonic(secretKey.bytes).get()
+            
             self.phrase = phrase
         }
     }
