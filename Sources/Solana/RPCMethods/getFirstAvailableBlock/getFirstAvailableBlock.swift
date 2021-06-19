@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    func getFirstAvailableBlock(onComplete: @escaping (Result<UInt64, Error>)->Void) {
+    public func getFirstAvailableBlock(onComplete: @escaping (Result<UInt64, Error>)->Void) {
         router.request { (result: Result<UInt64, Error>) in
             switch result {
             case .success(let block):

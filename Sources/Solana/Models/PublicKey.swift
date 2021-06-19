@@ -5,21 +5,21 @@ public struct PublicKey {
     public static let LENGTH = 32
     public let bytes: [UInt8]
     
-    init?(bytes: [UInt8]?) {
+    public init?(bytes: [UInt8]?) {
         guard let bytes = bytes, bytes.count <= PublicKey.LENGTH else {
             return nil
         }
         self.bytes = bytes
     }
     
-    init?(string: String) {
+    public init?(string: String) {
         guard string.utf8.count >= PublicKey.LENGTH else {
             return nil
         }
         self.init(bytes: Base58.decode(string))
     }
     
-    init?(data: Data) {
+    public init?(data: Data) {
         guard data.count <= PublicKey.LENGTH else {
             return nil
         }

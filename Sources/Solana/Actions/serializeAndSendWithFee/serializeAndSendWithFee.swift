@@ -25,7 +25,7 @@ extension Solana {
         return
     }
 
-    func serializeAndSendWithFee(
+    public func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
@@ -89,7 +89,7 @@ extension Solana {
         return
     }
 
-    func serializeAndSendWithFeeSimulation(
+    public func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],

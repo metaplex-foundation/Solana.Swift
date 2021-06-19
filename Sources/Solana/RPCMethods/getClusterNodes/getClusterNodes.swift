@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    func getClusterNodes(onComplete: @escaping (Result<[ClusterNodes], Error>) -> Void) {
+    public func getClusterNodes(onComplete: @escaping (Result<[ClusterNodes], Error>) -> Void) {
         router.request { (result: Result<[ClusterNodes], Error>) in
             switch result {
             case .success(let nodes):

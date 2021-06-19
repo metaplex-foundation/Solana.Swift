@@ -1,7 +1,8 @@
 import XCTest
 import RxSwift
 import RxBlocking
-@testable import Solana
+@testable import RxSolana
+import Solana
 
 class createAssociatedTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana

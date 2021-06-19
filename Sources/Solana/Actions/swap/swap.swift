@@ -188,7 +188,7 @@ extension Solana {
         }.run(onComplete)
     }
 
-    func getAccountInfoData(account: String,
+    public func getAccountInfoData(account: String,
                                     tokenProgramId: PublicKey,
                                     onComplete: @escaping (Result<AccountInfo, Error>)-> Void) {
         getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in

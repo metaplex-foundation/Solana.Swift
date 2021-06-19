@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    func getRecentPerformanceSamples(limit: UInt64, onComplete: @escaping(Result<[PerformanceSample], Error>)->Void) {
+    public func getRecentPerformanceSamples(limit: UInt64, onComplete: @escaping(Result<[PerformanceSample], Error>)->Void) {
         router.request(parameters: [limit]) { (result: Result<[PerformanceSample], Error>) in
             switch result {
             case .success(let samples):

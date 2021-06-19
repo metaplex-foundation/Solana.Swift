@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    internal func serializeTransaction(
+    public func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
