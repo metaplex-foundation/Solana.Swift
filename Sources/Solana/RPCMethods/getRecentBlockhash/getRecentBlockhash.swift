@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    func getRecentBlockhash(commitment: Commitment? = nil, onComplete: @escaping(Result<String, Error>)->Void) {
+    public func getRecentBlockhash(commitment: Commitment? = nil, onComplete: @escaping(Result<String, Error>)->Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<Fee?>, Error>) in
             switch result {
             case .success(let rpc):

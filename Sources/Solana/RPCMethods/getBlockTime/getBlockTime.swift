@@ -1,7 +1,7 @@
 import Foundation
 
 extension Solana {
-    func getBlockTime(block: UInt64, onComplete: @escaping( (Result<Date?, Error>) -> Void)) {
+    public func getBlockTime(block: UInt64, onComplete: @escaping( (Result<Date?, Error>) -> Void)) {
         router.request(parameters: [block]) { (result: Result<Int64?, Error>) in
             switch result {
             case .success(let timestamp):

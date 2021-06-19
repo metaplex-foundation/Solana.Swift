@@ -30,7 +30,7 @@ extension Solana {
         )
     }
 
-    func getPools(swapProgramId: String, onComplete: @escaping (Result<[Pool], Error>) -> Void) {
+    public func getPools(swapProgramId: String, onComplete: @escaping (Result<[Pool], Error>) -> Void) {
         getProgramAccounts(publicKey: swapProgramId, decodedTo: TokenSwapInfo.self) { programsResult in
             switch programsResult {
             case .success(let programs):

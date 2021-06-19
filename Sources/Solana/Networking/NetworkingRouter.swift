@@ -20,12 +20,12 @@ public class NetworkingRouter {
 
     let endpoint: RPCEndpoint
     private let urlSession: URLSession
-    init(endpoint: RPCEndpoint, session: URLSession = .shared) {
+    public init(endpoint: RPCEndpoint, session: URLSession = .shared) {
         self.endpoint = endpoint
         self.urlSession = session
     }
 
-    func request<T: Decodable>(
+    public func request<T: Decodable>(
         method: HTTPMethod = .post,
         bcMethod: String = #function,
         parameters: [Encodable?] = [],

@@ -10,7 +10,10 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "Solana",
-            targets: ["Solana"])
+            targets: ["Solana"]),
+        .library(
+            name: "RxSolana",
+            targets: ["RxSolana"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,13 +26,19 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Solana",
-            dependencies: ["TweetNacl", "RxSwift", "CryptoSwift", .product(name: "RxCocoa", package: "RxSwift")],
+            dependencies: ["TweetNacl", "CryptoSwift"],
+            resources: [ .process("Resources")
+            ]
+        ),
+        .target(
+            name: "RxSolana",
+            dependencies: ["TweetNacl", "Solana", "RxSwift", "CryptoSwift", .product(name: "RxCocoa", package: "RxSwift")],
             resources: [ .process("Resources")
             ]
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "RxSwift", "CryptoSwift", .product(name: "RxBlocking", package: "RxSwift")],
+            dependencies: ["RxSolana", "TweetNacl", "RxSwift", "CryptoSwift", .product(name: "RxBlocking", package: "RxSwift")],
             resources: [ .process("Resources")
             ]
         )

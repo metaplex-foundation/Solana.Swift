@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
-@testable import Solana
+@testable import RxSolana
+import Solana
 
 class TransactionParserTests: XCTestCase {
     let endpoint = RPCEndpoint.mainnetBetaSolana

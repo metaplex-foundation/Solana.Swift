@@ -2,6 +2,7 @@ import Foundation
 import RxSwift
 
 extension Solana {
+    public typealias SPLTokenDestinationAddress = (destination: PublicKey, isUnregisteredAsocciatedToken: Bool)
     public func findSPLTokenDestinationAddress(
         mintAddress: String,
         destinationAddress: String,
