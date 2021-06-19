@@ -1,6 +1,7 @@
 # Solana
 [![Swift](https://github.com/ajamaica/Solana.Swift/actions/workflows/swift.yml/badge.svg?branch=master)](https://github.com/ajamaica/Solana.Swift/actions/workflows/swift.yml)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)  
+[![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg?style=flat&colorA=28a745&&colorB=4E4E4E)](https://github.com/apple/swift-package-manager)
 
 This is a open source library on pure swift for Solana protocol.
 
@@ -34,13 +35,13 @@ If you encounter any problem or have a question on adding the package to an Xcod
 
 ### Ideas and plans
 
-I want to build a wallet for solana but I found that the swift librarys are lacking. I used one of the most advanced projects as base and modify the code to make it easier to work with and integrate. I also remove a lot of code and libraries that are not necesary. The code and api will be evoling for this initial fork please keep that in mind.
+The code and api will be evoling for this initial fork please keep that in mind. I am planning adding support for othr development layers like React Native or flutter.
 
 RxSwift maybe be removed from the library or at least moved to a diferent sublibrary. Every call will have a unit test.
 
 ### Disclaimer 
 
-It was originally fork from the [P2p-org library](https://github.com/p2p-org/solana-swift "P2p-org library").
+It was originally fork from the [P2p-org library](https://github.com/p2p-org/solana-swift "P2p-org library"). Now is way far than the original implementation. Most of parts where rewriten.
 
 ### Support it 
 
