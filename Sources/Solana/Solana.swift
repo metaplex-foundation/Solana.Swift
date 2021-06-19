@@ -9,12 +9,11 @@ public protocol SolanaAccountStorage {
 public class Solana {
     let router: NetworkingRouter
     public let accountStorage: SolanaAccountStorage
-    public private(set) var supportedTokens = [Token]()
+    public let supportedTokens: [Token]
 
     public init(router: NetworkingRouter, accountStorage: SolanaAccountStorage) {
         self.router = router
         self.accountStorage = accountStorage
-        let parser = TokensListParser()
-        supportedTokens = (try? parser.parse(network: router.endpoint.network.cluster)) ?? []
+        self.supportedTokens = (try? TokensListParser().parse(network: router.endpoint.network.cluster).get()) ?? []
     }
 }
