@@ -8,21 +8,25 @@ public struct Ed25519HDKey {
 
     public enum Error: Swift.Error {
         case invalidDerivationPath
+        case hmacCanNotAuthenticate
+        case canNotGetMasterKeyFromSeed
     }
 
     private static let ed25519Curve = "ed25519 seed"
     public static let hardenedOffset = 0x80000000
 
-    public static func getMasterKeyFromSeed(_ seed: Hex) throws -> Keys {
+    public static func getMasterKeyFromSeed(_ seed: Hex) -> Result<Keys, Error> {
         let hmacKey = ed25519Curve.bytes
         let hmac = HMAC(key: hmacKey, variant: .sha512)
-        let entropy = try hmac.authenticate(Data(hex: seed).bytes)
+        guard let entropy = try? hmac.authenticate(Data(hex: seed).bytes) else {
+            return .failure(.hmacCanNotAuthenticate)
+        }
         let IL = Data(entropy[0..<32])
         let IR = Data(entropy[32...])
-        return Keys(key: IL, chainCode: IR)
+        return .success(Keys(key: IL, chainCode: IR))
     }
 
-    private static func CKDPriv(keys: Keys, index: UInt32) throws -> Keys {
+    private static func CKDPriv(keys: Keys, index: UInt32) -> Result<Keys, Error> {
         var bytes = [UInt8]()
         bytes.append(UInt8(0))
         bytes += keys.key.bytes
@@ -30,11 +34,13 @@ public struct Ed25519HDKey {
         let data = Data(bytes)
 
         let hmac = HMAC(key: keys.chainCode.bytes, variant: .sha512)
-
-        let entropy = try hmac.authenticate(data.bytes)
+        
+        guard let entropy = try? hmac.authenticate(data.bytes) else {
+            return .failure(.hmacCanNotAuthenticate)
+        }
         let IL = Data(entropy[0..<32])
         let IR = Data(entropy[32...])
-        return Keys(key: IL, chainCode: IR)
+        return .success(Keys(key: IL, chainCode: IR))
     }
 
     public static func getPublicKey(privateKey: Data, withZeroBytes: Bool = true) throws -> Data {
@@ -44,16 +50,23 @@ public struct Ed25519HDKey {
         return withZeroBytes ? Data(zero + signPk): Data(signPk)
     }
 
-    public static func derivePath(_ path: Path, seed: Hex, offSet: Int = hardenedOffset) throws -> Keys {
+    public static func derivePath(_ path: Path, seed: Hex, offSet: Int = hardenedOffset) -> Result<Keys, Error> {
         guard path.isValidDerivationPath else {
-            throw Error.invalidDerivationPath
+            return .failure(Error.invalidDerivationPath)
         }
 
-        let keys = try getMasterKeyFromSeed(seed)
-        let segments = path.components(separatedBy: "/")[1...]
-            .map {$0.replacingDerive}
-            .map {Int($0)!}
-
-        return try segments.reduce(keys, {try CKDPriv(keys: $0, index: UInt32($1+offSet))})
+        return getMasterKeyFromSeed(seed).flatMap { keys in
+            let segments = path.components(separatedBy: "/")[1...]
+                .map {$0.replacingDerive}
+                .map {Int($0)!}
+            return .success((keys:keys, segments: segments))
+        }.flatMap { (keys:Keys, segments: [Int]) in
+            do{
+                let keys = try segments.reduce(keys, { try CKDPriv(keys: $0, index: UInt32($1+offSet)).get() })
+                return .success(keys)
+            } catch {
+                return .failure(.canNotGetMasterKeyFromSeed)
+            }
+        }
     }
 }
