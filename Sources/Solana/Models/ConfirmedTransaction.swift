@@ -46,7 +46,8 @@ public extension Solana {
 
                 // approve
                 let amount: String?
-                weak var delegate: String?
+                // swiftlint:disable all
+                var delegate: String?
 
                 // transfer
                 let authority: String?
@@ -85,7 +86,8 @@ public extension Solana {
 
                 // approve
                 let amount: String?
-                weak var delegate: String?
+                // swiftlint:disable all
+                var delegate: String?
 
                 // transfer
                 let authority: String?
