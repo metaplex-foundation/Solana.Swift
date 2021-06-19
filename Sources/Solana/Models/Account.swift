@@ -28,26 +28,6 @@ public extension Solana {
             let derivablePath = derivablePath ?? .default
 
             switch derivablePath.type {
-            #if canImport(UIKit)
-            case .deprecated:
-                guard let keychain = try? Keychain(seedString: phrase.joined(separator: " "), network: network.cluster) else {
-                    return nil
-                }
-                guard let seed = try? keychain.derivedKeychain(at: derivablePath.rawValue).privateKey else {
-                    return nil
-                }
-
-                guard let keys = try? NaclSign.KeyPair.keyPair(fromSeed: seed) else {
-                    return nil
-                }
-
-                guard let newKey = PublicKey(data: keyPair.publicKey) else {
-                    return nil
-                }
-
-                self.publicKey = newKey
-                self.secretKey = keys.secretKey
-            #endif
             default:
                 guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()) else {
                     return nil
