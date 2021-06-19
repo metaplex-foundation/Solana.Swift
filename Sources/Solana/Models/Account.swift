@@ -29,7 +29,7 @@ public extension Solana {
 
             switch derivablePath.type {
             default:
-                guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()) else {
+                guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()).get() else {
                     return nil
                 }
 
