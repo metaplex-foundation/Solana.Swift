@@ -6,28 +6,28 @@ import RxBlocking
 class Methods: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solanaSDK: Solana!
-    var account: Solana.Account { solanaSDK.accountStorage.account! }
+    var account: Account { solanaSDK.accountStorage.account! }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
-        let account = Solana.Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solanaSDK.accountStorage.save(account).get()
     }
 
     func testGetAccountInfo() {
-        let info: Solana.BufferInfo<Solana.AccountInfo>? = try! solanaSDK.getAccountInfo(account: account.publicKey.base58EncodedString, decodedTo: Solana.AccountInfo.self).toBlocking().first()
+        let info: BufferInfo<AccountInfo>? = try! solanaSDK.getAccountInfo(account: account.publicKey.base58EncodedString, decodedTo: AccountInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
     }
     
     func testGetMultipleAccounts() {
-        let info: [Solana.BufferInfo<Solana.AccountInfo>?] = try! solanaSDK.getMultipleAccounts(pubkeys: [account.publicKey.base58EncodedString], decodedTo: Solana.AccountInfo.self).toBlocking().first()!!
+        let info: [BufferInfo<AccountInfo>?] = try! solanaSDK.getMultipleAccounts(pubkeys: [account.publicKey.base58EncodedString], decodedTo: AccountInfo.self).toBlocking().first()!!
         XCTAssertNotNil(info)
         XCTAssertNotNil(info[0]?.data)
     }
     func testGetProgramAccounts() {
-        let info = try! solanaSDK.getProgramAccounts(publicKey: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8", decodedTo: Solana.TokenSwapInfo.self).toBlocking().first()
+        let info = try! solanaSDK.getProgramAccounts(publicKey: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8", decodedTo: TokenSwapInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
     }
     func testGetBlockCommitment() {

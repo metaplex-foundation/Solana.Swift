@@ -8,10 +8,10 @@ extension Solana {
         onComplete: @escaping (Result<SPLTokenDestinationAddress, Error>) -> Void
     ) {
 
-        ContResult<BufferInfo<Solana.AccountInfo>, Error>.init { cb in
+        ContResult<BufferInfo<AccountInfo>, Error>.init { cb in
             self.getAccountInfo(
                 account: destinationAddress,
-                decodedTo: Solana.AccountInfo.self
+                decodedTo: AccountInfo.self
             ) { cb($0) }
         }.flatMap { info in
             let toTokenMint = info.data.value?.mint.base58EncodedString

@@ -1,8 +1,8 @@
 import Foundation
 
 public protocol SolanaAccountStorage {
-    func save(_ account: Solana.Account) -> Result<Void, Error>
-    var account: Solana.Account? {get}
+    func save(_ account: Account) -> Result<Void, Error>
+    var account: Account? { get }
     func clear() -> Result<Void, Error>
 }
 
@@ -14,7 +14,6 @@ public class Solana {
     public init(router: NetworkingRouter, accountStorage: SolanaAccountStorage) {
         self.router = router
         self.accountStorage = accountStorage
-
         let parser = TokensListParser()
         supportedTokens = (try? parser.parse(network: router.endpoint.network.cluster)) ?? []
     }

@@ -3,7 +3,7 @@ import RxSwift
 
 extension Solana {
     public func closeTokenAccount(
-        account: Solana.Account? = nil,
+        account: Account? = nil,
         tokenPubkey: String
     ) -> Single<TransactionID> {
         Single.create { emitter in

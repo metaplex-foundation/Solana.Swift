@@ -11,7 +11,7 @@ public enum RPCError: Error {
     case httpError
     case httpErrorCode(Int)
     case invalidResponseNoData
-    case invalidResponse(Solana.ResponseError)
+    case invalidResponse(ResponseError)
     case unknownResponse
     case retry
 }
@@ -95,13 +95,13 @@ public class NetworkingRouter {
         }
         .flatMap { (responseData: Data, _: HTTPURLResponse) in
             do {
-                let decoded = try JSONDecoder().decode(Solana.Response<T>.self, from: responseData)
+                let decoded = try JSONDecoder().decode(Response<T>.self, from: responseData)
                 return .success(decoded)
             } catch let error {
                 return .failure(error)
             }
         }
-        .flatMap { (decoded: Solana.Response<T>) in
+        .flatMap { (decoded: Response<T>) in
             if let result = decoded.result {
                 return .success(result)
             } else if let responseError = decoded.error {

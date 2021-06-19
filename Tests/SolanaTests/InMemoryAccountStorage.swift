@@ -21,12 +21,12 @@ enum TestsWallet{
 
 
 class InMemoryAccountStorage: SolanaAccountStorage {
-    private var _account: Solana.Account?
-    func save(_ account: Solana.Account) -> Result<Void, Error> {
+    private var _account: Account?
+    func save(_ account: Account) -> Result<Void, Error> {
         _account = account
         return .success(())
     }
-    var account: Solana.Account? {
+    var account: Account? {
         _account
     }
     func clear() -> Result<Void, Error> {
