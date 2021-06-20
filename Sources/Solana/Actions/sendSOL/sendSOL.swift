@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Api {
+extension Action {
     public func sendSOL(
         to destination: String,
         amount: UInt64,
@@ -19,7 +19,7 @@ extension Api {
         }
 
         // check
-        getAccountInfo(account: destination, decodedTo: EmptyInfo.self) { resultInfo in
+        self.api.getAccountInfo(account: destination, decodedTo: EmptyInfo.self) { resultInfo in
 
             if case Result.failure( let error) = resultInfo {
                 if let solanaError = error as? SolanaError,

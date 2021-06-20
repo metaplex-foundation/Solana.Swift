@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-public extension Api {
+public extension Action {
 
     func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId) -> Single<Mint> {
         Single.create { emitter in

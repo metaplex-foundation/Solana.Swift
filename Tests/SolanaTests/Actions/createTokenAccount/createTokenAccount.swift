@@ -18,7 +18,7 @@ class createTokenAccount: XCTestCase {
     
     func testCreateTokenAccount() {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let account = try! solana.api.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
+        let account = try! solana.action.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
         XCTAssertNotNil(account)
     }
     

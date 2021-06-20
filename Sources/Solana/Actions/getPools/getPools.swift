@@ -2,7 +2,7 @@ import Foundation
 
 private var mintDatasCache = [Mint]()
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
-extension Api {
+extension Action {
     struct ParsedSwapInfo: Codable {
         let address: String
         let info: TokenSwapInfo
@@ -31,7 +31,7 @@ extension Api {
     }
 
     public func getPools(swapProgramId: String, onComplete: @escaping (Result<[Pool], Error>) -> Void) {
-        getProgramAccounts(publicKey: swapProgramId, decodedTo: TokenSwapInfo.self) { programsResult in
+        self.api.getProgramAccounts(publicKey: swapProgramId, decodedTo: TokenSwapInfo.self) { programsResult in
             switch programsResult {
             case .success(let programs):
                 // get parsed swap info
@@ -145,10 +145,10 @@ extension Api {
     }
 
     public func getPoolWithTokenBalances(pool: Pool, onComplete: @escaping (Result<Pool, Error>) -> Void) {
-        self.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountA.base58EncodedString) { tokenAResult in
+        self.api.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountA.base58EncodedString) { tokenAResult in
             switch tokenAResult {
             case .success(let tokenABalance):
-                self.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountB.base58EncodedString) { _ in
+                self.api.getTokenAccountBalance(pubkey: pool.swapData.tokenAccountB.base58EncodedString) { _ in
                    switch tokenAResult {
                    case .success(let tokenBBalance):
                     var pool = pool

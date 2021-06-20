@@ -10,6 +10,7 @@ public class Solana {
     let router: NetworkingRouter
     public let auth: SolanaAccountStorage
     public let api: Api
+    public let action: Action
     public let supportedTokens: [Token]
 
     public init(router: NetworkingRouter, accountStorage: SolanaAccountStorage) {
@@ -17,6 +18,7 @@ public class Solana {
         self.auth = accountStorage
         self.supportedTokens = (try? TokensListParser().parse(network: router.endpoint.network.cluster).get()) ?? []
         self.api = Api(router: router, auth: accountStorage, supportedTokens: supportedTokens)
+        self.action = Action(api: self.api, router: router, auth: accountStorage, supportedTokens: supportedTokens)
     }
 }
 
@@ -31,3 +33,18 @@ public class Api {
         self.supportedTokens = supportedTokens
     }
 }
+
+public class Action {
+    internal let api: Api
+    internal let router: NetworkingRouter
+    internal let auth: SolanaAccountStorage
+    internal let supportedTokens: [Token]
+    
+    public init(api: Api, router: NetworkingRouter, auth: SolanaAccountStorage, supportedTokens: [Token]) {
+        self.router = router
+        self.auth = auth
+        self.supportedTokens = supportedTokens
+        self.api = api
+    }
+}
+

@@ -27,7 +27,7 @@ class serializeAndSendWithFee: XCTestCase {
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try! solana.api.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account]).toBlocking().first()
+        let transactionId = try! solana.action.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account]).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
     
@@ -43,7 +43,7 @@ class serializeAndSendWithFee: XCTestCase {
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try! solana.api.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
+        let transactionId = try! solana.action.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
         XCTAssertNotNil(transactionId)
     }
     

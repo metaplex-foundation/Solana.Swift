@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
-extension Api {
+extension Action {
     public struct SwapResponse {
         public let transactionId: String
         public let newWalletPubkey: String?
@@ -64,7 +64,7 @@ extension Api {
         }
 
         let balanceCall = ContResult<UInt64, Error>.init { cb in
-            self.getMinimumBalanceForRentExemption(dataLength: UInt64(AccountInfo.BUFFER_LENGTH)) {
+            self.api.getMinimumBalanceForRentExemption(dataLength: UInt64(AccountInfo.BUFFER_LENGTH)) {
                 cb($0)
             }
         }
@@ -191,7 +191,7 @@ extension Api {
     public func getAccountInfoData(account: String,
                                     tokenProgramId: PublicKey,
                                     onComplete: @escaping (Result<AccountInfo, Error>)-> Void) {
-        getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in
+        self.api.getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in
             switch accountInfoResult {
             case .success(let account):
 

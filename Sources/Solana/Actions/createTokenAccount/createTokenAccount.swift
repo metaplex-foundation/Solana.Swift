@@ -1,9 +1,9 @@
 import Foundation
 
-extension Api {
+extension Action {
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
-        getMinimumBalanceForRentExemption(dataLength: AccountInfo.span, onComplete: onComplete)
+        self.api.getMinimumBalanceForRentExemption(dataLength: AccountInfo.span, onComplete: onComplete)
     }
 
     public func createTokenAccount(
@@ -15,7 +15,7 @@ extension Api {
             return
         }
 
-        self.getRecentBlockhash { resultBlockhash in
+        self.api.getRecentBlockhash { resultBlockhash in
             switch resultBlockhash {
             case .success(let recentBlockhash):
                 self.callGetCreateTokenAccountFee(mintAddress: mintAddress,

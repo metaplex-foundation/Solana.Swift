@@ -22,7 +22,7 @@ class sendSOL: XCTestCase {
         let balance = try! solana.api.getBalance().toBlocking().first()
         XCTAssertNotNil(balance)
 
-        let transactionId = try! solana.api.sendSOL(
+        let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: balance!/10
         ).toBlocking().first()
@@ -30,7 +30,7 @@ class sendSOL: XCTestCase {
     }
     func testSendSOL() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        let transactionId = try! solana.api.sendSOL(
+        let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first()
@@ -38,14 +38,14 @@ class sendSOL: XCTestCase {
     }
     func testSendSOLIncorrectDestination() {
         let toPublicKey = "XX"
-        XCTAssertThrowsError(try solana.api.sendSOL(
+        XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first())
     }
     func testSendSOLBigAmmount() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        XCTAssertThrowsError(try solana.api.sendSOL(
+        XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 9223372036854775808
         ).toBlocking().first())

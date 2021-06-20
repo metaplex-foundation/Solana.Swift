@@ -16,17 +16,17 @@ class getMintData: XCTestCase {
     }
     
     func testGetMintData() {
-        let data = try! solana.api.getMintData(mintAddress: PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!).toBlocking().first()
+        let data = try! solana.action.getMintData(mintAddress: PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!).toBlocking().first()
         XCTAssertNotNil(data)
     }
     
     func testGetMultipleMintDatas() {
-        let datas = try! solana.api.getMultipleMintDatas(mintAddresses: [PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!]).toBlocking().first()
+        let datas = try! solana.action.getMultipleMintDatas(mintAddresses: [PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!]).toBlocking().first()
         XCTAssertNotNil(datas)
     }
     
     func testGetPools() {
-        let pools = try! solana.api.getSwapPools().toBlocking().first()
+        let pools = try! solana.action.getSwapPools().toBlocking().first()
         XCTAssertNotNil(pools)
         XCTAssertNotEqual(pools!.count, 0)
     }

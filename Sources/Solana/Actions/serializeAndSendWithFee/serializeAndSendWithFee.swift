@@ -1,6 +1,6 @@
 import Foundation
 
-extension Api {
+extension Action {
     fileprivate func retryOrError(instructions: [TransactionInstruction],
                                   recentBlockhash: String? = nil,
                                   signers: [Account],
@@ -40,7 +40,7 @@ extension Api {
             }
         }.flatMap { transaction in
             return ContResult.init { cb in
-                self.sendTransaction(serializedTransaction: transaction) {
+                self.api.sendTransaction(serializedTransaction: transaction) {
                     cb($0)
                 }
             }
@@ -64,7 +64,7 @@ extension Api {
         .run(onComplete)
     }
 }
-extension Api {
+extension Action {
     fileprivate func retrySimulateOrError(instructions: [TransactionInstruction],
                                           recentBlockhash: String? = nil,
                                           signers: [Account],
@@ -100,7 +100,7 @@ extension Api {
         serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers) { result in
             switch result {
             case .success(let transaction):
-                self.simulateTransaction(transaction: transaction) {
+                self.api.simulateTransaction(transaction: transaction) {
                     switch $0 {
                     case .success(let r):
                         if r.err != nil {

@@ -1,6 +1,6 @@
 import Foundation
 
-extension Api {
+extension Action {
     public func sendSPLTokens(
         mintAddress: String,
         decimals: Decimals,

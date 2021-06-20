@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Api {
+extension Action {
     public typealias SPLTokenDestinationAddress = (destination: PublicKey, isUnregisteredAsocciatedToken: Bool)
     public func findSPLTokenDestinationAddress(
         mintAddress: String,
@@ -10,7 +10,7 @@ extension Api {
     ) {
 
         ContResult<BufferInfo<AccountInfo>, Error>.init { cb in
-            self.getAccountInfo(
+            self.api.getAccountInfo(
                 account: destinationAddress,
                 decodedTo: AccountInfo.self
             ) { cb($0) }
@@ -47,7 +47,7 @@ extension Api {
             if destinationAddress != toPublicKey.base58EncodedString {
                 // check if associated address is already registered
                 return ContResult.init { cb in
-                    self.getAccountInfo(
+                    self.api.getAccountInfo(
                         account: toPublicKey.base58EncodedString,
                         decodedTo: AccountInfo.self
                     ) { cb($0)}

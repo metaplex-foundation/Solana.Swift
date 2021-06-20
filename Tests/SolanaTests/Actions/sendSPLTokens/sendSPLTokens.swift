@@ -21,7 +21,7 @@ class sendSPLTokens: XCTestCase {
         let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
         let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
 
-        let transactionId = try! solana.api.sendSPLTokens(
+        let transactionId = try! solana.action.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: source,
@@ -30,7 +30,7 @@ class sendSPLTokens: XCTestCase {
         ).toBlocking().first()
         XCTAssertNotNil(transactionId)
         
-        let transactionIdB = try! solana.api.sendSPLTokens(
+        let transactionIdB = try! solana.action.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: destination,

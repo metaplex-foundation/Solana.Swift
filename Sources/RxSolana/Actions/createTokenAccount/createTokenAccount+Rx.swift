@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+extension Action {
     public func createTokenAccount(
         mintAddress: String
     ) -> Single<(signature: String, newPubkey: String)> {

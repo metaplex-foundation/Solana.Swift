@@ -67,7 +67,7 @@ class TransactionParserTests: XCTestCase {
     }
     
     func testDecodingSendSOLTransactionPaidByP2PORG() {
-        let transactionInfo = try! transactionInfoFromJSONFileName("SendSOLTransactionPaidByP2PORG")
+        let transactionInfo = transactionInfoFromJSONFileName("SendSOLTransactionPaidByP2PORG")
         
         let myAccount = "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm"
         let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
