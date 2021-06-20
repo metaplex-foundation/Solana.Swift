@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Solana {
+extension Action {
     public func getTokenWallets(account: String? = nil) -> Single<[Wallet]> {
         Single.create { emitter in
             self.getTokenWallets(account: account) { result in

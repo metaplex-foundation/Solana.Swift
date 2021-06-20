@@ -1,9 +1,9 @@
 import Foundation
 
-public extension Solana {
+public extension Action {
 
     func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId, onComplete: @escaping ((Result<Mint, Error>) -> Void)) {
-        getAccountInfo(account: mintAddress.base58EncodedString, decodedTo: Mint.self) { result in
+        self.api.getAccountInfo(account: mintAddress.base58EncodedString, decodedTo: Mint.self) { result in
             switch result {
             case .success(let account):
                 if account.owner != programId.base58EncodedString {
@@ -26,7 +26,7 @@ public extension Solana {
     func getMultipleMintDatas(mintAddresses: [PublicKey], programId: PublicKey = .tokenProgramId, onComplete: @escaping (Result<[PublicKey: Mint], Error>) -> Void) {
 
         return ContResult.init { cb in
-            self.getMultipleAccounts(pubkeys: mintAddresses.map { $0.base58EncodedString }, decodedTo: Mint.self) {
+            self.api.getMultipleAccounts(pubkeys: mintAddresses.map { $0.base58EncodedString }, decodedTo: Mint.self) {
                 cb($0)
             }
         }.flatMap {

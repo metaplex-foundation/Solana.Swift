@@ -5,15 +5,15 @@ import RxBlocking
 
 class sendSPLTokens: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solanaSDK: Solana!
-    var account: Account { try! solanaSDK.auth.account.get() }
+    var solana: Solana!
+    var account: Account { try! solana.auth.account.get() }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.auth.save(account).get()
-        _ = try solanaSDK.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
+        try solana.auth.save(account).get()
+        _ = try solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
     }
     
     func testSendSPLTokenWithFee() {
@@ -21,7 +21,7 @@ class sendSPLTokens: XCTestCase {
         let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
         let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
 
-        let transactionId = try! solanaSDK.sendSPLTokens(
+        let transactionId = try! solana.action.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: source,
@@ -30,7 +30,7 @@ class sendSPLTokens: XCTestCase {
         ).toBlocking().first()
         XCTAssertNotNil(transactionId)
         
-        let transactionIdB = try! solanaSDK.sendSPLTokens(
+        let transactionIdB = try! solana.action.sendSPLTokens(
             mintAddress: mintAddress,
             decimals: 5,
             from: destination,

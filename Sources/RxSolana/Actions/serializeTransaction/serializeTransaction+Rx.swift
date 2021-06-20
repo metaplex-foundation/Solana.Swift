@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Solana {
+extension Action {
     public func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,

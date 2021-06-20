@@ -5,15 +5,15 @@ import RxBlocking
 
 class swap: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solanaSDK: Solana!
-    var account: Account { try! solanaSDK.auth.account.get() }
+    var solana: Solana!
+    var account: Account { try! solana.auth.account.get() }
     let publicKey = PublicKey(string: "11111111111111111111111111111111")!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.auth.save(account).get()
+        try solana.auth.save(account).get()
     }
 
     /*func testSwapToken() {
@@ -39,7 +39,7 @@ class swap: XCTestCase {
     }*/
     
     func testSwapInstruction() {
-        let instruction = Solana.TokenSwapProgram.swapInstruction(
+        let instruction = TokenSwapProgram.swapInstruction(
             tokenSwap: publicKey,
             authority: publicKey,
             userTransferAuthority: publicKey,
@@ -60,7 +60,7 @@ class swap: XCTestCase {
     }
     
     func testDepositInstruction() {
-        let instruction = Solana.TokenSwapProgram.depositInstruction(
+        let instruction = TokenSwapProgram.depositInstruction(
             tokenSwap: publicKey,
             authority: publicKey,
             sourceA: publicKey,
@@ -80,7 +80,7 @@ class swap: XCTestCase {
     }
     
     func testWithdrawInstruction() {
-        let instruction = Solana.TokenSwapProgram.withdrawInstruction(
+        let instruction = TokenSwapProgram.withdrawInstruction(
             tokenSwap: publicKey,
             authority: publicKey,
             poolMint: publicKey,

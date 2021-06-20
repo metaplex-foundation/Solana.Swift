@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Solana {
+extension Action {
 
     public func getOrCreateAssociatedTokenAccount(
         owner: PublicKey,
@@ -16,7 +16,7 @@ extension Solana {
             return
         }
 
-        getAccountInfo(
+        api.getAccountInfo(
             account: associatedAddress.base58EncodedString,
             decodedTo: AccountInfo.self
         ) { acountInfoResult in

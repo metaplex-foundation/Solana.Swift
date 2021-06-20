@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Action {
     public func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
@@ -43,7 +43,7 @@ extension Solana {
         if let recentBlockhash = recentBlockhash {
             getRecentBlockhashRequest(.success(recentBlockhash))
         } else {
-            getRecentBlockhash { getRecentBlockhashRequest($0) }
+            self.api.getRecentBlockhash { getRecentBlockhashRequest($0) }
         }
     }
 }

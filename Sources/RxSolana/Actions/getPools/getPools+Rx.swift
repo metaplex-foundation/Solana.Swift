@@ -4,7 +4,7 @@ import Solana
 
 private var mintDatasCache = [Mint]()
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
-extension Solana {
+extension Action {
 
     public func getSwapPools() -> Single<[Pool]> {
         getPools(swapProgramId: swapProgramId)

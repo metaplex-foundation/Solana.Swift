@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Action {
     public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
 
         guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString else {
@@ -19,7 +19,7 @@ extension Solana {
         ])
 
         ContResult.init { cb in
-            self.getProgramAccounts(
+            self.api.getProgramAccounts(
                 publicKey: PublicKey.tokenProgramId.base58EncodedString,
                 configs: configs,
                 decodedTo: AccountInfo.self

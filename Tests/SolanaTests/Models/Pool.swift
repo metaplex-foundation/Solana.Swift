@@ -2,10 +2,10 @@ import Foundation
 import XCTest
 @testable import Solana
 
-class Pool: XCTestCase {
-    var pool: Solana.Pool!
+class PoolTests: XCTestCase {
+    var pool: Pool!
     override func setUpWithError() throws {
-        pool = Solana.Pool(
+        pool = Pool(
             address: PublicKey(string: "95DKMPsJWAir7d1K3kSAyyqaad2RoQ4daxFKXS8XshUe")!,
             tokenAInfo: .init(
                 mintAuthorityOption: 0,
