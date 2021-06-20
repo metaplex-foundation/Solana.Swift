@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-extension Solana {
+extension Api {
     public func sendSOL(
         to destination: String,
         amount: UInt64,

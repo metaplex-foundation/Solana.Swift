@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Solana {
+extension Api {
     public func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
@@ -30,7 +30,7 @@ extension Solana {
         }
     }
 }
-extension Solana {
+extension Api {
     public func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,

@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Api {
     public func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,

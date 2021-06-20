@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Api {
     public func closeTokenAccount(
         account: Account? = nil,
         tokenPubkey: String,

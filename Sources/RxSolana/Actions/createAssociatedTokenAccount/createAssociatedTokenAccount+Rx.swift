@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Solana {
+extension Api {
     public func getOrCreateAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey
@@ -20,7 +20,7 @@ extension Solana {
         }
     }
 
-    func createAssociatedTokenAccount(
+    public func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
         payer: Account? = nil

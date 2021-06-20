@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Api {
     public func sendSPLTokens(
         mintAddress: String,
         decimals: Decimals,

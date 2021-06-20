@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Api {
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         getMinimumBalanceForRentExemption(dataLength: AccountInfo.span, onComplete: onComplete)

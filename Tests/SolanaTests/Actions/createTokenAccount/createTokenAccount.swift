@@ -6,19 +6,19 @@ import Solana
 
 class createTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solanaSDK: Solana!
-    var account: Account { try! solanaSDK.auth.account.get() }
+    var solana: Solana!
+    var account: Account { try! solana.auth.account.get() }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.auth.save(account).get()
+        try solana.auth.save(account).get()
     }
     
     func testCreateTokenAccount() {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let account = try! solanaSDK.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
+        let account = try! solana.api.createTokenAccount( mintAddress: mintAddress).toBlocking().first()
         XCTAssertNotNil(account)
     }
     

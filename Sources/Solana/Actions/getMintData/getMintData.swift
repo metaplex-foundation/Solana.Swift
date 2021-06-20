@@ -1,6 +1,6 @@
 import Foundation
 
-public extension Solana {
+public extension Api {
 
     func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId, onComplete: @escaping ((Result<Mint, Error>) -> Void)) {
         getAccountInfo(account: mintAddress.base58EncodedString, decodedTo: Mint.self) { result in

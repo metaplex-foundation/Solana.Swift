@@ -1,6 +1,6 @@
 import Foundation
 
-extension Solana {
+extension Api {
     fileprivate func retryOrError(instructions: [TransactionInstruction],
                                   recentBlockhash: String? = nil,
                                   signers: [Account],
@@ -64,7 +64,7 @@ extension Solana {
         .run(onComplete)
     }
 }
-extension Solana {
+extension Api {
     fileprivate func retrySimulateOrError(instructions: [TransactionInstruction],
                                           recentBlockhash: String? = nil,
                                           signers: [Account],

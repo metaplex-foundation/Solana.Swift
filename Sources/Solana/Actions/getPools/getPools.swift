@@ -2,7 +2,7 @@ import Foundation
 
 private var mintDatasCache = [Mint]()
 private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
-extension Solana {
+extension Api {
     struct ParsedSwapInfo: Codable {
         let address: String
         let info: TokenSwapInfo

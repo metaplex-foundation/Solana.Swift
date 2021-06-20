@@ -369,7 +369,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         guard let account = account else { return onComplete(.success(nil)) }
         
         ContResult.init { cb in
-            solanaSDK.getAccountInfo(
+            solanaSDK.api.getAccountInfo(
                 account: account,
                 decodedTo: AccountInfo.self
             ) { cb($0) }

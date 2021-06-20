@@ -5,28 +5,28 @@ import RxBlocking
 
 class getMintData: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solanaSDK: Solana!
-    var account: Account { try! solanaSDK.auth.account.get() }
+    var solana: Solana!
+    var account: Account { try! solana.auth.account.get() }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.auth.save(account).get()
+        try solana.auth.save(account).get()
     }
     
     func testGetMintData() {
-        let data = try! solanaSDK.getMintData(mintAddress: PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!).toBlocking().first()
+        let data = try! solana.api.getMintData(mintAddress: PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!).toBlocking().first()
         XCTAssertNotNil(data)
     }
     
     func testGetMultipleMintDatas() {
-        let datas = try! solanaSDK.getMultipleMintDatas(mintAddresses: [PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!]).toBlocking().first()
+        let datas = try! solana.api.getMultipleMintDatas(mintAddresses: [PublicKey(string: "8wzZaGf89zqx7PRBoxk9T6QyWWQbhwhdU555ZxRnceG3")!]).toBlocking().first()
         XCTAssertNotNil(datas)
     }
     
     func testGetPools() {
-        let pools = try! solanaSDK.getSwapPools().toBlocking().first()
+        let pools = try! solana.api.getSwapPools().toBlocking().first()
         XCTAssertNotNil(pools)
         XCTAssertNotEqual(pools!.count, 0)
     }
