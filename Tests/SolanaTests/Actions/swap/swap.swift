@@ -6,14 +6,14 @@ import RxBlocking
 class swap: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solanaSDK: Solana!
-    var account: Account { solanaSDK.accountStorage.account! }
+    var account: Account { try! solanaSDK.auth.account.get() }
     let publicKey = PublicKey(string: "11111111111111111111111111111111")!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.accountStorage.save(account).get()
+        try solanaSDK.auth.save(account).get()
     }
 
     /*func testSwapToken() {

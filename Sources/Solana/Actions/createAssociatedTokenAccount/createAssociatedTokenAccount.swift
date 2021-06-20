@@ -54,7 +54,7 @@ extension Solana {
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
         // get account
-        guard let payer = payer ?? accountStorage.account else {
+        guard let payer = try? payer ?? auth.account.get() else {
             return onComplete(.failure(SolanaError.unauthorized))
         }
 

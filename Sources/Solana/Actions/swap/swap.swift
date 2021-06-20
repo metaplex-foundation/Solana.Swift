@@ -20,7 +20,7 @@ extension Solana {
         onComplete: @escaping(Result<SwapResponse, Error>) -> Void
     ) {
         // verify account
-        guard let owner = account ?? accountStorage.account else {
+        guard let owner = try? account ?? auth.account.get() else {
              onComplete(.failure(SolanaError.unauthorized))
             return
         }

@@ -7,24 +7,24 @@ import Solana
 class createAssociatedTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solanaSDK: Solana!
-    var account: Account { solanaSDK.accountStorage.account! }
+    var account: Account { try! solanaSDK.auth.account.get() }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.accountStorage.save(account).get()
+        try solanaSDK.auth.save(account).get()
     }
     
     func testGetOrCreateAssociatedTokenAccount() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        let account = try! solanaSDK.getOrCreateAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first()
+        let account = try! solanaSDK.getOrCreateAssociatedTokenAccount(for: solanaSDK.auth.account.get().publicKey, tokenMint: tokenMint).toBlocking().first()
         XCTAssertNotNil(account)
     }
     
     func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        XCTAssertThrowsError(try solanaSDK.createAssociatedTokenAccount(for: solanaSDK.accountStorage.account!.publicKey, tokenMint: tokenMint).toBlocking().first())
+        XCTAssertThrowsError(try solanaSDK.createAssociatedTokenAccount(for: solanaSDK.auth.account.get().publicKey, tokenMint: tokenMint).toBlocking().first())
     }
     func testFindAssociatedTokenAddress() {
         let associatedTokenAddress = try! PublicKey.associatedTokenAddress(

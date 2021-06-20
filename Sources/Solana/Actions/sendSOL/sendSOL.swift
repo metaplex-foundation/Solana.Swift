@@ -7,7 +7,7 @@ extension Solana {
         amount: UInt64,
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
-        guard let account = self.accountStorage.account else {
+        guard let account = try? self.auth.account.get() else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }

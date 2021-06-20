@@ -3,7 +3,7 @@ import Foundation
 extension Solana {
     public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
 
-        guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString else {
+        guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString else {
             return onComplete(.failure(SolanaError.unauthorized))
         }
 

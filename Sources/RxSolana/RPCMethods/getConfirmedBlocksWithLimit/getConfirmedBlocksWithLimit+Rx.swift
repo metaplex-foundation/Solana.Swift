@@ -3,7 +3,6 @@ import RxSwift
 import Solana
 
 public extension Solana {
-    @available(*, deprecated, message: "Use getBlock insted")
     func getConfirmedBlocksWithLimit(startSlot: UInt64, limit: UInt64) -> Single<[UInt64]> {
         Single.create { emitter in
             self.getConfirmedBlocksWithLimit(startSlot: startSlot, limit: limit) {
