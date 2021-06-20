@@ -9,7 +9,7 @@ extension Solana {
         onComplete: @escaping ((Result<String, Error>) -> Void)
     ) {
 
-        guard let feePayer = feePayer ?? accountStorage.account?.publicKey else {
+        guard let feePayer = try? feePayer ?? auth.account.get().publicKey else {
             onComplete(.failure(SolanaError.invalidRequest(reason: "Fee-payer not found")))
             return
         }

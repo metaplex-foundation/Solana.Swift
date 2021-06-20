@@ -3,7 +3,7 @@ import Foundation
 public extension Solana {
     func getBalance(account: String? = nil, commitment: Commitment? = nil, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
 
-        guard let account = account ?? accountStorage.account?.publicKey.base58EncodedString
+        guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString
         else {
             onComplete(.failure(SolanaError.unauthorized))
             return

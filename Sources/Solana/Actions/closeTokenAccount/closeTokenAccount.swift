@@ -6,7 +6,7 @@ extension Solana {
         tokenPubkey: String,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
-        guard let account = account ?? accountStorage.account else {
+        guard let account = try? account ?? auth.account.get() else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }

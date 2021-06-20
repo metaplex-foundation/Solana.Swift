@@ -6,13 +6,13 @@ import RxBlocking
 class serializeAndSendWithFee: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solanaSDK: Solana!
-    var account: Account { solanaSDK.accountStorage.account! }
+    var account: Account { try! solanaSDK.auth.account.get() }
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.accountStorage.save(account)
+        try solanaSDK.auth.save(account).get()
     }
 
     func testSimulationSerializeAndSend() {

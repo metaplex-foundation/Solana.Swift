@@ -12,7 +12,7 @@ class TransactionParserTests: XCTestCase {
         let wallet: TestsWallet = .devnet
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solanaSDK.accountStorage.save(account).get()
+        try solanaSDK.auth.save(account).get()
         
         parser = TransactionParser(solanaSDK: solanaSDK)
     }

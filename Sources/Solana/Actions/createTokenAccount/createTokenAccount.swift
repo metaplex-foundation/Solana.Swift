@@ -10,7 +10,7 @@ extension Solana {
         mintAddress: String,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
-        guard let payer = self.accountStorage.account else {
+        guard let payer = try? self.auth.account.get() else {
             onComplete(.failure(SolanaError.unauthorized))
             return
         }
