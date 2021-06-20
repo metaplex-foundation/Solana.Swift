@@ -44,19 +44,19 @@ class Methods: XCTestCase {
         XCTAssertNotNil(nodes)
     }
     func testGetBlockTime() {
-        let date = try! solana.api.getBlockTime(block: 61968801).toBlocking().first()
+        let date = try! solana.api.getBlockTime(block: 63426807).toBlocking().first()
         XCTAssertNotNil(date!)
     }
     func testGetConfirmedBlock() {
-        let block = try! solana.api.getConfirmedBlock(slot: 61998730).toBlocking().first()
+        let block = try! solana.api.getConfirmedBlock(slot: 63426807).toBlocking().first()
         XCTAssertNotNil(block)
     }
     func testGetConfirmedBlocks() {
-        let blocks = try! solana.api.getConfirmedBlocks(startSlot:61998720, endSlot: 61998730).toBlocking().first()
+        let blocks = try! solana.api.getConfirmedBlocks(startSlot:63426807, endSlot: 63426808).toBlocking().first()
         XCTAssertNotNil(blocks)
     }
     func testGetConfirmedBlocksWithLimit() {
-        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:61998720, limit: 10).toBlocking().first()
+        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:63426800, limit: 10).toBlocking().first()
         XCTAssertNotNil(blocks)
     }
     func testGetConfirmedSignaturesForAddress() {
