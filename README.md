@@ -7,13 +7,15 @@ This is a open source library on pure swift for Solana protocol.
 
 The objective is to create a cross platform, fully functional, highly tested and less depencies as posible. The project is still at initial stage. Lots of changes chan happen to the exposed api.
 
+Please check my wallet [Summer](https://github.com/ajamaica/Summer).
+
 # Features
 - [x] Sign and send transactions.
 - [x] Key pair generation
 - [x] RPC configuration.
 - [x] SPM integration
 - [x] Few libraries requirement (Commoncrypto, TweetNACL). Rxswift is optional.
-- [53%] Fully tested 
+- [x] Fully tested (53%)
 - [ ] Sockets
 
 # Usage
