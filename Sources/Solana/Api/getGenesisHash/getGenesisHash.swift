@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getGenesisHash(onComplete: @escaping(Result<String, Error>)->Void) {
+public extension Api {
+    func getGenesisHash(onComplete: @escaping(Result<String, Error>)->Void) {
         router.request { (result: Result<String, Error>) in
             switch result {
             case .success(let hash):

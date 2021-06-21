@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getClusterNodes() -> Single<[ClusterNodes]> {
         Single.create { emitter in
             self.getClusterNodes {

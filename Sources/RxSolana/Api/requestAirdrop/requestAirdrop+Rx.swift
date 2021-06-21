@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func requestAirdrop(account: String, lamports: UInt64, commitment: Commitment? = nil) -> Single<String> {
+public extension Api {
+    func requestAirdrop(account: String, lamports: UInt64, commitment: Commitment? = nil) -> Single<String> {
         Single.create { emitter in
             self.requestAirdrop(account: account, lamports: lamports, commitment: commitment) {
                 switch $0 {

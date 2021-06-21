@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getProgramAccounts<T: BufferLayout>(publicKey: String,
+public extension Api {
+    func getProgramAccounts<T: BufferLayout>(publicKey: String,
                                                     configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
                                                     decodedTo: T.Type,
                                                     onComplete: @escaping (Result<[ProgramAccount<T>], Error>) -> Void) {

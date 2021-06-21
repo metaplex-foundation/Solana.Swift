@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getVersion(onComplete: @escaping(Result<Version, Error>)->Void) {
+public extension Api{
+    func getVersion(onComplete: @escaping(Result<Version, Error>)->Void) {
         router.request { (result: Result<Version, Error>) in
             switch result {
             case .success(let version):

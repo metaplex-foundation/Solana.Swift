@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getIdentity(onComplete: @escaping(Result<Identity, Error>)->Void) {
+public extension Api {
+    func getIdentity(onComplete: @escaping(Result<Identity, Error>)->Void) {
         router.request { (result: Result<Identity, Error>) in
             switch result {
             case .success(let identity):

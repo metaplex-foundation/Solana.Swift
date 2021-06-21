@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getLargestAccounts() -> Single<[LargestAccount]> {
         Single.create { emitter in
             self.getLargestAccounts {
