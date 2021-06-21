@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getFirstAvailableBlock() -> Single<UInt64> {
+public extension Api {
+    func getFirstAvailableBlock() -> Single<UInt64> {
         Single.create { emitter in
             self.getFirstAvailableBlock {
                 switch $0 {

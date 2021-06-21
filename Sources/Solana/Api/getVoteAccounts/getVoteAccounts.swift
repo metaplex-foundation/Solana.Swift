@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getVoteAccounts(commitment: Commitment? = nil, onComplete: @escaping(Result<VoteAccounts, Error>)->Void) {
+public extension Api {
+    func getVoteAccounts(commitment: Commitment? = nil, onComplete: @escaping(Result<VoteAccounts, Error>)->Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<VoteAccounts, Error>) in
             switch result {
             case .success(let accounts):

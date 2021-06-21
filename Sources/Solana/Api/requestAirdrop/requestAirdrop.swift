@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func requestAirdrop(account: String, lamports: UInt64, commitment: Commitment? = nil, onComplete: @escaping(Result<String, Error>)->Void) {
+public extension Api {
+    func requestAirdrop(account: String, lamports: UInt64, commitment: Commitment? = nil, onComplete: @escaping(Result<String, Error>)->Void) {
         router.request(parameters: [account, lamports, RequestConfiguration(commitment: commitment)]) { (result: Result<String, Error>) in
             switch result {
             case .success(let hash):

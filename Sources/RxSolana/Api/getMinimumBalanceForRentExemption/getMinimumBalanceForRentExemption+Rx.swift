@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = "recent") -> Single<UInt64> {
+public extension Api {
+    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = "recent") -> Single<UInt64> {
         Single.create { emitter in
             self.getMinimumBalanceForRentExemption(dataLength: dataLength, commitment: commitment) {
                 switch $0 {

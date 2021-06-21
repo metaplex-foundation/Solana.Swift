@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getInflationRate() -> Single<InflationRate> {
         Single.create { emitter in
             self.getInflationRate {

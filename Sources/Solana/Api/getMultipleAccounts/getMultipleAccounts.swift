@@ -1,7 +1,7 @@
 import Foundation
 
-extension Api {
-    public func getMultipleAccounts<T: BufferLayout>(pubkeys: [String],
+public extension Api {
+    func getMultipleAccounts<T: BufferLayout>(pubkeys: [String],
                                               decodedTo: T.Type,
                                               onComplete: @escaping (Result<[BufferInfo<T>], Error>) -> Void) {
         let configs = RequestConfiguration(encoding: "base64")

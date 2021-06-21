@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getBlockTime(block: UInt64) -> Single<Date?> {
+public extension Api {
+    func getBlockTime(block: UInt64) -> Single<Date?> {
         Single.create { emitter in
             self.getBlockTime(block: block) {
                 switch $0 {

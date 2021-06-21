@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getInflationGovernor(commitment: Commitment? = nil) -> Single<InflationGovernor> {
         Single.create { emitter in
             self.getInflationGovernor(commitment: commitment) {

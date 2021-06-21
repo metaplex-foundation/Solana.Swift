@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getVersion() -> Single<Version> {
         Single.create { emitter in
             self.getVersion {

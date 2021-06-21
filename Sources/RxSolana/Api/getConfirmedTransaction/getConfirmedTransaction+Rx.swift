@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getConfirmedTransaction(transactionSignature: String) -> Single<TransactionInfo> {
+public extension Api {
+    func getConfirmedTransaction(transactionSignature: String) -> Single<TransactionInfo> {
         Single.create { emitter in
             self.getConfirmedTransaction(transactionSignature: transactionSignature) {
                 switch $0 {

@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
+public extension Api {
     public func getIdentity() -> Single<Identity> {
         Single.create { emitter in
             self.getIdentity {

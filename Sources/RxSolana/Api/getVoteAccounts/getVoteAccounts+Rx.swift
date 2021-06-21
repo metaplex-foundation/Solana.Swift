@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getVoteAccounts(commitment: Commitment? = nil) ->  Single<VoteAccounts> {
+public extension Api {
+    func getVoteAccounts(commitment: Commitment? = nil) ->  Single<VoteAccounts> {
         Single.create { emitter in
             self.getVoteAccounts(commitment: commitment) {
                 switch $0 {

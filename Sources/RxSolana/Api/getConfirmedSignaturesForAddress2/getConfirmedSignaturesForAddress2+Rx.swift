@@ -2,8 +2,8 @@ import Foundation
 import RxSwift
 import Solana
 
-extension Api {
-    public func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) -> Single<[SignatureInfo]> {
+public extension Api {
+    func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) -> Single<[SignatureInfo]> {
         Single.create { emitter in
             self.getConfirmedSignaturesForAddress2(account: account, configs: configs) {
                 switch $0 {
