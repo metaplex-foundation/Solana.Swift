@@ -60,8 +60,11 @@ public extension Bignum {
 		}
 		let m = (n + 7) / 8
 		var limbs = Limbs(repeating: 0, count: m)
-		data.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
-			var p = ptr
+		data.withUnsafeBytes { ptr -> Void in
+            guard let typedPointer = ptr.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
+                return
+            }
+			var p = typedPointer
 			let r = n % 8
 			let k = r == 0 ? 8 : r
 			for j in (0..<k).reversed() {
