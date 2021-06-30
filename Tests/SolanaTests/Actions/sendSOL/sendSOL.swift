@@ -17,7 +17,7 @@ class sendSOL: XCTestCase {
     }
     
     func testSendSOLFromBalance() {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+        let toPublicKey = PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!
 
         let balance = try! solana.api.getBalance().toBlocking().first()
         XCTAssertNotNil(balance)
@@ -29,7 +29,7 @@ class sendSOL: XCTestCase {
         XCTAssertNotNil(transactionId)
     }
     func testSendSOL() {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+        let toPublicKey = PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!
         let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
@@ -37,14 +37,14 @@ class sendSOL: XCTestCase {
         XCTAssertNotNil(transactionId)
     }
     func testSendSOLIncorrectDestination() {
-        let toPublicKey = "XX"
+        let toPublicKey = PublicKey(string: "XX")!
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
         ).toBlocking().first())
     }
     func testSendSOLBigAmmount() {
-        let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
+        let toPublicKey = PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 9223372036854775808

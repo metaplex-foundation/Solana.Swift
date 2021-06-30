@@ -3,7 +3,7 @@ import RxSwift
 
 extension Action {
     public func sendSOL(
-        to destination: String,
+        to destination: PublicKey,
         amount: UInt64,
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
@@ -13,7 +13,7 @@ extension Action {
         }
 
         let fromPublicKey = account.publicKey
-        if fromPublicKey.base58EncodedString == destination {
+        if fromPublicKey.base58EncodedString == destination.base58EncodedString {
             onComplete(.failure(SolanaError.other("You can not send tokens to yourself")))
             return
         }
@@ -40,14 +40,11 @@ extension Action {
                 onComplete(.failure(SolanaError.other("Invalid account info")))
                 return
             }
-            guard let to = PublicKey(string: destination) else {
-                onComplete(.failure(SolanaError.invalidPublicKey))
-                return
-            }
+            
 
             let instruction = SystemProgram.transferInstruction(
                 from: fromPublicKey,
-                to: to,
+                to: destination,
                 lamports: amount
             )
             self.serializeAndSendWithFee(

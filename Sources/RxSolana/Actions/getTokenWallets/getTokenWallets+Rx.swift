@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 extension Action {
-    public func getTokenWallets(account: String? = nil) -> Single<[Wallet]> {
+    public func getTokenWallets(account: PublicKey) -> Single<[Wallet]> {
         Single.create { emitter in
             self.getTokenWallets(account: account) { result in
                 switch result {

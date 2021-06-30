@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 private var mintDatasCache = [Mint]()
-private let swapProgramId = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8"
+private let swapProgramId = PublicKey(string: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8")!
 extension Action {
 
     public func getSwapPools() -> Single<[Pool]> {
@@ -16,7 +16,7 @@ extension Action {
             }
     }
 
-    public func getPools(swapProgramId: String) -> Single<[Pool]> {
+    public func getPools(swapProgramId: PublicKey) -> Single<[Pool]> {
         Single.create { emitter in
             self.getPools(swapProgramId: swapProgramId) { result in
                 switch result {

@@ -1,11 +1,7 @@
 import Foundation
 
 extension Action {
-    public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
-
-        guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString else {
-            return onComplete(.failure(SolanaError.unauthorized))
-        }
+    public func getTokenWallets(account: PublicKey, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
 
         let memcmp = EncodableWrapper(
             wrapped:
@@ -20,7 +16,7 @@ extension Action {
 
         ContResult.init { cb in
             self.api.getProgramAccounts(
-                publicKey: PublicKey.tokenProgramId.base58EncodedString,
+                publicKey: PublicKey.tokenProgramId,
                 configs: configs,
                 decodedTo: AccountInfo.self
             ) { cb($0) }

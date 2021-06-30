@@ -7,7 +7,7 @@ extension Action {
     }
 
     public func createTokenAccount(
-        mintAddress: String,
+        mintAddress: PublicKey,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
         guard let payer = try? self.auth.account.get() else {
@@ -31,7 +31,7 @@ extension Action {
     }
 
     fileprivate func callGetCreateTokenAccountFee(
-        mintAddress: String,
+        mintAddress: PublicKey,
         payer: Account,
         recentBlockhash: String,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
@@ -53,16 +53,12 @@ extension Action {
         }
     }
 
-    fileprivate func signAndSend(mintAddress: String,
+    fileprivate func signAndSend(mintAddress: PublicKey,
                           payer: Account,
                           recentBlockhash: String,
                           minBalance: UInt64,
                           onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)) {
 
-        guard let mintAddress = PublicKey(string: mintAddress) else {
-            onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
         // create new account for token
         guard let newAccount = Account(network: self.router.endpoint.network) else {
             onComplete(.failure(SolanaError.unauthorized))

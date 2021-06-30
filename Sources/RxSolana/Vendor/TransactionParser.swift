@@ -8,7 +8,7 @@ extension TransactionParser {
     // MARK: - Methods
     public func parse(
         transactionInfo: TransactionInfo,
-        myAccount: String?,
+        myAccount: PublicKey?,
         myAccountSymbol: String?
     ) -> Single<AnyTransaction> {
         Single.create { emitter in

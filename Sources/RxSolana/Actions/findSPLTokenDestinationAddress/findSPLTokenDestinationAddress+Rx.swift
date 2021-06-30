@@ -4,8 +4,8 @@ import Solana
 
 extension Action {
     public func findSPLTokenDestinationAddress(
-        mintAddress: String,
-        destinationAddress: String
+        mintAddress: PublicKey,
+        destinationAddress: PublicKey
     ) -> Single<SPLTokenDestinationAddress> {
         Single.create { emitter in
             self.findSPLTokenDestinationAddress(mintAddress: mintAddress, destinationAddress: destinationAddress) {

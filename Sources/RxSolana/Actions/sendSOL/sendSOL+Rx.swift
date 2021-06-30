@@ -4,7 +4,7 @@ import Solana
 
 extension Action {
     public func sendSOL(
-        to destination: String,
+        to destination: PublicKey,
         amount: UInt64
     ) -> Single<TransactionID> {
         Single.create { emitter in

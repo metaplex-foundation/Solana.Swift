@@ -36,7 +36,7 @@ extension Action {
         }
     }
 
-    public func getAccountInfoData(account: String, tokenProgramId: PublicKey) -> Single<AccountInfo> {
+    public func getAccountInfoData(account: PublicKey, tokenProgramId: PublicKey) -> Single<AccountInfo> {
         Single.create { emitter in
             self.getAccountInfoData(account: account, tokenProgramId: tokenProgramId) {
                 switch $0 {

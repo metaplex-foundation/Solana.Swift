@@ -55,7 +55,7 @@ extension Action {
         let accountInfoCall: (Pool) -> ContResult<AccountInfo, Error> = { pool in
             ContResult<AccountInfo, Error>.init { cb in
                 self.getAccountInfoData(
-                    account: pool.swapData.tokenAccountA.base58EncodedString,
+                    account: pool.swapData.tokenAccountA,
                     tokenProgramId: .tokenProgramId
                 ) {
                     cb($0)
@@ -188,7 +188,7 @@ extension Action {
         }.run(onComplete)
     }
 
-    public func getAccountInfoData(account: String,
+    public func getAccountInfoData(account: PublicKey,
                                     tokenProgramId: PublicKey,
                                     onComplete: @escaping (Result<AccountInfo, Error>)-> Void) {
         self.api.getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in

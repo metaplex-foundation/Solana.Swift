@@ -2,10 +2,10 @@ import Foundation
 
 extension Action {
     public func sendSPLTokens(
-        mintAddress: String,
+        mintAddress: PublicKey,
         decimals: Decimals,
-        from fromPublicKey: String,
-        to destinationAddress: String,
+        from fromPublicKey: PublicKey,
+        to destinationAddress: PublicKey,
         amount: UInt64,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
@@ -23,23 +23,16 @@ extension Action {
             let toPublicKey = destination
 
             // catch error
-            guard fromPublicKey != toPublicKey.base58EncodedString else {
+            guard fromPublicKey.base58EncodedString != toPublicKey.base58EncodedString else {
                 return .failure(SolanaError.invalidPublicKey)
             }
 
-            guard let fromPublicKey = PublicKey(string: fromPublicKey) else {
-                return .failure( SolanaError.invalidPublicKey)
-            }
             var instructions = [TransactionInstruction]()
 
             // create associated token address
             if isUnregisteredAsocciatedToken {
-                guard let mint = PublicKey(string: mintAddress) else {
-                    return .failure(SolanaError.invalidPublicKey)
-                }
-                guard let owner = PublicKey(string: destinationAddress) else {
-                    return .failure(SolanaError.invalidPublicKey)
-                }
+                let mint = mintAddress
+                let owner = destinationAddress
 
                 let createATokenInstruction = AssociatedTokenProgram.createAssociatedTokenAccountInstruction(
                     mint: mint,

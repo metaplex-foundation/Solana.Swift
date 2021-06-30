@@ -16,7 +16,7 @@ class Methods: XCTestCase {
     }
 
     func testGetAccountInfo() {
-        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: account.publicKey.base58EncodedString, decodedTo: AccountInfo.self).toBlocking().first()
+        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: account.publicKey, decodedTo: AccountInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
     }
@@ -27,7 +27,7 @@ class Methods: XCTestCase {
         XCTAssertNotNil(info[0]?.data)
     }
     func testGetProgramAccounts() {
-        let info = try! solana.api.getProgramAccounts(publicKey: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8", decodedTo: TokenSwapInfo.self).toBlocking().first()
+        let info = try! solana.api.getProgramAccounts(publicKey: PublicKey(string:"SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8")!, decodedTo: TokenSwapInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
     }
     func testGetBlockCommitment() {

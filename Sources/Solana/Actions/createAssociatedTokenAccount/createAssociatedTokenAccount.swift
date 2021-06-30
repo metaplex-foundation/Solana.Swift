@@ -17,7 +17,7 @@ extension Action {
         }
 
         api.getAccountInfo(
-            account: associatedAddress.base58EncodedString,
+            account: associatedAddress,
             decodedTo: AccountInfo.self
         ) { acountInfoResult in
             switch acountInfoResult {

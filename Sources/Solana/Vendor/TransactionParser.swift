@@ -2,7 +2,7 @@ import Foundation
 import RxSwift
 
 public protocol SolanaSDKTransactionParserType {
-    func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ())
+    func parse(transactionInfo: TransactionInfo, myAccount: PublicKey?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ())
 }
 
 public struct TransactionParser: SolanaSDKTransactionParserType {
@@ -16,7 +16,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
     }
     
     // MARK: - Methods
-    public func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ()) {
+    public func parse(transactionInfo: TransactionInfo, myAccount: PublicKey?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ()) {
         // get data
         let innerInstructions = transactionInfo.meta?.innerInstructions
         let instructions = transactionInfo.transaction.message.instructions
@@ -166,7 +166,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
     fileprivate func parseTransferTransaction(
         instruction: ParsedInstruction,
         postTokenBalances: [TokenBalance],
-        myAccount: String?,
+        myAccount: PublicKey?,
         accountKeys: [Account.Meta],
         onComplete: @escaping (Result<TransferTransaction, Error>) -> ()
     ) {
@@ -175,23 +175,23 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         var destination: Wallet?
         
         // get pubkeys
-        let sourcePubkey = instruction.parsed?.info.source
-        let destinationPubkey = instruction.parsed?.info.destination
+        let sourcePubkey = PublicKey(string: instruction.parsed!.info.source!)!
+        let destinationPubkey = PublicKey(string: instruction.parsed!.info.destination!)!
         
         // get lamports
         let lamports = instruction.parsed?.info.lamports ?? UInt64(instruction.parsed?.info.amount ?? instruction.parsed?.info.tokenAmount?.amount ?? "0")
         
         // SOL to SOL
         if instruction.programId == PublicKey.programId.base58EncodedString {
-            source = Wallet.nativeSolana(pubkey: sourcePubkey, lamport: nil)
-            destination = Wallet.nativeSolana(pubkey: destinationPubkey, lamport: nil)
+            source = Wallet.nativeSolana(pubkey: sourcePubkey.base58EncodedString, lamport: nil)
+            destination = Wallet.nativeSolana(pubkey: destinationPubkey.base58EncodedString, lamport: nil)
             
             return onComplete(.success(
                                 TransferTransaction(
                                     source: source,
                                     destination: destination,
                                     amount: lamports?.convertToBalance(decimals: source!.token.decimals),
-                                    myAccount: myAccount
+                                    myAccount: myAccount?.base58EncodedString
                                 ))
             )
         } else {
@@ -199,19 +199,19 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             if let tokenBalance = postTokenBalances.first(where: {!$0.mint.isEmpty}) {
                 let token = getTokenWithMint(tokenBalance.mint)
                 
-                source = Wallet(pubkey: sourcePubkey, lamports: nil, token: token)
-                destination = Wallet(pubkey: destinationPubkey, lamports: nil, token: token)
+                source = Wallet(pubkey: sourcePubkey.base58EncodedString, lamports: nil, token: token)
+                destination = Wallet(pubkey: destinationPubkey.base58EncodedString, lamports: nil, token: token)
                 
                 // if the wallet that is opening is SOL, then modify myAccount
                 var myAccount = myAccount
-                if sourcePubkey != myAccount && destinationPubkey != myAccount,
+                if sourcePubkey != myAccount && destinationPubkey.base58EncodedString != myAccount?.base58EncodedString,
                    accountKeys.count >= 4 {
                     // send
-                    if myAccount == accountKeys[0].publicKey.base58EncodedString {
+                    if myAccount?.base58EncodedString == accountKeys[0].publicKey.base58EncodedString {
                         myAccount = sourcePubkey
                     }
                     
-                    if myAccount == accountKeys[3].publicKey.base58EncodedString {
+                    if myAccount?.base58EncodedString == accountKeys[3].publicKey.base58EncodedString {
                         myAccount = destinationPubkey
                     }
                 }
@@ -221,7 +221,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                                         source: source,
                                         destination: destination,
                                         amount: lamports?.convertToBalance(decimals: source?.token.decimals),
-                                        myAccount: myAccount
+                                        myAccount: myAccount?.base58EncodedString
                                     ))
                 )
             } else {
@@ -230,14 +230,14 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                     getAccountInfo(account: sourcePubkey, retryWithAccount: destinationPubkey) { cb($0) }
                 }.map { info in
                     let token = getTokenWithMint(info?.mint.base58EncodedString)
-                    source = Wallet(pubkey: sourcePubkey, lamports: nil, token: token)
-                    destination = Wallet(pubkey: destinationPubkey, lamports: nil, token: token)
+                    source = Wallet(pubkey: sourcePubkey.base58EncodedString, lamports: nil, token: token)
+                    destination = Wallet(pubkey: destinationPubkey.base58EncodedString, lamports: nil, token: token)
                     
                     return TransferTransaction(
                         source: source,
                         destination: destination,
                         amount: lamports?.convertToBalance(decimals: source?.token.decimals),
-                        myAccount: myAccount
+                        myAccount: myAccount?.base58EncodedString
                     )
                 }.run(onComplete)
             }
@@ -300,16 +300,18 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         var sourcePubkey: PublicKey?
         if let sourceString = sourceInfo?.source {
             sourcePubkey = PublicKey(string: sourceString)
+            let retryWithAccount = PublicKey(string: sourceInfo!.source!)
             request1 = ContResult<AccountInfo?, Error>.init { cb in
-                getAccountInfo(account: sourceString, retryWithAccount: sourceInfo?.destination) { cb($0) }
+                getAccountInfo(account: sourcePubkey, retryWithAccount: retryWithAccount) { cb($0) }
             }
         }
         
         var destinationPubkey: PublicKey?
         if let destinationString = destinationInfo?.destination {
             destinationPubkey = PublicKey(string: destinationString)
+            let retryWithAccount = PublicKey(string: destinationInfo!.source!)
             request2 = ContResult<AccountInfo?, Error>.init { cb in
-                getAccountInfo(account: destinationString, retryWithAccount: destinationInfo?.source) { cb($0) }
+                getAccountInfo(account: destinationPubkey, retryWithAccount: retryWithAccount) { cb($0) }
             }
         }
         // get token account info
@@ -364,7 +366,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         return solanaSDK.supportedTokens.first(where: {$0.address == mint}) ?? .unsupported(mint: mint)
     }
     
-    fileprivate func getAccountInfo(account: String?, retryWithAccount retryAccount: String? = nil, onComplete: @escaping (Result<AccountInfo?, Error>) -> ()) {
+    fileprivate func getAccountInfo(account: PublicKey?, retryWithAccount retryAccount: PublicKey? = nil, onComplete: @escaping (Result<AccountInfo?, Error>) -> ()) {
         
         guard let account = account else { return onComplete(.success(nil)) }
         

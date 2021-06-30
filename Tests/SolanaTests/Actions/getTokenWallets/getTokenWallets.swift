@@ -16,7 +16,8 @@ class getTokenWallets: XCTestCase {
     }
     
     func testsGetTokenWallets() {
-        let wallets = try! solana.action.getTokenWallets().toBlocking().first()
+        let publicKey = try! solana.action.auth.account.get().publicKey
+        let wallets = try! solana.action.getTokenWallets(account: publicKey).toBlocking().first()
         XCTAssertNotNil(wallets)
     }
 }

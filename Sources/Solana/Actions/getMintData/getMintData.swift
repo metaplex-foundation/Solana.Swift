@@ -3,7 +3,7 @@ import Foundation
 public extension Action {
 
     func getMintData(mintAddress: PublicKey, programId: PublicKey = .tokenProgramId, onComplete: @escaping ((Result<Mint, Error>) -> Void)) {
-        self.api.getAccountInfo(account: mintAddress.base58EncodedString, decodedTo: Mint.self) { result in
+        self.api.getAccountInfo(account: mintAddress, decodedTo: Mint.self) { result in
             switch result {
             case .success(let account):
                 if account.owner != programId.base58EncodedString {

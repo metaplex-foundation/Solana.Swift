@@ -4,10 +4,10 @@ import Solana
 
 extension Action {
     public func sendSPLTokens(
-        mintAddress: String,
+        mintAddress: PublicKey,
         decimals: Decimals,
-        from fromPublicKey: String,
-        to destinationAddress: String,
+        from fromPublicKey: PublicKey,
+        to destinationAddress: PublicKey,
         amount: UInt64
     ) -> Single<TransactionID> {
         Single.create { emitter in

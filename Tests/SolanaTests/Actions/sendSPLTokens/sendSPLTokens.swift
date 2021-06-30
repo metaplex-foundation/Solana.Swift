@@ -17,9 +17,9 @@ class sendSPLTokens: XCTestCase {
     }
     
     func testSendSPLTokenWithFee() {
-        let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let source = "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ"
-        let destination = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
+        let mintAddress = PublicKey(string: "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH")!
+        let source = PublicKey(string: "8hoBQbSFKfDK3Mo7Wwc15Pp2bbkYuJE8TdQmnHNDjXoQ")!
+        let destination = PublicKey(string: "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB")!
 
         let transactionId = try! solana.action.sendSPLTokens(
             mintAddress: mintAddress,

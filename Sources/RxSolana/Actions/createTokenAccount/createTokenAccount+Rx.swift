@@ -4,7 +4,7 @@ import Solana
 
 extension Action {
     public func createTokenAccount(
-        mintAddress: String
+        mintAddress: PublicKey
     ) -> Single<(signature: String, newPubkey: String)> {
         Single.create { emitter in
             self.createTokenAccount(mintAddress: mintAddress) {

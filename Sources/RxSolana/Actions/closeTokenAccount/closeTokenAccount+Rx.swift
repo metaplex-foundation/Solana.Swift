@@ -4,8 +4,8 @@ import Solana
 
 extension Action {
     public func closeTokenAccount(
-        account: Account? = nil,
-        tokenPubkey: String
+        account: Account,
+        tokenPubkey: PublicKey
     ) -> Single<TransactionID> {
         Single.create { emitter in
             self.closeTokenAccount(account: account, tokenPubkey: tokenPubkey) {
