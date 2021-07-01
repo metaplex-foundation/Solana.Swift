@@ -16,15 +16,17 @@ class Methods: XCTestCase {
     }
 
     func testGetAccountInfo() {
-        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: account.publicKey.base58EncodedString, decodedTo: AccountInfo.self).toBlocking().first()
+        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: "So11111111111111111111111111111111111111112", decodedTo: AccountInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
+        XCTAssertTrue(info!.lamports > 0)
     }
     
     func testGetMultipleAccounts() {
-        let info: [BufferInfo<AccountInfo>?] = try! solana.api.getMultipleAccounts(pubkeys: [account.publicKey.base58EncodedString], decodedTo: AccountInfo.self).toBlocking().first()!!
-        XCTAssertNotNil(info)
-        XCTAssertNotNil(info[0]?.data)
+        let accounts: [BufferInfo<AccountInfo>?] = try! solana.api.getMultipleAccounts(pubkeys: ["skynetDj29GH6o6bAqoixCpDuYtWqi1rm8ZNx1hB3vq","namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX"], decodedTo: AccountInfo.self).toBlocking().first()!!
+        XCTAssertNotNil(accounts)
+        XCTAssertTrue(accounts.count == 2)
+        XCTAssertNotNil(accounts[0]?.data)
     }
     func testGetProgramAccounts() {
         let info = try! solana.api.getProgramAccounts(publicKey: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8", decodedTo: TokenSwapInfo.self).toBlocking().first()
@@ -33,15 +35,18 @@ class Methods: XCTestCase {
     func testGetBlockCommitment() {
         let block = try! solana.api.getBlockCommitment(block: 82493733).toBlocking().first()
         XCTAssertNotNil(block)
+        XCTAssertTrue(block!.totalStake > 0)
     }
   
     func testGetBalance() {
         let value = try! solana.api.getBalance(account: account.publicKey.base58EncodedString).toBlocking().first()
         XCTAssertNotNil(value)
+        XCTAssertTrue(value! > 0)
     }
     func testGetClusterNodes() {
         let nodes = try! solana.api.getClusterNodes().toBlocking().first()
         XCTAssertNotNil(nodes)
+        XCTAssertTrue(nodes!.count > 0);
     }
     func testGetBlockTime() {
         let date = try! solana.api.getBlockTime(block: 63426807).toBlocking().first()
@@ -50,14 +55,17 @@ class Methods: XCTestCase {
     func testGetConfirmedBlock() {
         let block = try! solana.api.getConfirmedBlock(slot: 63426807).toBlocking().first()
         XCTAssertNotNil(block)
+        XCTAssertEqual(63426806, block!.parentSlot);
     }
     func testGetConfirmedBlocks() {
         let blocks = try! solana.api.getConfirmedBlocks(startSlot:63426807, endSlot: 63426808).toBlocking().first()
         XCTAssertNotNil(blocks)
+        XCTAssertEqual(blocks!.count, 2);
     }
     func testGetConfirmedBlocksWithLimit() {
         let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:63426800, limit: 10).toBlocking().first()
         XCTAssertNotNil(blocks)
+        XCTAssertEqual(blocks!.count, 10);
     }
     func testGetConfirmedSignaturesForAddress() {
         let signatures = try! solana.api.getConfirmedSignaturesForAddress(account: "Vote111111111111111111111111111111111111111", startSlot: 61968701, endSlot: 61968801).toBlocking().first()
@@ -68,8 +76,9 @@ class Methods: XCTestCase {
         XCTAssertEqual(result?.count, 10)
     }
     func testGetConfirmedTransaction() {
-        let result = try! solana.api.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth").toBlocking().first()
-        XCTAssertNotNil(result)
+        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth").toBlocking().first()
+        XCTAssertNotNil(transaction)
+        XCTAssertEqual(transaction!.blockTime, 1623983206)
     }
     func testGetEpochInfo() {
         let epoch = try! solana.api.getEpochInfo().toBlocking().first()
@@ -79,20 +88,33 @@ class Methods: XCTestCase {
         let epoch = try! solana.api.getEpochSchedule().toBlocking().first()
         XCTAssertNotNil(epoch)
     }
-    func testGetFeeCalculatorForBlockhashExpired() {
-        XCTAssertThrowsError(try solana.api.getFeeCalculatorForBlockhash(blockhash: "3pkUeCqmzESag2V2upuvxsFqbAmejBerWNMCSvUTeTQt").toBlocking().first())
+    func testGetFeeCalculatorForBlockhash() {
+        let hash = try! solana.api.getRecentBlockhash().toBlocking().first()
+        let fee = try! solana.api.getFeeCalculatorForBlockhash(blockhash: hash!).toBlocking().first()
+        XCTAssertNotNil(fee)
+        XCTAssertTrue(fee!.feeCalculator!.lamportsPerSignature > 0)
     }
     func testGetFeeRateGovernor() {
-        let fee = try! solana.api.getFeeRateGovernor().toBlocking().first()
-        XCTAssertNotNil(fee)
+        let feeRateGovernorInfo = try! solana.api.getFeeRateGovernor().toBlocking().first()
+        XCTAssertNotNil(feeRateGovernorInfo)
+        
+        XCTAssertTrue(feeRateGovernorInfo!.feeRateGovernor!.burnPercent > 0)
+        XCTAssertTrue(feeRateGovernorInfo!.feeRateGovernor!.maxLamportsPerSignature > 0)
+        XCTAssertTrue(feeRateGovernorInfo!.feeRateGovernor!.minLamportsPerSignature > 0)
+        XCTAssertTrue(feeRateGovernorInfo!.feeRateGovernor!.targetLamportsPerSignature >= 0)
+        XCTAssertTrue(feeRateGovernorInfo!.feeRateGovernor!.targetSignaturesPerSlot >= 0)
     }
     func testGetFees() {
-        let fee = try! solana.api.getFees().toBlocking().first()
-        XCTAssertNotNil(fee)
+        let feesInfo = try! solana.api.getFees().toBlocking().first()
+        XCTAssertNotNil(feesInfo)
+        XCTAssertNotEqual("", feesInfo!.blockhash)
+        XCTAssertTrue(feesInfo!.feeCalculator!.lamportsPerSignature > 0)
+        XCTAssertTrue(feesInfo!.lastValidSlot! > 0)
     }
     func testGetFirstAvailableBlock() {
         let block = try! solana.api.getFirstAvailableBlock().toBlocking().first()
         XCTAssertNotNil(block)
+        XCTAssertTrue(0 <= block!)
     }
     func testGetGenesisHash() {
         let hash = try! solana.api.getGenesisHash().toBlocking().first()
@@ -160,16 +182,20 @@ class Methods: XCTestCase {
     }
     func testGetStakeActivation() {
         // https://explorer.solana.com/address/HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf?cluster=devnet
-        let hash = try! solana.api.getStakeActivation(stakeAccount: "HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf").toBlocking().first()
+        let stakeActivation = try! solana.api.getStakeActivation(stakeAccount: "HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf").toBlocking().first()
+        XCTAssertNotNil(stakeActivation);
+        XCTAssertEqual("active", stakeActivation!.state);
+        XCTAssertTrue(stakeActivation!.active > 0);
+        XCTAssertEqual(0, stakeActivation!.inactive);
         XCTAssertNotNil(hash)
     }
     func testGetSignatureStatuses() {
-        let count = try! solana.api.getSignatureStatuses(pubkeys: ["3o2Jk6wsPY5eEXaXr1cC3a4uZcjFVxc5VnKR5kXvXD8E6DnqGfikovk4u6Ts7zSAewmbYiUby9tAzHeUtGTLFcdK"]).toBlocking().first()
+        let count = try! solana.api.getSignatureStatuses(pubkeys: ["3nVfYabxKv9ohGb4nXF3EyJQnbVcGVQAm2QKzdPrsemrP4D8UEZEzK8bCWgyTFif6mjo99akvHcCbxiEKzN5L9ZG"]).toBlocking().first()
         XCTAssertNotNil(count)
+
     }
     
     /* Tokens */
-    
     func testGetTokenAccountBalance() {
         let tokenAddress = "FzhfekYF625gqAemjNZxjgTZGwfJpavMZpXCLFdypRFD"
         let balance = try! solana.api.getTokenAccountBalance(pubkey: tokenAddress).toBlocking().first()
@@ -177,20 +203,24 @@ class Methods: XCTestCase {
         XCTAssertNotNil(balance?.amount)
         XCTAssertNotNil(balance?.decimals)
     }
-    // TODO: Find a valid combination
-    /*func testGetTokenAccountsByDelegate() {
-        let address = "8Poh9xusEcKtmYZ9U4FSfjrrrQR155TLWGAsyFWjjKxB"
-        let balance = try solana.api.getTokenAccountsByDelegate(pubkey: address, mint: "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH").toBlocking().first()!
-        XCTAssertNotNil(balance[0])
+
+    func testGetTokenAccountsByDelegate() {
+        let address = "AoUnMozL1ZF4TYyVJkoxQWfjgKKtu8QUK9L4wFdEJick"
+        let tokenAccount = try! solana.api.getTokenAccountsByDelegate(pubkey: address, programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").toBlocking().first()
+        XCTAssertNotNil(tokenAccount)
+        XCTAssertTrue(tokenAccount!.isEmpty);
     }
+    
     func testGetTokenAccountsByOwner() {
-        let address = "2ST2CedQ1QT7f2G31Qws9n7GFj7C56fKnhbxnvLymFwU"
-        let balance = try solana.api.getTokenAccountsByOwner(pubkey: address, mint: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
-        XCTAssertNotNil(balance[0])
-    }*/
+        let address = "AoUnMozL1ZF4TYyVJkoxQWfjgKKtu8QUK9L4wFdEJick"
+        let balance = try! solana.api.getTokenAccountsByOwner(pubkey: address, mint: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()
+        XCTAssertTrue(balance!.isEmpty)
+    }
     func testGetTokenSupply() {
-        let supply = try! solana.api.getTokenSupply(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
-        XCTAssertNotNil(supply)
+        let tokenSupply = try! solana.api.getTokenSupply(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
+        XCTAssertNotNil(tokenSupply)
+        XCTAssertEqual(6, tokenSupply.decimals)
+        XCTAssertTrue(tokenSupply.uiAmount > 0)
     }
     func testGetTokenLargestAccounts() {
         let accounts = try! solana.api.getTokenLargestAccounts(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8").toBlocking().first()!
