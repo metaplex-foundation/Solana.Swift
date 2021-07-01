@@ -17,6 +17,9 @@ Please check my wallet [Summer](https://github.com/ajamaica/Summer).
 - [x] Few libraries requirement (Commoncrypto, TweetNACL). Rxswift is optional.
 - [x] Fully tested (53%)
 - [ ] Sockets
+- [ ] Type-safe Transaction templates
+- [ ] Documentation with guides and examples
+- [ ] Program template library for common tasks
 
 # Usage
 
