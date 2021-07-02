@@ -70,4 +70,25 @@ class BorshCodableTests: XCTestCase {
         
         XCTAssertEqual(key2.base58EncodedString, key.base58EncodedString)
     }
+    
+    func test_should_deserialize_accountInfo(){
+        let expectedBuf = Data(base64Encoded: "BhrZ0FOHFUhTft4+JhhJo9+3/QL6vHWyI8jkatuFPQwCqmOzhzy1ve5l2AqL0ottCChJZ1XSIW3k3C7TaBQn7aCGAQAAAAAAAQAAAOt6vNDYdevCbaGxgaMzmz7yoxaVu3q9vGeCc7ytzeWqAQAAAAAAAAAAAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")!
+        
+        let generateInfo = try! BorshDecoder().decode(AccountInfo.self, from: expectedBuf)
+        let generatedBuf = try! BorshEncoder().encode(generateInfo)
+        
+        XCTAssertEqual(expectedBuf.bytes.count, generatedBuf.bytes.count)
+        XCTAssertEqual(expectedBuf.bytes, generatedBuf.bytes)
+
+                
+        XCTAssertEqual("QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo", generateInfo.mint.base58EncodedString)
+        XCTAssertEqual("BQWWFhzBdw2vKKBUX17NHeFbCoFQHfRARpdztPE2tDJ", generateInfo.owner.base58EncodedString)
+        XCTAssertEqual("GrDMoeqMLFjeXQ24H56S1RLgT4R76jsuWCd6SvXyGPQ5", generateInfo.delegate?.base58EncodedString)
+        XCTAssertEqual(100, generateInfo.delegatedAmount)
+        XCTAssertEqual(false, generateInfo.isNative)
+        XCTAssertEqual(true, generateInfo.isInitialized)
+        XCTAssertEqual(false, generateInfo.isFrozen)
+        XCTAssertNil(generateInfo.rentExemptReserve)
+        XCTAssertNil(generateInfo.closeAuthority)
+    }
 }
