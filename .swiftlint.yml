@@ -9,6 +9,7 @@ disabled_rules:
   - file_length
   - empty_count
   - type_name
+  - shorthand_operator
 
 force_cast: warning
 force_try:
