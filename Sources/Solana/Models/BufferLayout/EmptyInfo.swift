@@ -1,15 +1,7 @@
 import Foundation
 
 public struct EmptyInfo: BufferLayout {
-    init() {}
-    
-    public init?(_ keys: [String: [UInt8]]) {
-        self = EmptyInfo()
-    }
-    
-    public static func layout() -> [(key: String?, length: Int)] {
-        []
-    }
+    public static var BUFFER_LENGTH: UInt64 = 0
 }
 
 extension EmptyInfo: BorshCodable {

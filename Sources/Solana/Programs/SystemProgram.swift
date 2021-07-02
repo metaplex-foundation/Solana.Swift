@@ -10,7 +10,7 @@ public struct SystemProgram {
         from fromPublicKey: PublicKey,
         toNewPubkey newPubkey: PublicKey,
         lamports: UInt64,
-        space: UInt64 = AccountInfo.span,
+        space: UInt64 = AccountInfo.BUFFER_LENGTH,
         programPubkey: PublicKey = PublicKey.tokenProgramId
     ) -> TransactionInstruction {
         

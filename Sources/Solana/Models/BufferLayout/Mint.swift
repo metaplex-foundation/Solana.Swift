@@ -1,6 +1,7 @@
 import Foundation
 
 public struct Mint: BufferLayout, Equatable, Hashable, Encodable {
+    public static var BUFFER_LENGTH: UInt64 = 82
     init(mintAuthorityOption: UInt32, mintAuthority: PublicKey?, supply: UInt64, decimals: UInt8, isInitialized: Bool, freezeAuthorityOption: UInt32, freezeAuthority: PublicKey?) {
         self.mintAuthorityOption = mintAuthorityOption
         self.mintAuthority = mintAuthority
@@ -18,44 +19,6 @@ public struct Mint: BufferLayout, Equatable, Hashable, Encodable {
     public let isInitialized: Bool
     public let freezeAuthorityOption: UInt32
     public let freezeAuthority: PublicKey?
-    public init?(_ keys: [String: [UInt8]]) {
-        guard let mintAuthorityOption = keys["mintAuthorityOption"]?.toUInt32(),
-              let mintAuthority = PublicKey(bytes: keys["mintAuthority"]),
-              let supply = keys["supply"]?.toUInt64(),
-              let decimals = keys["decimals"]?.first,
-              let isInitialized = keys["decimals"]?.first,
-              let freezeAuthorityOption = keys["freezeAuthorityOption"]?.toUInt32(),
-              let freezeAuthority = PublicKey(bytes: keys["freezeAuthority"])
-        else {return nil}
-        self.mintAuthorityOption = mintAuthorityOption
-        if mintAuthorityOption == 0 {
-            self.mintAuthority = nil
-        } else {
-            self.mintAuthority = mintAuthority
-        }
-        
-        self.supply = supply
-        self.decimals = decimals
-        self.isInitialized = isInitialized != 0
-        self.freezeAuthorityOption = freezeAuthorityOption
-        if freezeAuthorityOption == 0 {
-            self.freezeAuthority = nil
-        } else {
-            self.freezeAuthority = freezeAuthority
-        }
-    }
-    
-    public static func layout()  -> [(key: String?, length: Int)] {
-        [
-            (key: "mintAuthorityOption", length: 4), // 4
-            (key: "mintAuthority", length: PublicKey.LENGTH), // 36
-            (key: "supply", length: 8), // 44
-            (key: "decimals", length: 1), // 45
-            (key: "isInitialized", length: 1), // 46
-            (key: "freezeAuthorityOption", length: 4), // 50
-            (key: "freezeAuthority", length: PublicKey.LENGTH) // 82
-        ]
-    }
 }
 
 extension Mint: BorshCodable{
