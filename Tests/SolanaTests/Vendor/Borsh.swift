@@ -91,4 +91,34 @@ class BorshCodableTests: XCTestCase {
         XCTAssertNil(generateInfo.rentExemptReserve)
         XCTAssertNil(generateInfo.closeAuthority)
     }
+    
+    func testDecodingTokenSwap() {
+        let string = #"["AQH/Bt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKnPPnmVdf8VefedpPOl3xy2V/o+YvTT+f/dj/1blp9D9lI+9w67aLlO5X6dSFPB7WkhvyP+71AxESXk7Qw9nyYEYH7t0UamkBlPrllRfjnQ9h+sx/GQHoBS4AbWPpi2+m5dBuymmuZeydiI91aVN//6kR8bk4czKnvSXu1WXNW4hwabiFf+q4GE+2h/Y0YYwDXaxDncGus7VZig8AAAAAAB1UBY8wcrypvzuco4dv7UUURt8t9MOpnq7YnffB1OovkZAAAAAAAAABAnAAAAAAAABQAAAAAAAAAQJwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","base64"]"#
+        
+        let tokenSwapInfo = try! JSONDecoder().decode(Buffer<TokenSwapInfo>.self, from: string.data(using: .utf8)!).value!
+        XCTAssertEqual(1, tokenSwapInfo.version)
+        XCTAssertEqual("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", tokenSwapInfo.tokenProgramId.base58EncodedString)
+        XCTAssertEqual("7G93KAMR8bLq5TvgLHmpACLXCYwDcdtXVBKsN5Fx41iN", tokenSwapInfo.mintA.base58EncodedString)
+        XCTAssertEqual("So11111111111111111111111111111111111111112", tokenSwapInfo.mintB.base58EncodedString)
+        XCTAssertEqual(0, tokenSwapInfo.curveType)
+        XCTAssertTrue(tokenSwapInfo.isInitialized == true)
+        XCTAssertEqual("11111111111111111111111111111111", tokenSwapInfo.payer.base58EncodedString)
+        
+        let expectedBuf = Data(base64Encoded: "AQH/Bt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKnPPnmVdf8VefedpPOl3xy2V/o+YvTT+f/dj/1blp9D9lI+9w67aLlO5X6dSFPB7WkhvyP+71AxESXk7Qw9nyYEYH7t0UamkBlPrllRfjnQ9h+sx/GQHoBS4AbWPpi2+m5dBuymmuZeydiI91aVN//6kR8bk4czKnvSXu1WXNW4hwabiFf+q4GE+2h/Y0YYwDXaxDncGus7VZig8AAAAAAB1UBY8wcrypvzuco4dv7UUURt8t9MOpnq7YnffB1OovkZAAAAAAAAABAnAAAAAAAABQAAAAAAAAAQJwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")!
+        
+        let generatedTokenSwapInfo = try! BorshDecoder().decode(TokenSwapInfo.self, from: expectedBuf)
+        let generatedBuf = try! BorshEncoder().encode(generatedTokenSwapInfo)
+        
+        XCTAssertEqual(expectedBuf.bytes.count, generatedBuf.bytes.count)
+        XCTAssertEqual(expectedBuf.bytes, generatedBuf.bytes)
+        
+        XCTAssertEqual(1, generatedTokenSwapInfo.version)
+        XCTAssertEqual("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA", generatedTokenSwapInfo.tokenProgramId.base58EncodedString)
+        XCTAssertEqual("7G93KAMR8bLq5TvgLHmpACLXCYwDcdtXVBKsN5Fx41iN", generatedTokenSwapInfo.mintA.base58EncodedString)
+        XCTAssertEqual("So11111111111111111111111111111111111111112", generatedTokenSwapInfo.mintB.base58EncodedString)
+        XCTAssertEqual(0, generatedTokenSwapInfo.curveType)
+        XCTAssertTrue(generatedTokenSwapInfo.isInitialized == true)
+        XCTAssertEqual("11111111111111111111111111111111", generatedTokenSwapInfo.payer.base58EncodedString)
+        
+    }
 }
