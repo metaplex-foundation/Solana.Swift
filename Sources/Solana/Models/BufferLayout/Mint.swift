@@ -66,7 +66,12 @@ extension Mint: BorshCodable{
         self.decimals = try .init(from: &reader)
         self.isInitialized = try UInt8.init(from: &reader) == 1
         self.freezeAuthorityOption = try .init(from: &reader)
-        self.freezeAuthority = try? PublicKey.init(from: &reader)
+        let freezeAuthorityTemp = try? PublicKey.init(from: &reader)
+        if freezeAuthorityOption == 0 {
+            self.freezeAuthority = nil
+        } else {
+            self.freezeAuthority = freezeAuthorityTemp
+        }
     }
     
     public func serialize(to writer: inout Data) throws {

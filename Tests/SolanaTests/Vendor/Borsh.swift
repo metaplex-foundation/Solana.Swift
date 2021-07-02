@@ -101,6 +101,7 @@ class BorshCodableTests: XCTestCase {
         XCTAssertEqual("7G93KAMR8bLq5TvgLHmpACLXCYwDcdtXVBKsN5Fx41iN", tokenSwapInfo.mintA.base58EncodedString)
         XCTAssertEqual("So11111111111111111111111111111111111111112", tokenSwapInfo.mintB.base58EncodedString)
         XCTAssertEqual(0, tokenSwapInfo.curveType)
+        XCTAssertEqual(0, tokenSwapInfo.ownerWithdrawFeeDenominator)
         XCTAssertTrue(tokenSwapInfo.isInitialized == true)
         XCTAssertEqual("11111111111111111111111111111111", tokenSwapInfo.payer.base58EncodedString)
         

@@ -74,6 +74,7 @@ extension PublicKey: BorshCodable {
     }
     
     public init(from reader: inout BinaryReader) throws {
-        self.bytes = try Array(0..<PublicKey.LENGTH).map{ _ in try UInt8.init(from: &reader) }
+        let byteArray = try Array(0..<PublicKey.LENGTH).map{ _ in try UInt8.init(from: &reader) }
+        self.bytes = byteArray
     }
 }
