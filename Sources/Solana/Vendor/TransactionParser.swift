@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 public protocol SolanaSDKTransactionParserType {
     func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ())
