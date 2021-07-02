@@ -1,7 +1,7 @@
 import Foundation
 
 public struct PublicKey {
-    
+    public static let NULL_PUBLICKEY_BYTES: [UInt8] = Array(repeating: UInt8(0), count: LENGTH)
     public static let LENGTH = 32
     public let bytes: [UInt8]
     
@@ -65,5 +65,21 @@ extension PublicKey: Codable {
             throw PublicKeyError.invalidPublicKey
         }
         self.bytes = Base58.decode(string)
+    }
+}
+
+extension PublicKey: BorshCodable {
+    public func serialize(to writer: inout Data) throws {
+        try bytes.forEach { try $0.serialize(to: &writer) }
+    }
+    
+    public init(from reader: inout BinaryReader) throws {
+        let byteArray = try Array(0..<PublicKey.LENGTH).map{ _ in try UInt8.init(from: &reader) }
+        if byteArray == PublicKey.NULL_PUBLICKEY_BYTES {
+            throw PublicKeyError.invalidPublicKey
+        } else {
+            self.bytes = byteArray
+        }
+        
     }
 }
