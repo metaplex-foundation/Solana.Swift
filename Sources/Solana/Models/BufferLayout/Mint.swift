@@ -2,15 +2,6 @@ import Foundation
 
 public struct Mint: BufferLayout, Equatable, Hashable, Encodable {
     public static var BUFFER_LENGTH: UInt64 = 82
-    init(mintAuthorityOption: UInt32, mintAuthority: PublicKey?, supply: UInt64, decimals: UInt8, isInitialized: Bool, freezeAuthorityOption: UInt32, freezeAuthority: PublicKey?) {
-        self.mintAuthorityOption = mintAuthorityOption
-        self.mintAuthority = mintAuthority
-        self.supply = supply
-        self.decimals = decimals
-        self.isInitialized = isInitialized
-        self.freezeAuthorityOption = freezeAuthorityOption
-        self.freezeAuthority = freezeAuthority
-    }
     
     public let mintAuthorityOption: UInt32
     public let mintAuthority: PublicKey?
