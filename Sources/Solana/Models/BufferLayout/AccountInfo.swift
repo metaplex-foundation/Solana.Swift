@@ -69,17 +69,70 @@ public struct AccountInfo: BufferLayout {
     
     public static func layout() -> [(key: String?, length: Int)] {
         [
-            (key: "mint", length: PublicKey.LENGTH),
-            (key: "owner", length: PublicKey.LENGTH),
-            (key: "lamports", length: 8),
-            (key: "delegateOption", length: 4),
-            (key: "delegate", length: PublicKey.LENGTH),
-            (key: "state", length: 1),
-            (key: "isNativeOption", length: 4),
-            (key: "isNativeRaw", length: 8),
-            (key: "delegatedAmount", length: 8),
-            (key: "closeAuthorityOption", length: 4),
-            (key: "closeAuthority", length: PublicKey.LENGTH)
+            (key: "mint", length: PublicKey.LENGTH), // 32
+            (key: "owner", length: PublicKey.LENGTH), // 64
+            (key: "lamports", length: 8), // 72
+            (key: "delegateOption", length: 4), // 76
+            (key: "delegate", length: PublicKey.LENGTH),  // 108
+            (key: "state", length: 1), // 109
+            (key: "isNativeOption", length: 4), // 113
+            (key: "isNativeRaw", length: 8), // 121
+            (key: "delegatedAmount", length: 8), // 129
+            (key: "closeAuthorityOption", length: 4), // 133
+            (key: "closeAuthority", length: PublicKey.LENGTH) // 165
         ]
     }
+}
+
+extension AccountInfo: BorshCodable {
+    public func serialize(to writer: inout Data) throws {
+        try mint.serialize(to: &writer)
+        try owner.serialize(to: &writer)
+        try lamports.serialize(to: &writer)
+        try delegateOption.serialize(to: &writer)
+        if let delegate = delegate {
+            try delegate.serialize(to: &writer)
+        } else {
+            try PublicKey.NULL_PUBLICKEY_BYTES.forEach { try $0.serialize(to: &writer) }
+        }
+        try state.serialize(to: &writer)
+        try isNativeOption.serialize(to: &writer)
+        try isNativeRaw.serialize(to: &writer)
+        try delegatedAmount.serialize(to: &writer)
+        try closeAuthorityOption.serialize(to: &writer)
+        if let closeAuthority = closeAuthority {
+            try closeAuthority.serialize(to: &writer)
+        } else {
+            try PublicKey.NULL_PUBLICKEY_BYTES.forEach { try $0.serialize(to: &writer) }
+        }
+    }
+    
+    public init(from reader: inout BinaryReader) throws {
+        self.mint = try .init(from: &reader)
+        self.owner = try .init(from: &reader)
+        self.lamports = try .init(from: &reader)
+        self.delegateOption = try .init(from: &reader)
+        self.delegate = try? PublicKey.init(from: &reader)
+        self.state = try .init(from: &reader)
+        self.isNativeOption = try .init(from: &reader)
+        self.isNativeRaw = try .init(from: &reader)
+        self.delegatedAmount = try .init(from: &reader)
+        self.closeAuthorityOption = try .init(from: &reader)
+        self.closeAuthority = try? PublicKey.init(from: &reader)
+        
+        self.isInitialized = state != 0
+        self.isFrozen = state == 2
+        
+        if isNativeOption == 1 {
+            self.rentExemptReserve = isNativeRaw
+            self.isNative = true
+        } else {
+            self.rentExemptReserve = nil
+            isNative = false
+        }
+        
+        if closeAuthorityOption == 0 {
+            self.closeAuthority = nil
+        }
+    }    
 }
