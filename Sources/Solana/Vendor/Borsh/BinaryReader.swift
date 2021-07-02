@@ -1,7 +1,7 @@
 import Foundation
 
 public struct BinaryReader {
-    var cursor: Int
+    private var cursor: Int
     private let bytes: [UInt8]
     
     init(bytes: [UInt8]) {

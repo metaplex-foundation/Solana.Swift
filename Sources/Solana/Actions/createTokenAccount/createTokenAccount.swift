@@ -3,7 +3,7 @@ import Foundation
 extension Action {
 
     public func getCreatingTokenAccountFee(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
-        self.api.getMinimumBalanceForRentExemption(dataLength: AccountInfo.span, onComplete: onComplete)
+        self.api.getMinimumBalanceForRentExemption(dataLength: AccountInfo.BUFFER_LENGTH, onComplete: onComplete)
     }
 
     public func createTokenAccount(

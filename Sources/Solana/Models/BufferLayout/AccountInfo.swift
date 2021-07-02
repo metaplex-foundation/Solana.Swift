@@ -1,6 +1,8 @@
 import Foundation
 
 public struct AccountInfo: BufferLayout {
+    public static let BUFFER_LENGTH: UInt64 = 165
+    
     public let mint: PublicKey
     public let owner: PublicKey
     public let lamports: UInt64
@@ -112,13 +114,20 @@ extension AccountInfo: BorshCodable {
         self.owner = try .init(from: &reader)
         self.lamports = try .init(from: &reader)
         self.delegateOption = try .init(from: &reader)
-        self.delegate = try? PublicKey.init(from: &reader)
+        let tempdelegate = try? PublicKey.init(from: &reader)
         self.state = try .init(from: &reader)
         self.isNativeOption = try .init(from: &reader)
         self.isNativeRaw = try .init(from: &reader)
         self.delegatedAmount = try .init(from: &reader)
         self.closeAuthorityOption = try .init(from: &reader)
         self.closeAuthority = try? PublicKey.init(from: &reader)
+        
+        if delegateOption == 0 {
+            self.delegate = nil
+            self.delegatedAmount = 0
+        } else {
+            self.delegate = tempdelegate
+        }
         
         self.isInitialized = state != 0
         self.isFrozen = state == 2
