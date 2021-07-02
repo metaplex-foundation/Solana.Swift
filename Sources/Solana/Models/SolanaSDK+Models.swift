@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 public typealias PublicKeyString = String
 public typealias TransactionID = String
