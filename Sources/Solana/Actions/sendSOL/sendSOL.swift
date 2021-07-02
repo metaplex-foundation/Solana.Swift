@@ -1,5 +1,4 @@
 import Foundation
-import RxSwift
 
 extension Action {
     public func sendSOL(
