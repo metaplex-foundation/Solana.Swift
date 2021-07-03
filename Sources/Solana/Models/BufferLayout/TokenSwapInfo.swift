@@ -2,30 +2,7 @@ import Foundation
 
 public struct TokenSwapInfo: BufferLayout, Equatable, Hashable, Encodable {
     public static var BUFFER_LENGTH: UInt64 = 324
-    init(version: UInt8, isInitialized: Bool, nonce: UInt8, tokenProgramId: PublicKey, tokenAccountA: PublicKey, tokenAccountB: PublicKey, tokenPool: PublicKey, mintA: PublicKey, mintB: PublicKey, feeAccount: PublicKey, tradeFeeNumerator: UInt64, tradeFeeDenominator: UInt64, ownerTradeFeeNumerator: UInt64, ownerTradeFeeDenominator: UInt64, ownerWithdrawFeeNumerator: UInt64, ownerWithdrawFeeDenominator: UInt64, hostFeeNumerator: UInt64, hostFeeDenominator: UInt64, curveType: UInt8, payer: PublicKey) {
-        self.version = version
-        self.isInitialized = isInitialized
-        self.nonce = nonce
-        self.tokenProgramId = tokenProgramId
-        self.tokenAccountA = tokenAccountA
-        self.tokenAccountB = tokenAccountB
-        self.tokenPool = tokenPool
-        self.mintA = mintA
-        self.mintB = mintB
-        self.feeAccount = feeAccount
-        self.tradeFeeNumerator = tradeFeeNumerator
-        self.tradeFeeDenominator = tradeFeeDenominator
-        self.ownerTradeFeeNumerator = ownerTradeFeeNumerator
-        self.ownerTradeFeeDenominator = ownerTradeFeeDenominator
-        self.ownerWithdrawFeeNumerator = ownerWithdrawFeeNumerator
-        self.ownerWithdrawFeeDenominator = ownerWithdrawFeeDenominator
-        self.hostFeeNumerator = hostFeeNumerator
-        self.hostFeeDenominator = hostFeeDenominator
-        self.curveType = curveType
-        self.payer = payer
-    }
-    
-    // MARK: - Properties
+
     public let version: UInt8
     public let isInitialized: Bool
     public let nonce: UInt8
