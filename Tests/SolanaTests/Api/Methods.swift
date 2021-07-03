@@ -144,10 +144,11 @@ class Methods: XCTestCase {
         let accounts = try! solana.api.getLargestAccounts().toBlocking().first()
         XCTAssertNotNil(accounts)
     }
-    func testGetLeaderSchedule() {
+    // This tests is very expensive on time
+    /*func testGetLeaderSchedule() {
         let accounts = try! solana.api.getLeaderSchedule().toBlocking().first()
-        XCTAssertNotNil(accounts)
-    }
+        XCTAssertNotNil(accounts ?? nil)
+    }*/
     func testGetMinimumBalanceForRentExemption() {
         let accounts = try! solana.api.getMinimumBalanceForRentExemption(dataLength: 32000).toBlocking().first()
         XCTAssertNotNil(accounts)
