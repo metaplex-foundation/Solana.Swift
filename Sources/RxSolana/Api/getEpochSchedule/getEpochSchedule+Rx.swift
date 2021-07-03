@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getEpochSchedule() -> Single<EpochSchedule> {
+    func getEpochSchedule() -> Single<EpochSchedule> {
         Single.create { emitter in
             self.getEpochSchedule {
                 switch $0 {

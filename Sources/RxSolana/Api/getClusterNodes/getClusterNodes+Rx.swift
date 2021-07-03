@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getClusterNodes() -> Single<[ClusterNodes]> {
+    func getClusterNodes() -> Single<[ClusterNodes]> {
         Single.create { emitter in
             self.getClusterNodes {
                 switch $0 {

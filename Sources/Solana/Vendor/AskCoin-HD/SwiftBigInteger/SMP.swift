@@ -2004,7 +2004,7 @@ public struct BDouble: ExpressibleByIntegerLiteral,
     public init(_ d: Double) {
         let nStr = String(d)
 
-        if let exp = nStr.index(of: "e")?.encodedOffset {
+        if let exp = nStr.firstIndex(of: "e")?.encodedOffset {
             let beforeExp = String(Array(nStr)[..<exp].filter { $0 != "." })
             var afterExp = String(Array(nStr)[(exp + 1)...])
             var sign = false

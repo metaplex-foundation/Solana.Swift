@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getGenesisHash() -> Single<String> {
+    func getGenesisHash() -> Single<String> {
         Single.create { emitter in
             self.getGenesisHash {
                 switch $0 {

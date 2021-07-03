@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getVersion() -> Single<Version> {
+    func getVersion() -> Single<Version> {
         Single.create { emitter in
             self.getVersion {
                 switch $0 {
