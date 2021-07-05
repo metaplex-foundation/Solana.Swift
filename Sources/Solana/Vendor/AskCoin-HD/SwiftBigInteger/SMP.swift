@@ -369,8 +369,9 @@ public struct BInt: SignedNumeric, // Implies Numeric, Equatable, ExpressibleByI
         return (self.sign, self.limbs)
     }
 
-    public var hashValue: Int {
-        return "\(self.sign)\(self.limbs)".hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.sign)
+        hasher.combine(self.limbs)
     }
 
     ///    A Boolean value indicating whether this type is a signed integer type.
@@ -855,7 +856,7 @@ fileprivate extension String {
         var multiplier = BInt(1)
 
         for char in number.reversed() {
-            if let digit = chars.index(of: char) {
+            if let digit = chars.firstIndex(of: char) {
                 precondition(digit < from)
 
                 sum += digit * multiplier
@@ -2009,7 +2010,7 @@ public struct BDouble: ExpressibleByIntegerLiteral,
             var afterExp = String(Array(nStr)[(exp + 1)...])
             var sign = false
 
-            if let neg = afterExp.index(of: "-")?.encodedOffset {
+            if let neg = afterExp.firstIndex(of: "-")?.encodedOffset {
                 afterExp = String(Array(afterExp)[(neg + 1)...])
                 sign = true
             }
@@ -2072,8 +2073,10 @@ public struct BDouble: ExpressibleByIntegerLiteral,
         return res
     }
 
-    public var hashValue: Int {
-        return "\(self.sign)\(self.numerator)\(self.denominator)".hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.sign)
+        hasher.combine(self.numerator)
+        hasher.combine(self.denominator)
     }
 
     public func rawData() -> (sign: Bool, numerator: [UInt64], denominator: [UInt64]) {
