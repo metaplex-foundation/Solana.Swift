@@ -1,14 +1,14 @@
 import Foundation
 import TweetNacl
 
-struct Transaction {
+public struct Transaction {
     private var signatures = [Signature]()
     let feePayer: PublicKey
     var instructions = [TransactionInstruction]()
     let recentBlockhash: String
     //        TODO: nonceInfo
     
-    init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
+    public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
         self.signatures = signatures
         self.feePayer = feePayer
         self.instructions = instructions
@@ -266,7 +266,7 @@ struct Transaction {
 }
 
 extension Transaction {
-    struct Signature {
+    public struct Signature {
         var signature: Data?
         var publicKey: PublicKey
     }

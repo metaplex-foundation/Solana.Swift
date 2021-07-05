@@ -20,7 +20,7 @@
         }
       },
       {
-        "package": "TweetNacl",
+        "package": "tweetnacl-swiftwrap",
         "repositoryURL": "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
         "state": {
           "branch": null,
