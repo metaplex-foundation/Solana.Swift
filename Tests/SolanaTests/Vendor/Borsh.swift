@@ -77,6 +77,8 @@ class BorshCodableTests: XCTestCase {
         let generateInfo = try! BorshDecoder().decode(AccountInfo.self, from: expectedBuf)
         let generatedBuf = try! BorshEncoder().encode(generateInfo)
         
+        let generateInfoDecoded = try! BorshDecoder().decode(AccountInfo.self, from: expectedBuf)
+
         XCTAssertEqual(expectedBuf.bytes.count, generatedBuf.bytes.count)
         XCTAssertEqual(expectedBuf.bytes, generatedBuf.bytes)
 
@@ -90,6 +92,16 @@ class BorshCodableTests: XCTestCase {
         XCTAssertEqual(false, generateInfo.isFrozen)
         XCTAssertNil(generateInfo.rentExemptReserve)
         XCTAssertNil(generateInfo.closeAuthority)
+        
+        XCTAssertEqual(generateInfoDecoded.mint.base58EncodedString, generateInfo.mint.base58EncodedString)
+        XCTAssertEqual(generateInfoDecoded.owner.base58EncodedString, generateInfo.owner.base58EncodedString)
+        XCTAssertEqual(generateInfoDecoded.delegate?.base58EncodedString, generateInfo.delegate?.base58EncodedString)
+        XCTAssertEqual(generateInfoDecoded.delegatedAmount, generateInfo.delegatedAmount)
+        XCTAssertEqual(generateInfoDecoded.isNative, generateInfo.isNative)
+        XCTAssertEqual(generateInfoDecoded.isInitialized, generateInfo.isInitialized)
+        XCTAssertEqual(generateInfoDecoded.isFrozen, generateInfo.isFrozen)
+        XCTAssertEqual(generateInfoDecoded.rentExemptReserve, generateInfo.rentExemptReserve)
+        XCTAssertEqual(generateInfoDecoded.closeAuthority, generateInfo.closeAuthority)
     }
     
     func testDecodingTokenSwap() {
