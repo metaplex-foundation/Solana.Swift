@@ -16,7 +16,7 @@ class Methods: XCTestCase {
     }
 
     func testGetAccountInfo() {
-        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: "So11111111111111111111111111111111111111112", decodedTo: AccountInfo.self).toBlocking().first()
+        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: "E4tVZ5LktRkiGzXHi95u37gEpqRm8GZ6VKQ9oUy6LnaV", decodedTo: AccountInfo.self).toBlocking().first()
         XCTAssertNotNil(info)
         XCTAssertNotNil(info?.data)
         XCTAssertTrue(info!.lamports > 0)
