@@ -132,8 +132,18 @@ extension SolanaSocket: WebSocketDelegate {
     private func onText(string: String) {
         guard let data = string.data(using: .utf8) else { return }
         do {
-            let notification = try JSONDecoder().decode(SOLAccountNotification.self, from: data)
-            delegate?.accountSubscribe(notification: notification)
+            // TODO: Fix this
+            guard let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
+            if let jsonType = jsonResponse["method"] as? String,
+               let type = SocketMethod(rawValue: jsonType) {
+                switch type {
+                case .accountSubscribe:
+                    let notification = try JSONDecoder().decode(SOLAccountNotification.self, from: data)
+                    delegate?.accountSubscribe(notification: notification)
+                default: break
+                }
+            }
+            
         } catch let error {
             delegate?.error(error: error)
         }

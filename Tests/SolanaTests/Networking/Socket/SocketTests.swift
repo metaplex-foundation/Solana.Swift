@@ -34,8 +34,8 @@ final class SocketTests: XCTestCase {
 
 extension SocketTests: SolanaLiveEventsDelegate {
     func connected() {
-        socket.accountSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g") // air drop
-        socket.signatureSubscribe(signature: "3FKbHYJpGH2QHuZrueYiL3DcLorLKTAfetWQXShvW2VWppwdzbr7mGvcg7MWwXQWL1p7o1C7CEiV4ZA1fed2L5b2")
+        _ = socket.accountSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g") // air drop
+        _ = socket.signatureSubscribe(signature: "3FKbHYJpGH2QHuZrueYiL3DcLorLKTAfetWQXShvW2VWppwdzbr7mGvcg7MWwXQWL1p7o1C7CEiV4ZA1fed2L5b2")
     }
     
     func disconnected(reason: String, code: UInt16) {
