@@ -14,9 +14,9 @@ Please check my wallet [Summer](https://github.com/ajamaica/Summer).
 - [x] Key pair generation
 - [x] RPC configuration.
 - [x] SPM integration
-- [x] Few libraries requirement (Commoncrypto, TweetNACL). Rxswift is optional.
+- [x] Few libraries requirement (Commoncrypto, TweetNACL, Starscream). Rxswift is optional.
 - [x] Fully tested (53%)
-- [ ] Sockets
+- [x] Sockets
 - [ ] Type-safe Transaction templates
 - [ ] Documentation with guides and examples
 - [ ] Program template library for common tasks
