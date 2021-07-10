@@ -1,10 +1,16 @@
 import Starscream
 import Foundation
 
-public protocol SolanaLiveEventsDelegate: AnyObject {
+enum SolanaSocketError: Error {
+    case disconnected
+    case couldNotSerialize
+}
+public protocol SolanaSocketEventsDelegate: AnyObject {
     func connected()
-    func accountSubscribe(notification: SOLAccountNotification)
-    func signatureUnsubscribe()
+    func subscribed(socket: UInt64, id: String)
+    func accountNotification(notification: Response<AccountNotification<[String]>>)
+    func signatureNotification(notification: Response<SignatureNotification>)
+    func unsubscribed(socket: UInt64, id: String)
     func disconnected(reason: String, code: UInt16)
     func error(error: Error?)
 }
@@ -26,7 +32,7 @@ public class SolanaSocket {
     private var socket: WebSocket?
     private var enableDebugLogs: Bool
     private var request: URLRequest
-    private weak var delegate: SolanaLiveEventsDelegate?
+    private weak var delegate: SolanaSocketEventsDelegate?
     
     init(endpoint: RPCEndpoint, enableDebugLogs: Bool = false){
         self.request = URLRequest(url: endpoint.urlWebSocket)
@@ -34,7 +40,7 @@ public class SolanaSocket {
         self.enableDebugLogs = enableDebugLogs
     }
     
-    public func start(delegate: SolanaLiveEventsDelegate) {
+    public func start(delegate: SolanaSocketEventsDelegate) {
         self.delegate = delegate
         self.socket = WebSocket(request: request)
         socket?.delegate = self
@@ -46,39 +52,39 @@ public class SolanaSocket {
         self.delegate = nil
     }
     
-    public func accountSubscribe(publickey: String) -> Bool {
+    public func accountSubscribe(publickey: String) -> Result<String, Error> {
         let method: SocketMethod = .accountSubscribe
         let params: [Encodable] = [ publickey, ["encoding":"jsonParsed", "commitment": "recent"] ]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
-    public func signatureSubscribe(signature: String) -> Bool {
+    public func signatureSubscribe(signature: String) -> Result<String, Error> {
         let method: SocketMethod = .signatureSubscribe
         let params: [Encodable] = [signature, ["commitment": "confirmed"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
-    func accountUnsubscribe(id: String) -> Bool{
+    func accountUnsubscribe(id: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .accountUnsubscribe
         let params: [Encodable] = [id]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
-    func signatureUnsubscribe(id: String) -> Bool{
+    func signatureUnsubscribe(id: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .signatureUnsubscribe
         let params: [Encodable] = [id]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
-    private func writeToSocket(request: SolanaRequest) -> Bool {
-        guard let jsonData = try? JSONEncoder().encode(request) else { return false }
-        guard let socket = socket else { return false }
+    private func writeToSocket(request: SolanaRequest) -> Result<String, Error> {
+        guard let jsonData = try? JSONEncoder().encode(request) else { return Result.failure(SolanaSocketError.couldNotSerialize) }
+        guard let socket = socket else { return Result.failure(SolanaSocketError.disconnected) }
         socket.write(data: jsonData)
-        return true
+        return Result.success(request.id)
     }
 }
 
@@ -132,18 +138,28 @@ extension SolanaSocket: WebSocketDelegate {
     private func onText(string: String) {
         guard let data = string.data(using: .utf8) else { return }
         do {
-            // TODO: Fix this
-            guard let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { return }
+            // TODO: Fix this mess code
+            let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
             if let jsonType = jsonResponse["method"] as? String,
                let type = SocketMethod(rawValue: jsonType) {
+                
                 switch type {
-                case .accountSubscribe:
-                    let notification = try JSONDecoder().decode(SOLAccountNotification.self, from: data)
-                    delegate?.accountSubscribe(notification: notification)
+                case .accountNotification:
+                    let notification = try JSONDecoder().decode(Response<AccountNotification<[String]>>.self, from: data)
+                    delegate?.accountNotification(notification: notification)
+                case .signatureNotification:
+                    let notification = try JSONDecoder().decode(Response<SignatureNotification>.self, from: data)
+                    delegate?.signatureNotification(notification: notification)
                 default: break
                 }
+                
+            } else {
+                if let subscription = try? JSONDecoder().decode(Response<UInt64>.self, from: data),
+                   let socket = subscription.result,
+                   let id = subscription.id{
+                    delegate?.subscribed(socket: socket, id: id)
+                }
             }
-            
         } catch let error {
             delegate?.error(error: error)
         }
