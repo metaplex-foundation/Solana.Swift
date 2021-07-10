@@ -7,10 +7,10 @@ enum SolanaSocketError: Error {
 }
 public protocol SolanaSocketEventsDelegate: AnyObject {
     func connected()
-    func subscribed(socket: UInt64, id: String)
+    func subscribed(socketId: UInt64, id: String)
     func accountNotification(notification: Response<AccountNotification<[String]>>)
     func signatureNotification(notification: Response<SignatureNotification>)
-    func unsubscribed(socket: UInt64, id: String)
+    func unsubscribed(id: String)
     func disconnected(reason: String, code: UInt16)
     func error(error: Error?)
 }
@@ -66,16 +66,16 @@ public class SolanaSocket {
         return writeToSocket(request: request)
     }
     
-    func accountUnsubscribe(id: UInt64) -> Result<String, Error> {
+    func accountUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .accountUnsubscribe
-        let params: [Encodable] = [id]
+        let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
-    func signatureUnsubscribe(id: UInt64) -> Result<String, Error> {
+    func signatureUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .signatureUnsubscribe
-        let params: [Encodable] = [id]
+        let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
@@ -155,9 +155,15 @@ extension SolanaSocket: WebSocketDelegate {
                 
             } else {
                 if let subscription = try? JSONDecoder().decode(Response<UInt64>.self, from: data),
-                   let socket = subscription.result,
+                   let socketId = subscription.result,
                    let id = subscription.id{
-                    delegate?.subscribed(socket: socket, id: id)
+                    delegate?.subscribed(socketId: socketId, id: id)
+                }
+                
+                if let subscription = try? JSONDecoder().decode(Response<Bool>.self, from: data),
+                   subscription.result == true,
+                   let id = subscription.id{
+                    delegate?.unsubscribed(id: id)
                 }
             }
         } catch let error {

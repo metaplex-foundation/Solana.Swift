@@ -2,13 +2,14 @@ import XCTest
 @testable import Solana
 
 class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
+    
         
     var onConected: (() -> Void)? = nil
     var onDisconnected: (() -> Void)? = nil
     var onAccountNotification: ((Response<AccountNotification<[String]>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
     var onSubscribed: ((UInt64, String) -> Void)? = nil
-    var onUnsubscribed: ((UInt64, String) -> Void)? = nil
+    var onUnsubscribed: ((String) -> Void)? = nil
 
     func connected() {
         onConected?()
@@ -24,12 +25,12 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
         onSignatureNotification?(notification)
     }
     
-    func subscribed(socket: UInt64, id: String) {
-        onSubscribed?(socket, id)
+    func subscribed(socketId: UInt64, id: String) {
+        onSubscribed?(socketId, id)
     }
     
-    func unsubscribed(socket: UInt64, id: String) {
-        onUnsubscribed?(socket, id)
+    func unsubscribed(id: String) {
+        onUnsubscribed?(id)
     }
     
     func disconnected(reason: String, code: UInt16) {
@@ -65,6 +66,26 @@ final class SocketTests: XCTestCase {
         delegate.onSubscribed = { (socket, id) in
             expectation.fulfill()
             XCTAssertEqual(expected_id, id)
+        }
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSocketAccountUnSubscribe() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        var expected_socket: UInt64?
+        delegate.onConected = {
+            expected_id = try! self.socket.accountSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g").get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            XCTAssertEqual(expected_id, id)
+            expected_socket = socket
+            try! self.socket.accountUnsubscribe(socketId: socket).get()
+        }
+        delegate.onUnsubscribed = { (socket) in
+            expectation.fulfill()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
