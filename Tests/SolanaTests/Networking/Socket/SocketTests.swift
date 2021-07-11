@@ -8,7 +8,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     var onAccountNotification: ((Response<AccountNotification<[String]>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
     var onLogsNotification: ((Response<LogsNotification>) -> Void)? = nil
-    var onProgramNotification: ((Response<ProgramNotification<String>>) -> Void)? = nil
+    var onProgramNotification: ((Response<ProgramNotification<[String]>>) -> Void)? = nil
     var onSubscribed: ((UInt64, String) -> Void)? = nil
     var onUnsubscribed: ((String) -> Void)? = nil
 
@@ -30,7 +30,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
         onLogsNotification?(notification)
     }
     
-    func programNotification(notification: Response<ProgramNotification<String>>) {
+    func programNotification(notification: Response<ProgramNotification<[String]>>) {
         onProgramNotification?(notification)
     }
     
