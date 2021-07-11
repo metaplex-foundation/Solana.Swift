@@ -85,6 +85,7 @@ final class SocketTests: XCTestCase {
             try! self.socket.accountUnsubscribe(socketId: socket).get()
         }
         delegate.onUnsubscribed = { (socket) in
+            XCTAssertEqual(expected_socket, expected_socket)
             expectation.fulfill()
         }
         socket.start(delegate: delegate)
