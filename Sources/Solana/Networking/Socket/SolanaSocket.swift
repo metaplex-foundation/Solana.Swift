@@ -7,10 +7,11 @@ enum SolanaSocketError: Error {
 }
 public protocol SolanaSocketEventsDelegate: AnyObject {
     func connected()
-    func subscribed(socketId: UInt64, id: String)
     func accountNotification(notification: Response<AccountNotification<[String]>>)
     func signatureNotification(notification: Response<SignatureNotification>)
+    func logsNotification(notification: Response<LogsNotification>)
     func unsubscribed(id: String)
+    func subscribed(socketId: UInt64, id: String)
     func disconnected(reason: String, code: UInt16)
     func error(error: Error?)
 }
@@ -59,13 +60,6 @@ public class SolanaSocket {
         return writeToSocket(request: request)
     }
     
-    public func signatureSubscribe(signature: String) -> Result<String, Error> {
-        let method: SocketMethod = .signatureSubscribe
-        let params: [Encodable] = [signature, ["commitment": "confirmed"]]
-        let request = SolanaRequest(method: method.rawValue, params: params)
-        return writeToSocket(request: request)
-    }
-    
     func accountUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .accountUnsubscribe
         let params: [Encodable] = [socketId]
@@ -73,8 +67,36 @@ public class SolanaSocket {
         return writeToSocket(request: request)
     }
     
+    public func signatureSubscribe(signature: String) -> Result<String, Error> {
+        let method: SocketMethod = .signatureSubscribe
+        let params: [Encodable] = [signature, ["commitment": "confirmed"]]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
     func signatureUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .signatureUnsubscribe
+        let params: [Encodable] = [socketId]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
+    public func logsSubscribe(mentions: [String]) -> Result<String, Error> {
+        let method: SocketMethod = .logsSubscribe
+        let params: [Encodable] = [["mentions": mentions], ["commitment": "confirmed"]]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
+    public func logsSubscribeAll() -> Result<String, Error> {
+        let method: SocketMethod = .logsSubscribe
+        let params: [Encodable] = [["all"], ["commitment": "confirmed"]]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
+    func logsUnsubscribe(socketId: UInt64) -> Result<String, Error> {
+        let method: SocketMethod = .logsUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
@@ -150,6 +172,9 @@ extension SolanaSocket: WebSocketDelegate {
                 case .signatureNotification:
                     let notification = try JSONDecoder().decode(Response<SignatureNotification>.self, from: data)
                     delegate?.signatureNotification(notification: notification)
+                case .logsNotification:
+                    let notification = try JSONDecoder().decode(Response<LogsNotification>.self, from: data)
+                    delegate?.logsNotification(notification: notification)
                 default: break
                 }
                 

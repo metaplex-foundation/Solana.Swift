@@ -2,12 +2,11 @@ import XCTest
 @testable import Solana
 
 class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
-    
-        
     var onConected: (() -> Void)? = nil
     var onDisconnected: (() -> Void)? = nil
     var onAccountNotification: ((Response<AccountNotification<[String]>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
+    var onLogsNotification: ((Response<LogsNotification>) -> Void)? = nil
     var onSubscribed: ((UInt64, String) -> Void)? = nil
     var onUnsubscribed: ((String) -> Void)? = nil
 
@@ -23,6 +22,10 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     
     func signatureNotification(notification: Response<SignatureNotification>) {
         onSignatureNotification?(notification)
+    }
+    
+    func logsNotification(notification: Response<LogsNotification>) {
+        onLogsNotification?(notification)
     }
     
     func subscribed(socketId: UInt64, id: String) {
@@ -82,10 +85,9 @@ final class SocketTests: XCTestCase {
         delegate.onSubscribed = { (socket, id) in
             XCTAssertEqual(expected_id, id)
             expected_socket = socket
-            try! self.socket.accountUnsubscribe(socketId: socket).get()
+            _ = try! self.socket.accountUnsubscribe(socketId: socket).get()
         }
-        delegate.onUnsubscribed = { (socket) in
-            XCTAssertEqual(expected_socket, expected_socket)
+        delegate.onUnsubscribed = { (id) in
             expectation.fulfill()
         }
         socket.start(delegate: delegate)
@@ -108,6 +110,60 @@ final class SocketTests: XCTestCase {
             XCTAssertNotNil(notification.params?.result)
             expectation.fulfill()
         }
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSockeLogsSubscribe() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.logsSubscribe(mentions: ["9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g"]).get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            expectation.fulfill()
+            XCTAssertEqual(expected_id, id)
+        }
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSockeLogsUnSubscribe() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.logsSubscribe(mentions: ["9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g"]).get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            XCTAssertEqual(expected_id, id)
+        }
+        
+        delegate.onUnsubscribed = { id in
+            expectation.fulfill()
+        }
+        
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSockeLogsNotification() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.logsSubscribe(mentions: ["9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g"]).get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            XCTAssertEqual(expected_id, id)
+        }
+        
+        delegate.onLogsNotification = { notification in
+            XCTAssertNotNil(notification.params?.result)
+            expectation.fulfill()
+        }
+        
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
     }

@@ -8,6 +8,18 @@ public enum SocketMethod: String {
     case signatureNotification
     case signatureSubscribe
     case signatureUnsubscribe
+    
+    case logsSubscribe
+    case logsNotification
+    case logsUnsubscribe
+    
+    case programSubscribe
+    case programNotification
+    case programUnsubscribe
+    
+    case slotSubscribe
+    case slotNotification
+    case slotUnsubscribe
 }
 
 struct SocketSubscription: Decodable {
@@ -41,3 +53,10 @@ public struct TokenAccountNotificationDataInfo: Decodable {
 public struct SignatureNotification: Decodable {
     let err: ResponseError?
 }
+
+public struct LogsNotification: Decodable {
+    let signature: String
+    let logs: [String]
+    let err: ResponseError?
+}
+
