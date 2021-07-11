@@ -8,6 +8,7 @@ enum SolanaSocketError: Error {
 public protocol SolanaSocketEventsDelegate: AnyObject {
     func connected()
     func accountNotification(notification: Response<AccountNotification<[String]>>)
+    func programNotification(notification: Response<ProgramNotification<String>>)
     func signatureNotification(notification: Response<SignatureNotification>)
     func logsNotification(notification: Response<LogsNotification>)
     func unsubscribed(id: String)
@@ -90,13 +91,27 @@ public class SolanaSocket {
     
     public func logsSubscribeAll() -> Result<String, Error> {
         let method: SocketMethod = .logsSubscribe
-        let params: [Encodable] = [["all"], ["commitment": "confirmed"]]
+        let params: [Encodable] = ["all", ["commitment": "confirmed"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
     
     func logsUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .logsUnsubscribe
+        let params: [Encodable] = [socketId]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
+    public func programSubscribe(publickey: String) -> Result<String, Error> {
+        let method: SocketMethod = .programSubscribe
+        let params: [Encodable] = [publickey, ["commitment": "confirmed"]]
+        let request = SolanaRequest(method: method.rawValue, params: params)
+        return writeToSocket(request: request)
+    }
+    
+    func programUnsubscribe(socketId: UInt64) -> Result<String, Error> {
+        let method: SocketMethod = .programUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
@@ -175,6 +190,9 @@ extension SolanaSocket: WebSocketDelegate {
                 case .logsNotification:
                     let notification = try JSONDecoder().decode(Response<LogsNotification>.self, from: data)
                     delegate?.logsNotification(notification: notification)
+                case .programNotification:
+                    let notification = try JSONDecoder().decode(Response<ProgramNotification<String>>.self, from: data)
+                    delegate?.programNotification(notification: notification)
                 default: break
                 }
                 

@@ -36,6 +36,11 @@ public struct AccountNotification<T: Decodable>: Decodable {
     public let rentEpoch: UInt64
 }
 
+public struct ProgramNotification<T: Decodable>: Decodable {
+    public let pubkey: PublicKey
+    public let account: AccountNotification<T>
+}
+
 public struct TokenAccountNotificationData: Decodable {
     public let program: String
     public let parsed: TokenAccountNotificationDataParsed

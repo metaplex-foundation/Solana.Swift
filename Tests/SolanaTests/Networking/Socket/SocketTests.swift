@@ -2,11 +2,13 @@ import XCTest
 @testable import Solana
 
 class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
+    
     var onConected: (() -> Void)? = nil
     var onDisconnected: (() -> Void)? = nil
     var onAccountNotification: ((Response<AccountNotification<[String]>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
     var onLogsNotification: ((Response<LogsNotification>) -> Void)? = nil
+    var onProgramNotification: ((Response<ProgramNotification<String>>) -> Void)? = nil
     var onSubscribed: ((UInt64, String) -> Void)? = nil
     var onUnsubscribed: ((String) -> Void)? = nil
 
@@ -26,6 +28,10 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     
     func logsNotification(notification: Response<LogsNotification>) {
         onLogsNotification?(notification)
+    }
+    
+    func programNotification(notification: Response<ProgramNotification<String>>) {
+        onProgramNotification?(notification)
     }
     
     func subscribed(socketId: UInt64, id: String) {
@@ -114,7 +120,7 @@ final class SocketTests: XCTestCase {
         wait(for: [expectation], timeout: 20.0)
     }
     
-    func testSockeLogsSubscribe() {
+    func testSocketLogsSubscribe() {
         let expectation = XCTestExpectation()
         let delegate = MockSolanaLiveEventsDelegate()
         var expected_id: String?
@@ -129,14 +135,15 @@ final class SocketTests: XCTestCase {
         wait(for: [expectation], timeout: 20.0)
     }
     
-    func testSockeLogsUnSubscribe() {
+    func testSocketLogsUnSubscribe() {
         let expectation = XCTestExpectation()
         let delegate = MockSolanaLiveEventsDelegate()
         var expected_id: String?
         delegate.onConected = {
             expected_id = try! self.socket.logsSubscribe(mentions: ["9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g"]).get()
         }
-        delegate.onSubscribed = { (socket, id) in
+        delegate.onSubscribed = { (socketId, id) in
+            _ = try! self.socket.logsUnsubscribe(socketId: socketId).get()
             XCTAssertEqual(expected_id, id)
         }
         
@@ -148,12 +155,32 @@ final class SocketTests: XCTestCase {
         wait(for: [expectation], timeout: 20.0)
     }
     
-    func testSockeLogsNotification() {
+    func testSocketLogsNotification() {
         let expectation = XCTestExpectation()
         let delegate = MockSolanaLiveEventsDelegate()
         var expected_id: String?
         delegate.onConected = {
             expected_id = try! self.socket.logsSubscribe(mentions: ["9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g"]).get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            XCTAssertEqual(expected_id, id)
+        }
+        
+        delegate.onLogsNotification = { notification in
+            XCTAssertNotNil(notification.params?.result)
+            expectation.fulfill()
+        }
+        
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSocketLogsNotificationAll() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.logsSubscribeAll().get()
         }
         delegate.onSubscribed = { (socket, id) in
             XCTAssertEqual(expected_id, id)
@@ -179,6 +206,61 @@ final class SocketTests: XCTestCase {
             expectation.fulfill()
             XCTAssertEqual(expected_id, id)
         }
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSocketProgramSubscribe() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.programSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g").get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            expectation.fulfill()
+            XCTAssertEqual(expected_id, id)
+        }
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSocketProgramUnSubscribe() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.programSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g").get()
+        }
+        delegate.onSubscribed = { (socketId, id) in
+            XCTAssertEqual(expected_id, id)
+            _ = try! self.socket.programUnsubscribe(socketId: socketId).get()
+        }
+        
+        delegate.onUnsubscribed = { id in
+            expectation.fulfill()
+        }
+        
+        socket.start(delegate: delegate)
+        wait(for: [expectation], timeout: 20.0)
+    }
+    
+    func testSocketProgramNotification() {
+        let expectation = XCTestExpectation()
+        let delegate = MockSolanaLiveEventsDelegate()
+        var expected_id: String?
+        delegate.onConected = {
+            expected_id = try! self.socket.programSubscribe(publickey: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").get()
+        }
+        delegate.onSubscribed = { (socket, id) in
+            XCTAssertEqual(expected_id, id)
+        }
+        
+        delegate.onProgramNotification = { notification in
+            XCTAssertNotNil(notification.params?.result)
+            expectation.fulfill()
+        }
+        
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
     }
@@ -225,6 +307,65 @@ final class SocketTests: XCTestCase {
         let result = try! JSONDecoder().decode(Response<AccountNotification<[String]>>.self, from: string.data(using: .utf8)!)
         XCTAssertEqual(result.params?.result?.value.lamports, 41083620)
     }
+    
+    func testDecodingProgramNotification() {
+        let string = """
+            {
+              "jsonrpc": "2.0",
+              "method": "programNotification",
+              "params": {
+                "result": {
+                  "context": {
+                    "slot": 5208469
+                  },
+                  "value": {
+                    "pubkey": "H4vnBqifaSACnKa7acsxstsY1iV1bvJNxsCY7enrd1hq",
+                    "account": {
+                      "data": ["11116bv5nS2h3y12kD1yUKeMZvGcKLSjQgX6BeV7u1FrjeJcKfsHPXHRDEHrBesJhZyqnnq9qJeUuF7WHxiuLuL5twc38w2TXNLxnDbjmuR", "base58"],
+                      "executable": false,
+                      "lamports": 33594,
+                      "owner": "11111111111111111111111111111111",
+                      "rentEpoch": 636
+                    },
+                  }
+                },
+                "subscription": 24040
+              }
+            }
+        """
+        let result = try! JSONDecoder().decode(Response<ProgramNotification<[String]>>.self, from: string.data(using: .utf8)!)
+        XCTAssertEqual(result.params?.subscription, 24040)
+    }
+    
+    func testDecodingProgramNotification2() {
+        let string = """
+            {
+               "jsonrpc":"2.0",
+               "method":"programNotification",
+               "params":{
+                  "result":{
+                     "context":{
+                        "slot":67598736
+                     },
+                     "value":{
+                        "account":{
+                           "data":"nBuzaooPfhgHcAYxbpZVcXFw1EVjyEKxicgjr8u5NXLBX7xfCGw2E1YiSeeGXLbrKu5MAquX1zwR9P12vhAr1HgSXyTyR66VeevvJcyFKeEDSPWMzh723b8KLxtfd2TyPYYG5HYXx3HcH3Dbxvx17QxADJtRaHYTvde9pB98PsP9FcHWrzkCUZi4bhWtQYeUACGkYCQtMo2hbJuWqBG5rzS45rr9W2YJK",
+                           "executable":false,
+                           "lamports":2039280,
+                           "owner":"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                           "rentEpoch":156
+                        },
+                        "pubkey":"9FENcWRd1bf8P97e2exQtV3eEZCkaRa3KFFjTkYXpBHQ"
+                     }
+                  },
+                  "subscription":22601084
+               }
+            }
+        """
+        let result = try! JSONDecoder().decode(Response<ProgramNotification<String>>.self, from: string.data(using: .utf8)!)
+        XCTAssertEqual(result.params?.subscription, 22601084)
+    }
+    
     
     func testDecodingTokenAccountNotification() {
         let string = """
