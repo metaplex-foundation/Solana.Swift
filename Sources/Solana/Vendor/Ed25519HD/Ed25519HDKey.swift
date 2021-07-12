@@ -1,6 +1,5 @@
 import Foundation
 import TweetNacl
-import CryptoSwift
 
 public struct Ed25519HDKey {
     public typealias Hex = String
@@ -17,8 +16,8 @@ public struct Ed25519HDKey {
 
     public static func getMasterKeyFromSeed(_ seed: Hex) -> Result<Keys, Error> {
         let hmacKey = ed25519Curve.bytes
-        let hmac = HMAC(key: hmacKey, variant: .sha512)
-        guard let entropy = try? hmac.authenticate(Data(hex: seed).bytes) else {
+        
+        guard let entropy = hmacSha512(message: Data(hex: seed), key: Data(hmacKey)) else {
             return .failure(.hmacCanNotAuthenticate)
         }
         let IL = Data(entropy[0..<32])
@@ -33,9 +32,8 @@ public struct Ed25519HDKey {
         bytes += index.edBytes
         let data = Data(bytes)
 
-        let hmac = HMAC(key: keys.chainCode.bytes, variant: .sha512)
-        
-        guard let entropy = try? hmac.authenticate(data.bytes) else {
+            
+        guard let entropy = hmacSha512(message: data, key: keys.chainCode) else {
             return .failure(.hmacCanNotAuthenticate)
         }
         let IL = Data(entropy[0..<32])

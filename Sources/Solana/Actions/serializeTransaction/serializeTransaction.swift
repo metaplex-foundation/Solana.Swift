@@ -27,11 +27,8 @@ extension Action {
                 transaction.sign(signers: signers)
                 .flatMap { transaction.serialize() }
                 .flatMap {
-                    if let base64 = $0.bytes.toBase64() {
-                        return .success(base64)
-                    } else {
-                        return .failure(SolanaError.other("Could not serialize transaction"))
-                    }
+                    let base64 = $0.bytes.toBase64()
+                    return .success(base64)
                 }
                 .onSuccess { onComplete(.success($0)) }
             case .failure(let error):

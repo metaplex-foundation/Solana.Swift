@@ -1,6 +1,5 @@
 import Foundation
 import TweetNacl
-import CryptoSwift
 
 public struct Account: Codable, Hashable {
     public let phrase: [String]
