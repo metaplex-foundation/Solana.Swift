@@ -54,7 +54,6 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
 final class SocketTests: XCTestCase {
     let socket = SolanaSocket(endpoint: .devnetSolana, enableDebugLogs: true)
     
-    
     func testSocketConnected() {
         let expectation = XCTestExpectation()
         let delegate = MockSolanaLiveEventsDelegate()
@@ -75,6 +74,7 @@ final class SocketTests: XCTestCase {
         delegate.onSubscribed = { (socket, id) in
             expectation.fulfill()
             XCTAssertEqual(expected_id, id)
+            self.socket.stop()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
@@ -95,6 +95,7 @@ final class SocketTests: XCTestCase {
         }
         delegate.onUnsubscribed = { (id) in
             expectation.fulfill()
+            self.socket.stop()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
@@ -115,6 +116,7 @@ final class SocketTests: XCTestCase {
         delegate.onAccountNotification = { notification in
             XCTAssertNotNil(notification.params?.result)
             expectation.fulfill()
+            self.socket.stop()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
@@ -130,6 +132,7 @@ final class SocketTests: XCTestCase {
         delegate.onSubscribed = { (socket, id) in
             expectation.fulfill()
             XCTAssertEqual(expected_id, id)
+            self.socket.stop()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
@@ -149,6 +152,7 @@ final class SocketTests: XCTestCase {
         
         delegate.onUnsubscribed = { id in
             expectation.fulfill()
+            self.socket.stop()
         }
         
         socket.start(delegate: delegate)
@@ -169,6 +173,7 @@ final class SocketTests: XCTestCase {
         delegate.onLogsNotification = { notification in
             XCTAssertNotNil(notification.params?.result)
             expectation.fulfill()
+            self.socket.stop()
         }
         
         socket.start(delegate: delegate)
@@ -189,6 +194,7 @@ final class SocketTests: XCTestCase {
         delegate.onLogsNotification = { notification in
             XCTAssertNotNil(notification.params?.result)
             expectation.fulfill()
+            self.socket.stop()
         }
         
         socket.start(delegate: delegate)
@@ -220,6 +226,7 @@ final class SocketTests: XCTestCase {
         delegate.onSubscribed = { (socket, id) in
             expectation.fulfill()
             XCTAssertEqual(expected_id, id)
+            self.socket.stop()
         }
         socket.start(delegate: delegate)
         wait(for: [expectation], timeout: 20.0)
@@ -239,6 +246,7 @@ final class SocketTests: XCTestCase {
         
         delegate.onUnsubscribed = { id in
             expectation.fulfill()
+            self.socket.stop()
         }
         
         socket.start(delegate: delegate)
@@ -259,6 +267,7 @@ final class SocketTests: XCTestCase {
         delegate.onProgramNotification = { notification in
             XCTAssertNotNil(notification.params?.result)
             expectation.fulfill()
+            self.socket.stop()
         }
         
         socket.start(delegate: delegate)
