@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getRecentBlockhash(commitment: Commitment? = nil) ->  Single<String> {
+    func getRecentBlockhash(commitment: Commitment? = nil) ->  Single<String> {
         Single.create { emitter in
             self.getRecentBlockhash(commitment: commitment) {
                 switch $0 {

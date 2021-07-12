@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getEpochInfo(commitment: Commitment? = nil) -> Single<EpochInfo> {
+    func getEpochInfo(commitment: Commitment? = nil) -> Single<EpochInfo> {
         Single.create { emitter in
             self.getEpochInfo(commitment: commitment) {
                 switch $0 {

@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getInflationRate() -> Single<InflationRate> {
+    func getInflationRate() -> Single<InflationRate> {
         Single.create { emitter in
             self.getInflationRate {
                 switch $0 {

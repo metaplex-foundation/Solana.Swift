@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getRecentPerformanceSamples(limit: UInt64) -> Single<[PerformanceSample]> {
+    func getRecentPerformanceSamples(limit: UInt64) -> Single<[PerformanceSample]> {
         Single.create { emitter in
             self.getRecentPerformanceSamples(limit: limit) {
                 switch $0 {

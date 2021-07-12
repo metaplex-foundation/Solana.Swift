@@ -84,13 +84,11 @@ final class SocketTests: XCTestCase {
         let expectation = XCTestExpectation()
         let delegate = MockSolanaLiveEventsDelegate()
         var expected_id: String?
-        var expected_socket: UInt64?
         delegate.onConected = {
             expected_id = try! self.socket.accountSubscribe(publickey: "9B5XszUGdMaxCZ7uSQhPzdks5ZQSmWxrmzCSvtJ6Ns6g").get()
         }
         delegate.onSubscribed = { (socket, id) in
             XCTAssertEqual(expected_id, id)
-            expected_socket = socket
             _ = try! self.socket.accountUnsubscribe(socketId: socket).get()
         }
         delegate.onUnsubscribed = { (id) in

@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getConfirmedSignaturesForAddress(account: String, startSlot: UInt64, endSlot: UInt64) -> Single<[String]> {
+    func getConfirmedSignaturesForAddress(account: String, startSlot: UInt64, endSlot: UInt64) -> Single<[String]> {
         Single.create { emitter in
             self.getConfirmedSignaturesForAddress(account: account, startSlot: startSlot, endSlot: endSlot) {
                 switch $0 {
