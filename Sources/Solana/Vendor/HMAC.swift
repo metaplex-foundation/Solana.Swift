@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Arturo Jamaica on 2021/07/12.
-//
-
 import Foundation
 import CommonCrypto
 
@@ -17,13 +10,15 @@ func hmac(hashName: String, message:Data, key:Data) -> Data? {
                  "SHA512": (kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)]
     guard let (hashAlgorithm, length) = algos[hashName]  else { return nil }
     var macData = Data(count: Int(length))
-
-    macData.withUnsafeMutableBytes {macBytes in
-        message.withUnsafeBytes {messageBytes in
-            key.withUnsafeBytes {keyBytes in
+    
+    macData.withUnsafeMutableBytes { (macBytes) in
+        message.withUnsafeBytes { (messageBytes) in
+            key.withUnsafeBytes { (keyBytes) in
                 CCHmac(CCHmacAlgorithm(hashAlgorithm),
-                       keyBytes,     key.count,
-                       messageBytes, message.count,
+                       keyBytes,
+                       key.count,
+                       messageBytes,
+                       message.count,
                        macBytes)
             }
         }

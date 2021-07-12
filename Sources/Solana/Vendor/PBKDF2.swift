@@ -21,6 +21,6 @@ func pbkdf2(hash: CCPBKDFAlgorithm, password: String, salt: Data, keyByteCount: 
         print("Error: \(derivationStatus)")
         return nil;
     }
-        
+    
     return derivedKeyData
 }
