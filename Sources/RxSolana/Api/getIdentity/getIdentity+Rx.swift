@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getIdentity() -> Single<Identity> {
+    func getIdentity() -> Single<Identity> {
         Single.create { emitter in
             self.getIdentity {
                 switch $0 {

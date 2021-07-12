@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getSupply(commitment: Commitment? = nil) -> Single<Supply> {
+    func getSupply(commitment: Commitment? = nil) -> Single<Supply> {
         Single.create { emitter in
             self.getSupply(commitment: commitment) {
                 switch $0 {

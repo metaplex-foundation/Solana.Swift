@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
+    func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Single<[ProgramAccount<T>]> {
         Single.create { emitter in
             self.getProgramAccounts(publicKey: publicKey, configs: configs, decodedTo: decodedTo) {
                 switch $0 {

@@ -3,7 +3,7 @@ import RxSwift
 import Solana
 
 public extension Api {
-    public func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) -> Single<[String: [Int]]?> {
+    func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) -> Single<[String: [Int]]?> {
         Single.create { emitter in
             self.getLeaderSchedule(epoch: epoch, commitment: commitment) {
                 switch $0 {
