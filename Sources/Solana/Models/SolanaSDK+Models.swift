@@ -13,12 +13,14 @@ public struct Response<T: Decodable>: Decodable {
     public let method: String?
     
     // socket
-    public let params: SocketParams<T>?
+    public let params: Params<T>?
 }
-public struct SocketParams<T: Decodable>: Decodable {
-    public let result: T?
+
+public struct Params<T: Decodable>: Decodable {
+    public let result: Rpc<T>?
     public let subscription: UInt64?
 }
+
 public struct ResponseError: Decodable {
     public let code: Int?
     public let message: String?

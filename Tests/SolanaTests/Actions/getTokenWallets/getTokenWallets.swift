@@ -4,7 +4,7 @@ import RxBlocking
 @testable import Solana
 
 class getTokenWallets: XCTestCase {
-    var endpoint = RPCEndpoint.testnetSolana
+    var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
     var account: Account { try! solana.auth.account.get() }
 
