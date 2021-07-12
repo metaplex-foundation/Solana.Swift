@@ -124,7 +124,8 @@ public class Mnemonic {
         let ENT = bytes.count * 8
         let CS = ENT / 32
 
-        let hash = bytes.sha256()
+        
+        let hash = sha256(data: Data(bytes)).bytes
         let hashbits = String(hash.flatMap { ("00000000" + String($0, radix: 2)).suffix(8) })
         return String(hashbits.prefix(CS))
     }
