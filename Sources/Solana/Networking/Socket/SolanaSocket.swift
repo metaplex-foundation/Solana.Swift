@@ -7,8 +7,8 @@ enum SolanaSocketError: Error {
 }
 public protocol SolanaSocketEventsDelegate: AnyObject {
     func connected()
-    func accountNotification(notification: Response<AccountNotification<[String]>>)
-    func programNotification(notification: Response<ProgramNotification<[String]>>)
+    func accountNotification(notification: Response<BufferInfo<AccountInfo>>)
+    func programNotification(notification: Response<ProgramAccount<AccountInfo>>)
     func signatureNotification(notification: Response<SignatureNotification>)
     func logsNotification(notification: Response<LogsNotification>)
     func unsubscribed(id: String)
@@ -182,7 +182,7 @@ extension SolanaSocket: WebSocketDelegate {
                 
                 switch type {
                 case .accountNotification:
-                    let notification = try JSONDecoder().decode(Response<AccountNotification<[String]>>.self, from: data)
+                    let notification = try JSONDecoder().decode(Response<BufferInfo<AccountInfo>>.self, from: data)
                     delegate?.accountNotification(notification: notification)
                 case .signatureNotification:
                     let notification = try JSONDecoder().decode(Response<SignatureNotification>.self, from: data)
@@ -191,7 +191,7 @@ extension SolanaSocket: WebSocketDelegate {
                     let notification = try JSONDecoder().decode(Response<LogsNotification>.self, from: data)
                     delegate?.logsNotification(notification: notification)
                 case .programNotification:
-                    let notification = try JSONDecoder().decode(Response<ProgramNotification<[String]>>.self, from: data)
+                    let notification = try JSONDecoder().decode(Response<ProgramAccount<AccountInfo>>.self, from: data)
                     delegate?.programNotification(notification: notification)
                 default: break
                 }
