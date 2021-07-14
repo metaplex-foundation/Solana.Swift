@@ -5,7 +5,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     
     var onConected: (() -> Void)? = nil
     var onDisconnected: (() -> Void)? = nil
-    var onAccountNotification: ((Response<AccountNotification<[String]>>) -> Void)? = nil
+    var onAccountNotification: ((Response<BufferInfo<AccountInfo>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
     var onLogsNotification: ((Response<LogsNotification>) -> Void)? = nil
     var onProgramNotification: ((Response<ProgramNotification<[String]>>) -> Void)? = nil
@@ -17,7 +17,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     }
     
     
-    func accountNotification(notification: Response<AccountNotification<[String]>>) {
+    func accountNotification(notification: Response<BufferInfo<AccountInfo>>) {
         onAccountNotification?(notification)
     }
     
@@ -311,7 +311,7 @@ final class SocketTests: XCTestCase {
                 }
              }
         """
-        let result = try! JSONDecoder().decode(Response<AccountNotification<[String]>>.self, from: string.data(using: .utf8)!)
+        let result = try! JSONDecoder().decode(Response<BufferInfo<AccountInfo>>.self, from: string.data(using: .utf8)!)
         XCTAssertEqual(result.params?.result?.value.lamports, 41083620)
     }
     
