@@ -8,7 +8,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
     var onAccountNotification: ((Response<BufferInfo<AccountInfo>>) -> Void)? = nil
     var onSignatureNotification: ((Response<SignatureNotification>) -> Void)? = nil
     var onLogsNotification: ((Response<LogsNotification>) -> Void)? = nil
-    var onProgramNotification: ((Response<ProgramNotification<[String]>>) -> Void)? = nil
+    var onProgramNotification: ((Response<ProgramAccount<AccountInfo>>) -> Void)? = nil
     var onSubscribed: ((UInt64, String) -> Void)? = nil
     var onUnsubscribed: ((String) -> Void)? = nil
 
@@ -30,7 +30,7 @@ class MockSolanaLiveEventsDelegate: SolanaSocketEventsDelegate {
         onLogsNotification?(notification)
     }
     
-    func programNotification(notification: Response<ProgramNotification<[String]>>) {
+    func programNotification(notification: Response<ProgramAccount<AccountInfo>>) {
         onProgramNotification?(notification)
     }
     
@@ -340,37 +340,8 @@ final class SocketTests: XCTestCase {
               }
             }
         """
-        let result = try! JSONDecoder().decode(Response<ProgramNotification<[String]>>.self, from: string.data(using: .utf8)!)
+        let result = try! JSONDecoder().decode(Response<ProgramAccount<AccountInfo>>.self, from: string.data(using: .utf8)!)
         XCTAssertEqual(result.params?.subscription, 24040)
-    }
-    
-    func testDecodingProgramNotification2() {
-        let string = """
-            {
-               "jsonrpc":"2.0",
-               "method":"programNotification",
-               "params":{
-                  "result":{
-                     "context":{
-                        "slot":67598736
-                     },
-                     "value":{
-                        "account":{
-                           "data":"nBuzaooPfhgHcAYxbpZVcXFw1EVjyEKxicgjr8u5NXLBX7xfCGw2E1YiSeeGXLbrKu5MAquX1zwR9P12vhAr1HgSXyTyR66VeevvJcyFKeEDSPWMzh723b8KLxtfd2TyPYYG5HYXx3HcH3Dbxvx17QxADJtRaHYTvde9pB98PsP9FcHWrzkCUZi4bhWtQYeUACGkYCQtMo2hbJuWqBG5rzS45rr9W2YJK",
-                           "executable":false,
-                           "lamports":2039280,
-                           "owner":"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-                           "rentEpoch":156
-                        },
-                        "pubkey":"9FENcWRd1bf8P97e2exQtV3eEZCkaRa3KFFjTkYXpBHQ"
-                     }
-                  },
-                  "subscription":22601084
-               }
-            }
-        """
-        let result = try! JSONDecoder().decode(Response<ProgramNotification<String>>.self, from: string.data(using: .utf8)!)
-        XCTAssertEqual(result.params?.subscription, 22601084)
     }
     
     
@@ -415,7 +386,7 @@ final class SocketTests: XCTestCase {
         }
         """
         
-        let result = try! JSONDecoder().decode(Response<AccountNotification<TokenAccountNotificationData>>.self, from: string.data(using: .utf8)!)
+        let result = try! JSONDecoder().decode(Response<BufferInfoJson<TokenAccountNotificationData>>.self, from: string.data(using: .utf8)!)
         
         XCTAssertEqual(result.params?.result?.value.data?.parsed.info.tokenAmount.amount, "390000101")
     }

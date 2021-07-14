@@ -28,19 +28,6 @@ struct SocketSubscription: Decodable {
     let result: UInt64
 }
 
-public struct AccountNotification<T: Decodable>: Decodable {
-    public let data: T?
-    public let lamports: Lamports
-    public let owner: String
-    public let executable: Bool
-    public let rentEpoch: UInt64
-}
-
-public struct ProgramNotification<T: Decodable>: Decodable {
-    public let pubkey: PublicKey
-    public let account: AccountNotification<T>
-}
-
 public struct TokenAccountNotificationData: Decodable {
     public let program: String
     public let parsed: TokenAccountNotificationDataParsed

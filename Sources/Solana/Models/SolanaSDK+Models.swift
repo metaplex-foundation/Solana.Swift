@@ -118,10 +118,18 @@ public struct ProgramAccount<T: BufferLayout>: Decodable {
     public let pubkey: String
 }
 
-public struct BufferInfo<T: BufferLayout>: Decodable {
+public struct BufferInfoJson<T: Decodable>: Decodable {
+    public let data: T?
     public let lamports: Lamports
     public let owner: String
+    public let executable: Bool
+    public let rentEpoch: UInt64
+}
+
+public struct BufferInfo<T: BufferLayout>: Decodable {
     public let data: Buffer<T>
+    public let lamports: Lamports
+    public let owner: String
     public let executable: Bool
     public let rentEpoch: UInt64
 }
