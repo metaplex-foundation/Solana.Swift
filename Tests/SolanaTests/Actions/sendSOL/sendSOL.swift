@@ -13,7 +13,6 @@ class sendSOL: XCTestCase {
         solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solana.auth.save(account).get()
-        _ = try solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
     }
     
     func testSendSOLFromBalance() {
