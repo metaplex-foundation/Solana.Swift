@@ -5,7 +5,7 @@
 
 This is a open source library on pure swift for Solana protocol.
 
-The objective is to create a cross platform, fully functional, highly tested and less depencies as posible. The project is still at initial stage. Lots of changes chan happen to the exposed api.
+The objective is to create a cross platform, fully functional, highly tested and less depencies as posible. 
 
 Please check my wallet [Summer](https://github.com/ajamaica/Summer).
 
@@ -187,13 +187,6 @@ From Xcode 11, you can use [Swift Package Manager](https://swift.org/package-man
 
 If you encounter any problem or have a question on adding the package to an Xcode project, I suggest reading the [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)  guide article from Apple.
 
-## Other
-
-### Ideas and plans
-
-The code and api will be evoling for this initial fork please keep that in mind. I am planning adding support for othr development layers like React Native or flutter.
-
-RxSwift maybe be removed from the library or at least moved to a diferent sublibrary. Every call will have a unit test.
 
 ### Support it 
 
