@@ -128,10 +128,10 @@ class Methods: XCTestCase {
         let version = try! solana.api.getVersion().toBlocking().first()
         XCTAssertNotNil(version)
     }
-    func testRequestAirdrop() {
+    /*func testRequestAirdrop() {
         let airdrop = try! solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 10000000000).toBlocking().first()
         XCTAssertNotNil(airdrop)
-    }
+    }*/
     func testGetInflationGovernor() {
         let governor = try! solana.api.getInflationGovernor().toBlocking().first()
         XCTAssertNotNil(governor)
