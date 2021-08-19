@@ -69,8 +69,8 @@ class Methods: XCTestCase {
         XCTAssertEqual(blocks!.count, 10);
     }
     func testGetConfirmedSignaturesForAddress2() {
-        let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: RequestConfiguration(limit: 10)).toBlocking().first()
-        XCTAssertEqual(result?.count, 10)
+        let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: RequestConfiguration(limit: 4)).toBlocking().first()
+        XCTAssertEqual(result?.count, 4)
     }
     func testGetConfirmedTransaction() {
         let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth").toBlocking().first()

@@ -187,6 +187,9 @@ From Xcode 11, you can use [Swift Package Manager](https://swift.org/package-man
 
 If you encounter any problem or have a question on adding the package to an Xcode project, I suggest reading the [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)  guide article from Apple.
 
+### Acknowledgment
+
+This was originally based on [P2P-ORG](https://github.com/p2p-org/solana-swift), currently is not longer compatible.
 
 ### Support it 
 
