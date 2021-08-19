@@ -1,7 +1,4 @@
 import XCTest
-import RxSwift
-import RxBlocking
-@testable import RxSolana
 import Solana
 
 class createAssociatedTokenAccount: XCTestCase {
@@ -18,14 +15,15 @@ class createAssociatedTokenAccount: XCTestCase {
     
     func testGetOrCreateAssociatedTokenAccount() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        let account = try! solana.action.getOrCreateAssociatedTokenAccount(for: solana.auth.account.get().publicKey, tokenMint: tokenMint).toBlocking().first()
+        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint).get()
         XCTAssertNotNil(account)
     }
     
     func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        XCTAssertThrowsError(try solana.action.createAssociatedTokenAccount(for: solana.auth.account.get().publicKey, tokenMint: tokenMint).toBlocking().first())
+        XCTAssertThrowsError(try (solana.action.createAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint).get() as TransactionID?))
     }
+
     func testFindAssociatedTokenAddress() {
         let associatedTokenAddress = try! PublicKey.associatedTokenAddress(
             walletAddress: PublicKey(string: "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG")!,

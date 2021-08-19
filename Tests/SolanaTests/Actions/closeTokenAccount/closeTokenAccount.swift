@@ -1,6 +1,4 @@
 import XCTest
-import RxSwift
-import RxBlocking
 @testable import Solana
 
 class closeTokenAccount: XCTestCase {

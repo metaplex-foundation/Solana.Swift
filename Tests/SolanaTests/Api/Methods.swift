@@ -1,6 +1,7 @@
 import XCTest
 import RxSwift
 import RxBlocking
+import RxSolana
 @testable import Solana
 
 class Methods: XCTestCase {
@@ -66,10 +67,6 @@ class Methods: XCTestCase {
         let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:63426800, limit: 10).toBlocking().first()
         XCTAssertNotNil(blocks)
         XCTAssertEqual(blocks!.count, 10);
-    }
-    func testGetConfirmedSignaturesForAddress() {
-        let signatures = try! solana.api.getConfirmedSignaturesForAddress(account: "Vote111111111111111111111111111111111111111", startSlot: 61968701, endSlot: 61968801).toBlocking().first()
-        XCTAssertNotNil(signatures)
     }
     func testGetConfirmedSignaturesForAddress2() {
         let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: RequestConfiguration(limit: 10)).toBlocking().first()
