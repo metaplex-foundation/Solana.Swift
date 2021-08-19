@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'Solana.Swift'
-  s.version          = '1.0.1'
+  s.version          = '1.1'
   s.summary          = 'This is a open source library on pure swift for Solana protocol.'
 
 
