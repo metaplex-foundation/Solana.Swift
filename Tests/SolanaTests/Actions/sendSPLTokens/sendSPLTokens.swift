@@ -1,7 +1,5 @@
 import XCTest
-import RxSwift
-import RxBlocking
-@testable import Solana
+import Solana
 
 class sendSPLTokens: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
@@ -13,7 +11,7 @@ class sendSPLTokens: XCTestCase {
         solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
         let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         try solana.auth.save(account).get()
-        _ = try solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9)).toBlocking().first()
+        _ = try solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9))?.get()
     }
     
     func testSendSPLTokenWithFee() {
@@ -27,7 +25,7 @@ class sendSPLTokens: XCTestCase {
             from: source,
             to: destination,
             amount: Double(0.001).toLamport(decimals: 5)
-        ).toBlocking().first()
+        )?.get()
         XCTAssertNotNil(transactionId)
         
         let transactionIdB = try! solana.action.sendSPLTokens(
@@ -36,7 +34,7 @@ class sendSPLTokens: XCTestCase {
             from: destination,
             to: source,
             amount: Double(0.001).toLamport(decimals: 5)
-        ).toBlocking().first()
+        )?.get()
         XCTAssertNotNil(transactionIdB)
     }
 }

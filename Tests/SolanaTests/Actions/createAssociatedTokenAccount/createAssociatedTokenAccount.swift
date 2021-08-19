@@ -15,13 +15,13 @@ class createAssociatedTokenAccount: XCTestCase {
     
     func testGetOrCreateAssociatedTokenAccount() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint).get()
+        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint)?.get()
         XCTAssertNotNil(account)
     }
     
     func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        XCTAssertThrowsError(try (solana.action.createAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint).get() as TransactionID?))
+        XCTAssertThrowsError(try (solana.action.createAssociatedTokenAccount(for: try! solana.auth.account.get().publicKey, tokenMint: tokenMint)?.get() as TransactionID?))
     }
 
     func testFindAssociatedTokenAddress() {

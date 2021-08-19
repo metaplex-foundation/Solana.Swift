@@ -1,6 +1,4 @@
 import XCTest
-import RxSwift
-import RxBlocking
 @testable import Solana
 
 class serializeAndSendWithFee: XCTestCase {
@@ -18,7 +16,7 @@ class serializeAndSendWithFee: XCTestCase {
     func testSimulationSerializeAndSend() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try! solana.api.getBalance().toBlocking().first()
+        let balance = try! solana.api.getBalance()?.get()
         XCTAssertNotNil(balance)
 
         let instruction = SystemProgram.transferInstruction(
@@ -27,14 +25,14 @@ class serializeAndSendWithFee: XCTestCase {
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try! solana.action.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account]).toBlocking().first()
+        let transactionId = try! solana.action.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account])?.get()
         XCTAssertNotNil(transactionId)
     }
     
     func testSerializeAndSend() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try! solana.api.getBalance().toBlocking().first()
+        let balance = try! solana.api.getBalance()?.get()
         XCTAssertNotNil(balance)
 
         let instruction = SystemProgram.transferInstruction(
@@ -43,7 +41,7 @@ class serializeAndSendWithFee: XCTestCase {
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try! solana.action.serializeAndSendWithFee( instructions: [instruction], signers: [account]).toBlocking().first()
+        let transactionId = try! solana.action.serializeAndSendWithFee( instructions: [instruction], signers: [account])?.get()
         XCTAssertNotNil(transactionId)
     }
     
