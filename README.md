@@ -190,7 +190,3 @@ If you encounter any problem or have a question on adding the package to an Xcod
 ### Acknowledgment
 
 This was originally based on [P2P-ORG](https://github.com/p2p-org/solana-swift), currently is not longer compatible.
-
-### Support it 
-
-SOL: CN87nZuhnFdz74S9zn3bxCcd5ZxW55nwvgAv5C2Tz3K7
