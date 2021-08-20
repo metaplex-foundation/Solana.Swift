@@ -1,6 +1,5 @@
 import Foundation
 import XCTest
-@testable import RxSolana
 import Solana
 
 class TransactionParserTests: XCTestCase {
