@@ -15,12 +15,7 @@ extension Action {
         let lock = RunLoopSimpleLock()
         lock.dispatch {
             self.createTokenAccount(mintAddress: mintAddress) {
-                switch $0 {
-                case .success(let transaction):
-                    transactionResult = .success(transaction)
-                case .failure(let error):
-                    transactionResult = .failure(error)
-                }
+                transactionResult = $0
                 lock.stop()
             }
         }

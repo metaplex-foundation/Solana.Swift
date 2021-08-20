@@ -1,7 +1,5 @@
 import XCTest
-import RxSwift
-import RxBlocking
-@testable import Solana
+import Solana
 
 class sendSOL: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
@@ -18,13 +16,13 @@ class sendSOL: XCTestCase {
     func testSendSOLFromBalance() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try! solana.api.getBalance().toBlocking().first()
+        let balance = try! solana.api.getBalance()?.get()
         XCTAssertNotNil(balance)
 
         let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: balance!/10
-        ).toBlocking().first()
+        )?.get()
         XCTAssertNotNil(transactionId)
     }
     func testSendSOL() {
@@ -32,7 +30,7 @@ class sendSOL: XCTestCase {
         let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
-        ).toBlocking().first()
+        )?.get()
         XCTAssertNotNil(transactionId)
     }
     func testSendSOLIncorrectDestination() {
@@ -40,13 +38,13 @@ class sendSOL: XCTestCase {
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9)
-        ).toBlocking().first())
+        )?.get())
     }
     func testSendSOLBigAmmount() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 9223372036854775808
-        ).toBlocking().first())
+        )?.get())
     }
 }

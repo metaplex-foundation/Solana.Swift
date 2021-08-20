@@ -21,8 +21,7 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("SwapTransaction")
         
         let myAccountSymbol = "SOL"
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: myAccountSymbol)
-            .toBlocking().first()?.value as! SwapTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: myAccountSymbol)?.get().value as! SwapTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "SRM")
         XCTAssertEqual(transaction.source?.pubkey, "BjUEdE292SLEq9mMeKtY3GXL6wirn7DqJPhrukCqAUua")
@@ -35,8 +34,7 @@ class TransactionParserTests: XCTestCase {
     func testDecodingCreateAccountTransaction() {
         let transactionInfo = transactionInfoFromJSONFileName("CreateAccountTransaction")
         
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! CreateAccountTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: nil)?.get().value as! CreateAccountTransaction
         
         XCTAssertEqual(transaction.fee, 0.00203928)
         XCTAssertEqual(transaction.newWallet?.token.symbol, "ETH")
@@ -46,8 +44,7 @@ class TransactionParserTests: XCTestCase {
     func testDecodingCloseAccountTransaction()  {
         let transactionInfo = transactionInfoFromJSONFileName("CloseAccountTransaction")
         
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! CloseAccountTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: nil, myAccountSymbol: nil)?.get().value as! CloseAccountTransaction
         
         XCTAssertEqual(transaction.reimbursedAmount, 0.00203928)
         XCTAssertEqual(transaction.closedWallet?.token.symbol, "ETH")
@@ -57,8 +54,7 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("SendSOLTransaction")
         
         let myAccount = "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm"
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "SOL")
         XCTAssertEqual(transaction.source?.pubkey, myAccount)
@@ -70,8 +66,7 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("SendSOLTransactionPaidByP2PORG")
         
         let myAccount = "6QuXb6mB6WmRASP2y8AavXh6aabBXEH5ZzrSH5xRrgSm"
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "SOL")
         XCTAssertEqual(transaction.source?.pubkey, myAccount)
@@ -82,8 +77,7 @@ class TransactionParserTests: XCTestCase {
     func testDecodingSendSPLToSOLTransaction() {
         let transactionInfo = transactionInfoFromJSONFileName("SendSPLToSOLTransaction")
         let myAccount = "22hXC9c4SGccwCkjtJwZ2VGRfhDYh9KSRCviD8bs4Xbg"
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "wUSDT")
         XCTAssertEqual(transaction.source?.pubkey, myAccount)
@@ -94,8 +88,7 @@ class TransactionParserTests: XCTestCase {
     func testDecodingSendSPLToSPLTransaction() {
         let transactionInfo = transactionInfoFromJSONFileName("SendSPLToSPLTransaction")
         let myAccount = "BjUEdE292SLEq9mMeKtY3GXL6wirn7DqJPhrukCqAUua"
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "SRM")
         XCTAssertEqual(transaction.source?.pubkey, myAccount)
@@ -108,8 +101,7 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("SendTokenToNewAssociatedTokenAddress")
         let myAccount = "H1yu3R247X5jQN9bbDU8KB7RY4JSeEaCv45p5CMziefd"
         
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: "MAPS")
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: "MAPS")?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction.source?.token.symbol, "MAPS")
         XCTAssertEqual(transaction.source?.pubkey, myAccount)
@@ -117,8 +109,7 @@ class TransactionParserTests: XCTestCase {
         
         // transfer checked type
         let transactionInfo2 = transactionInfoFromJSONFileName("SendTokenToNewAssociatedTokenAddressTransferChecked")
-        let transaction2 = try! parser.parse(transactionInfo: transactionInfo2, myAccount: myAccount, myAccountSymbol: "MAPS")
-            .toBlocking().first()?.value as! TransferTransaction
+        let transaction2 = try! parser.parse(transactionInfo: transactionInfo2, myAccount: myAccount, myAccountSymbol: "MAPS")?.get().value as! TransferTransaction
         
         XCTAssertEqual(transaction2.source?.token.symbol, "MAPS")
         XCTAssertEqual(transaction2.source?.pubkey, myAccount)
@@ -130,10 +121,9 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("ProvideLiquidityToPoolTransaction")
         let myAccount = "H1yu3R247X5jQN9bbDU8KB7RY4JSeEaCv45p5CMziefd"
         
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()!
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get()
         
-        XCTAssertNil(transaction.value)
+        XCTAssertNil(transaction?.value)
     }
     
     func testDecodingBurnLiquidityInPoolTransaction() {
@@ -141,10 +131,9 @@ class TransactionParserTests: XCTestCase {
         let transactionInfo = transactionInfoFromJSONFileName("BurnLiquidityInPoolTransaction")
         let myAccount = "H1yu3R247X5jQN9bbDU8KB7RY4JSeEaCv45p5CMziefd"
         
-        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)
-            .toBlocking().first()!
+        let transaction = try! parser.parse(transactionInfo: transactionInfo, myAccount: myAccount, myAccountSymbol: nil)?.get()
         
-        XCTAssertNil(transaction.value)
+        XCTAssertNil(transaction?.value)
     }
     
     private func transactionInfoFromJSONFileName(_ name: String) -> TransactionInfo {

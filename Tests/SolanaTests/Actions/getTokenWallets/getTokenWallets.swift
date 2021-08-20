@@ -1,7 +1,5 @@
 import XCTest
-import RxSwift
-import RxBlocking
-@testable import Solana
+import Solana
 
 class getTokenWallets: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
@@ -16,7 +14,7 @@ class getTokenWallets: XCTestCase {
     }
     
     func testsGetTokenWallets() {
-        let wallets = try! solana.action.getTokenWallets().toBlocking().first()
+        let wallets = try? solana.action.getTokenWallets()?.get()
         XCTAssertNotNil(wallets)
     }
 }

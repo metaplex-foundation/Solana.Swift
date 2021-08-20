@@ -18,11 +18,7 @@ import CoreFoundation
 #endif
 
 final class RunLoopSimpleLock {
-    let currentRunLoop: CFRunLoop
-
-    init() {
-        self.currentRunLoop = CFRunLoopGetCurrent()
-    }
+    let currentRunLoop = CFRunLoopGetCurrent()
 
     func dispatch(_ action: @escaping () -> Void) {
         CFRunLoopPerformBlock(self.currentRunLoop, runLoopSimpleModeRaw) {

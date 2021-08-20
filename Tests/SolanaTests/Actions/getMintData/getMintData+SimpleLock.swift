@@ -15,12 +15,7 @@ extension Action {
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             self?.getMintData(mintAddress: mintAddress, programId: programId) { result in
-                switch result {
-                case .success(let mint):
-                    mintResult = .success(mint)
-                case .failure(let error):
-                    mintResult = .failure(error)
-                }
+                mintResult = result
                 lock.stop()
             }
         }
@@ -33,12 +28,7 @@ extension Action {
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             self?.getMultipleMintDatas(mintAddresses: mintAddresses, programId: programId) { result in
-                switch result {
-                case .success(let mint):
-                    mintResult = .success(mint)
-                case .failure(let error):
-                    mintResult = .failure(error)
-                }
+                mintResult = result
                 lock.stop()
             }
         }
@@ -51,12 +41,7 @@ extension Action {
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             self?.getPools(swapProgramId: "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8") { result in
-                switch result {
-                case .success(let pools):
-                    resultPools = .success(pools)
-                case .failure(let error):
-                    resultPools = .failure(error)
-                }
+                resultPools = result
                 lock.stop()
             }
         }
