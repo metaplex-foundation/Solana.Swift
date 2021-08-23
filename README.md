@@ -14,7 +14,7 @@ Please check my wallet [Summer](https://github.com/ajamaica/Summer).
 - [x] Key pair generation
 - [x] RPC configuration.
 - [x] SPM integration
-- [x] Few libraries requirement (TweetNACL, Starscream).
+- [x] Few libraries requirement (TweetNACL, Starscream, secp256k1).
 - [x] Fully tested (53%)
 - [x] Sockets
 - [ ] Type-safe Transaction templates
