@@ -29,7 +29,6 @@ public class Keychain: NSObject {
 	}
 	
 	public var privateKey: Data?
-	//	private var publicKey: Data?
 	private var chainCode: Data?
 	
 	fileprivate var isMasterKey = false
@@ -43,10 +42,17 @@ public class Keychain: NSObject {
 		
 	}
 	
-    public convenience init(seedString: String, network: String) throws {
-        let seed = Mnemonic(phrase: seedString.components(separatedBy: " "))!.seed
-        let hmac = hmacSha512(message: Data(seed), key: "Bitcoin seed".data(using: .utf8)!)!.bytes
-        self.init(hmac: hmac)
+    public convenience init?(seedString: String, network: String) throws {
+        guard let seedData = Mnemonic(phrase: seedString.components(separatedBy: " ")) else {
+            return nil
+        }
+        guard let keyData = "Bitcoin seed".data(using: .utf8) else {
+            return nil
+        }
+        guard let hmac = hmacSha512(message: Data(seedData.seed), key: keyData) else {
+            return nil
+        }
+        self.init(hmac: hmac.bytes)
         isMasterKey = true
         isTestnet = network == "devnet" || network == "testnet"
 	}
@@ -239,23 +245,3 @@ public class Keychain: NSObject {
 	}
 	
 }
-
-// MARK: - BIP44
-extension Keychain {
-	
-	public func checkMasterKey() throws {
-		guard isMasterKey else {
-			throw KeyDerivationError.notMasterKey
-		}
-	}
-	
-	public func bitcoinMainnetKeychain() throws -> Keychain {
-		try checkMasterKey()
-		return try derivedKeychain(at: "44'/0'")
-	}
-	public func bitcoinTestnetKeychain() throws -> Keychain {
-		try checkMasterKey()
-		return try derivedKeychain(at: "44'/1'")
-	}
-}
-
