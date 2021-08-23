@@ -14,7 +14,7 @@ extension Action {
             return
         }
 
-        let getRecentBlockhashRequest: (Result<String, Error>)->Void = { result in
+        let getRecentBlockhashRequest: (Result<String, Error>) -> Void = { result in
             switch result {
             case .success(let recentBlockhash):
 

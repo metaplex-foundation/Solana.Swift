@@ -15,18 +15,18 @@ public struct DerivablePath: Hashable {
             }
         }
     }
-    
+
     // MARK: - Properties
     public let type: DerivableType
     public let walletIndex: Int
     public let accountIndex: Int?
-    
+
     public init(type: DerivablePath.DerivableType, walletIndex: Int, accountIndex: Int? = nil) {
         self.type = type
         self.walletIndex = walletIndex
         self.accountIndex = accountIndex
     }
-    
+
     public static var `default`: Self {
         .init(
             type: .bip44Change,
@@ -34,7 +34,7 @@ public struct DerivablePath: Hashable {
             accountIndex: 0
         )
     }
-    
+
     public var rawValue: String {
         var value = type.prefix
         switch type {

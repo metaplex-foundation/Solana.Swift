@@ -30,16 +30,16 @@ public struct ParsedInstruction: Decodable {
             let account: String?
             let source: String?
             let destination: String?
-            
+
             // create account
             let lamports: UInt64?
             let newAccount: String?
             let space: UInt64?
-            
+
             // initialize account
             let mint: String?
             let rentSysvar: String?
-            
+
             // approve
             let amount: String?
             // swiftlint:disable all

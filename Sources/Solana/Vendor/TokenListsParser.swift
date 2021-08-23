@@ -12,10 +12,9 @@ public class TokensListParser {
         #if SWIFT_PACKAGE
         let path = Bundle.module.url(forResource: network + ".tokens", withExtension: "json")?.path
         #else
-        let path = Bundle(for: Solana.self).path(forResource: network + ".tokens", ofType:  "json")
+        let path = Bundle(for: Solana.self).path(forResource: network + ".tokens", ofType: "json")
         #endif
-        
-        
+
         guard let jsonData = try? Data(contentsOf: URL(fileURLWithPath: path!)) else {
             return .failure(TokensListParserError.invalidData)
         }

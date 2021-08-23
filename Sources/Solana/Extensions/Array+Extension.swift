@@ -3,7 +3,7 @@ import Foundation
 extension Array {
   @inlinable
   init(reserveCapacity: Int) {
-    self = Array<Element>()
+    self = [Element]()
     self.reserveCapacity(reserveCapacity)
   }
 

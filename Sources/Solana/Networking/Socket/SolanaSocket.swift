@@ -35,88 +35,88 @@ public class SolanaSocket {
     private var enableDebugLogs: Bool
     private var request: URLRequest
     private weak var delegate: SolanaSocketEventsDelegate?
-    
-    init(endpoint: RPCEndpoint, enableDebugLogs: Bool = false){
+
+    init(endpoint: RPCEndpoint, enableDebugLogs: Bool = false) {
         self.request = URLRequest(url: endpoint.urlWebSocket)
         self.request.timeoutInterval = 5
         self.enableDebugLogs = enableDebugLogs
     }
-    
+
     public func start(delegate: SolanaSocketEventsDelegate) {
         self.delegate = delegate
         self.socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
     }
-    
-    public func stop(){
+
+    public func stop() {
         self.socket?.disconnect()
         self.delegate = nil
     }
-    
+
     public func accountSubscribe(publickey: String) -> Result<String, Error> {
         let method: SocketMethod = .accountSubscribe
         let params: [Encodable] = [ publickey, ["commitment": "recent", "encoding": "base64"] ]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     func accountUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .accountUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     public func signatureSubscribe(signature: String) -> Result<String, Error> {
         let method: SocketMethod = .signatureSubscribe
         let params: [Encodable] = [signature, ["commitment": "confirmed", "encoding": "base64"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     func signatureUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .signatureUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     public func logsSubscribe(mentions: [String]) -> Result<String, Error> {
         let method: SocketMethod = .logsSubscribe
         let params: [Encodable] = [["mentions": mentions], ["commitment": "confirmed", "encoding": "base64"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     public func logsSubscribeAll() -> Result<String, Error> {
         let method: SocketMethod = .logsSubscribe
         let params: [Encodable] = ["all", ["commitment": "confirmed", "encoding": "base64"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     func logsUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .logsUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     public func programSubscribe(publickey: String) -> Result<String, Error> {
         let method: SocketMethod = .programSubscribe
         let params: [Encodable] = [publickey, ["commitment": "confirmed", "encoding": "base64"]]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     func programUnsubscribe(socketId: UInt64) -> Result<String, Error> {
         let method: SocketMethod = .programUnsubscribe
         let params: [Encodable] = [socketId]
         let request = SolanaRequest(method: method.rawValue, params: params)
         return writeToSocket(request: request)
     }
-    
+
     private func writeToSocket(request: SolanaRequest) -> Result<String, Error> {
         guard let jsonData = try? JSONEncoder().encode(request) else { return Result.failure(SolanaSocketError.couldNotSerialize) }
         guard let socket = socket else { return Result.failure(SolanaSocketError.disconnected) }
@@ -146,8 +146,8 @@ extension SolanaSocket: WebSocketDelegate {
             self.delegate?.error(error: error)
         }
     }
-    
-    private func log(event: WebSocketEvent){
+
+    private func log(event: WebSocketEvent) {
         switch event {
         case .connected(let headers):
             if enableDebugLogs { debugPrint("conected with headers \(headers)") }
@@ -171,7 +171,7 @@ extension SolanaSocket: WebSocketDelegate {
             if enableDebugLogs { debugPrint("error \(error?.localizedDescription ?? "")") }
         }
     }
-    
+
     private func onText(string: String) {
         guard let data = string.data(using: .utf8) else { return }
         do {
@@ -179,7 +179,7 @@ extension SolanaSocket: WebSocketDelegate {
             let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
             if let jsonType = jsonResponse["method"] as? String,
                let type = SocketMethod(rawValue: jsonType) {
-                
+
                 switch type {
                 case .accountNotification:
                     let notification = try JSONDecoder().decode(Response<BufferInfo<AccountInfo>>.self, from: data)
@@ -195,17 +195,17 @@ extension SolanaSocket: WebSocketDelegate {
                     delegate?.programNotification(notification: notification)
                 default: break
                 }
-                
+
             } else {
                 if let subscription = try? JSONDecoder().decode(Response<UInt64>.self, from: data),
                    let socketId = subscription.result,
-                   let id = subscription.id{
+                   let id = subscription.id {
                     delegate?.subscribed(socketId: socketId, id: id)
                 }
-                
+
                 if let subscription = try? JSONDecoder().decode(Response<Bool>.self, from: data),
                    subscription.result == true,
-                   let id = subscription.id{
+                   let id = subscription.id {
                     delegate?.unsubscribed(id: id)
                 }
             }
@@ -213,5 +213,5 @@ extension SolanaSocket: WebSocketDelegate {
             delegate?.error(error: error)
         }
     }
-    
+
 }

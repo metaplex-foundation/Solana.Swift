@@ -31,9 +31,9 @@ public struct Token: Hashable, Decodable {
         self.extensions = extensions
         self.isNative = isNative
     }
-    
+
     let _tags: [String]
-    
+
     public let chainId: Int
     public let address: String
     public let symbol: String
@@ -43,11 +43,11 @@ public struct Token: Hashable, Decodable {
     public var tags: [TokenTag] = []
     public let extensions: TokenExtensions?
     public private(set) var isNative = false
-    
+
     enum CodingKeys: String, CodingKey {
         case chainId, address, symbol, name, decimals, logoURI, extensions, _tags = "tags"
     }
-    
+
     public static func unsupported(
         mint: String?
     ) -> Token {
@@ -63,17 +63,17 @@ public struct Token: Hashable, Decodable {
             extensions: nil
         )
     }
-    
+
     public var wrappedBy: WrappingToken? {
         if tags.contains(where: {$0.name == "wrapped-sollet"}) {
             return .sollet
         }
-        
+
         if tags.contains(where: {$0.name == "wrapped"}) &&
             tags.contains(where: {$0.name == "wormhole"}) {
             return .wormhole
         }
-        
+
         return nil
     }
 }

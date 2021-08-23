@@ -28,7 +28,7 @@ public class Api {
     internal let router: NetworkingRouter
     internal let auth: SolanaAccountStorage
     internal let supportedTokens: [Token]
-    
+
     public init(router: NetworkingRouter, auth: SolanaAccountStorage, supportedTokens: [Token]) {
         self.router = router
         self.auth = auth
@@ -41,7 +41,7 @@ public class Action {
     internal let router: NetworkingRouter
     internal let auth: SolanaAccountStorage
     internal let supportedTokens: [Token]
-    
+
     public init(api: Api, router: NetworkingRouter, auth: SolanaAccountStorage, supportedTokens: [Token]) {
         self.router = router
         self.auth = auth
@@ -49,4 +49,3 @@ public class Action {
         self.api = api
     }
 }
-

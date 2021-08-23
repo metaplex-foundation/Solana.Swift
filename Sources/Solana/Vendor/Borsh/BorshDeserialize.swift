@@ -12,7 +12,7 @@ public extension FixedWidthInteger {
   init(from reader: inout BinaryReader) throws {
     var value: Self = .zero
     let bytes = reader.read(count: UInt32(MemoryLayout<Self>.size))
-    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) } )
+    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) })
     assert(size == MemoryLayout<Self>.size)
     self = Self(littleEndian: value)
   }
@@ -33,7 +33,7 @@ extension Float32: BorshDeserializable {
   public init(from reader: inout BinaryReader) throws {
     var value: Self = .zero
     let bytes = reader.read(count: UInt32(MemoryLayout<Self>.size))
-    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) } )
+    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) })
     assert(size == MemoryLayout<Self>.size)
     assert(!value.isNaN, "For portability reasons we do not allow to deserialize NaNs.")
     self = value
@@ -44,7 +44,7 @@ extension Float64: BorshDeserializable {
   public init(from reader: inout BinaryReader) throws {
     var value: Self = .zero
     let bytes = reader.read(count: UInt32(MemoryLayout<Self>.size))
-    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) } )
+    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) })
     assert(size == MemoryLayout<Self>.size)
     assert(!value.isNaN, "For portability reasons we do not allow to deserialize NaNs.")
     self = value
@@ -55,7 +55,7 @@ extension Bool: BorshDeserializable {
   public init(from reader: inout BinaryReader) throws {
     var value: Self = false
     let bytes = reader.read(count: UInt32(MemoryLayout<Self>.size))
-    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) } )
+    let size = withUnsafeMutableBytes(of: &value, { bytes.copyBytes(to: $0) })
     assert(size == MemoryLayout<Self>.size)
     self = value
   }
@@ -83,20 +83,20 @@ extension String: BorshDeserializable {
 extension Array: BorshDeserializable where Element: BorshDeserializable {
   public init(from reader: inout BinaryReader) throws {
     let count: UInt32 = try .init(from: &reader)
-    self = try Array<UInt32>(0..<count).map {_ in try Element.init(from: &reader) }
+    self = try [UInt32](0..<count).map {_ in try Element.init(from: &reader) }
   }
 }
 
 extension Set: BorshDeserializable where Element: BorshDeserializable & Equatable {
   public init(from reader: inout BinaryReader) throws {
-    self = try Set(Array<Element>.init(from: &reader))
+    self = try Set([Element].init(from: &reader))
   }
 }
 
 extension Dictionary: BorshDeserializable where Key: BorshDeserializable & Equatable, Value: BorshDeserializable {
   public init(from reader: inout BinaryReader) throws {
     let count: UInt32 = try .init(from: &reader)
-    let keyValuePairs = try Array<UInt32>(0..<count)
+    let keyValuePairs = try [UInt32](0..<count)
       .map {_ in (try Key.init(from: &reader), try Value.init(from: &reader)) }
     self = Dictionary(uniqueKeysWithValues: keyValuePairs)
   }

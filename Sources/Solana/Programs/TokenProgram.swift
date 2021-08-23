@@ -11,7 +11,7 @@ struct TokenProgram {
         static let closeAccount: UInt8 = 9
         static let transferChecked: UInt8 = 12
     }
-    
+
     // MARK: - Instructions
     public static func initializeMintInstruction(
         tokenProgramId: PublicKey,
@@ -20,7 +20,7 @@ struct TokenProgram {
         authority: PublicKey,
         freezeAuthority: PublicKey?
     ) -> TransactionInstruction {
-        
+
         TransactionInstruction(
             keys: [
                 Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
@@ -36,14 +36,14 @@ struct TokenProgram {
             ]
         )
     }
-    
+
     public static func initializeAccountInstruction(
         programId: PublicKey = PublicKey.tokenProgramId,
         account: PublicKey,
         mint: PublicKey,
         owner: PublicKey
     ) -> TransactionInstruction {
-        
+
         TransactionInstruction(
             keys: [
                 Account.Meta(publicKey: account, isSigner: false, isWritable: true),
@@ -55,7 +55,7 @@ struct TokenProgram {
             data: [Index.initializeAccount]
         )
     }
-    
+
     public static func transferInstruction(
         tokenProgramId: PublicKey,
         source: PublicKey,
@@ -73,7 +73,7 @@ struct TokenProgram {
             data: [Index.transfer, amount]
         )
     }
-    
+
     public static func approveInstruction(
         tokenProgramId: PublicKey,
         account: PublicKey,
@@ -86,7 +86,7 @@ struct TokenProgram {
             Account.Meta(publicKey: account, isSigner: false, isWritable: true),
             Account.Meta(publicKey: delegate, isSigner: false, isWritable: false)
         ]
-        
+
         if multiSigners.isEmpty {
             keys.append(
                 Account.Meta(publicKey: owner, isSigner: true, isWritable: false)
@@ -95,21 +95,21 @@ struct TokenProgram {
             keys.append(
                 Account.Meta(publicKey: owner, isSigner: false, isWritable: false)
             )
-            
+
             for signer in multiSigners {
                 keys.append(
                     Account.Meta(publicKey: signer.publicKey, isSigner: true, isWritable: false)
                 )
             }
         }
-        
+
         return TransactionInstruction(
             keys: keys,
             programId: tokenProgramId,
             data: [Index.approve, amount]
         )
     }
-    
+
     public static func mintToInstruction(
         tokenProgramId: PublicKey,
         mint: PublicKey,
@@ -117,7 +117,7 @@ struct TokenProgram {
         authority: PublicKey,
         amount: UInt64
     ) -> TransactionInstruction {
-        
+
         TransactionInstruction(
             keys: [
                 Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
@@ -128,14 +128,14 @@ struct TokenProgram {
             data: [Index.mintTo, amount]
         )
     }
-    
+
     public static func closeAccountInstruction(
         tokenProgramId: PublicKey = .tokenProgramId,
         account: PublicKey,
         destination: PublicKey,
         owner: PublicKey
     ) -> TransactionInstruction {
-        
+
         TransactionInstruction(
             keys: [
                 Account.Meta(publicKey: account, isSigner: false, isWritable: true),
@@ -146,7 +146,7 @@ struct TokenProgram {
             data: [Index.closeAccount]
         )
     }
-    
+
     public static func transferCheckedInstruction(
         programId: PublicKey,
         source: PublicKey,
@@ -162,7 +162,7 @@ struct TokenProgram {
             Account.Meta(publicKey: mint, isSigner: false, isWritable: false),
             Account.Meta(publicKey: destination, isSigner: false, isWritable: true)
         ]
-        
+
         if multiSigners.count == 0 {
             keys.append(.init(publicKey: owner, isSigner: true, isWritable: false))
         } else {
@@ -171,7 +171,7 @@ struct TokenProgram {
                 keys.append(.init(publicKey: signer.publicKey, isSigner: true, isWritable: false))
             }
         }
-        
+
         return .init(
             keys: keys,
             programId: programId,

@@ -48,7 +48,7 @@ extension TokenSwapInfo: BorshCodable {
         try curveType.serialize(to: &writer)
         try payer.serialize(to: &writer)
     }
-    
+
     public init(from reader: inout BinaryReader) throws {
         self.version = try .init(from: &reader)
         self.isInitialized = try UInt8.init(from: &reader) == 1
