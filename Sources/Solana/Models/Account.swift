@@ -5,7 +5,7 @@ public struct Account: Codable, Hashable {
     public let phrase: [String]
     public let publicKey: PublicKey
     public let secretKey: Data
-    
+
     public init?(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) {
         let mnemonic: Mnemonic
         var phrase = phrase.filter {!$0.isEmpty}
@@ -17,9 +17,9 @@ public struct Account: Codable, Hashable {
             phrase = mnemonic.phrase
         }
         self.phrase = phrase
-        
+
         let derivablePath = derivablePath ?? .default
-        
+
         switch derivablePath.type {
         case .bip32Deprecated:
             guard let keychain = try? Keychain(seedString: phrase.joined(separator: " "), network: network.cluster)  else {
@@ -40,7 +40,7 @@ public struct Account: Codable, Hashable {
             guard let keys = try? Ed25519HDKey.derivePath(derivablePath.rawValue, seed: mnemonic.seed.toHexString()).get() else {
                 return nil
             }
-            
+
             guard let keyPair = try? NaclSign.KeyPair.keyPair(fromSeed: keys.key) else {
                 return nil
             }
@@ -51,7 +51,7 @@ public struct Account: Codable, Hashable {
             self.secretKey = keyPair.secretKey
         }
     }
-    
+
     public init?(secretKey: Data) {
         guard let keys = try? NaclSign.KeyPair.keyPair(fromSecretKey: secretKey) else {
             return nil
@@ -64,7 +64,7 @@ public struct Account: Codable, Hashable {
         }
         self.publicKey = newKey
         self.secretKey = keys.secretKey
-        
+
         self.phrase = phrase
     }
 }
@@ -74,12 +74,12 @@ public extension Account {
         public let publicKey: PublicKey
         public var isSigner: Bool
         public var isWritable: Bool
-        
+
         // MARK: - Decodable
         enum CodingKeys: String, CodingKey {
             case pubkey, signer, writable
         }
-        
+
         public init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             guard let newKey = PublicKey(string: try values.decode(String.self, forKey: .pubkey)) else {
@@ -89,14 +89,14 @@ public extension Account {
             isSigner = try values.decode(Bool.self, forKey: .signer)
             isWritable = try values.decode(Bool.self, forKey: .writable)
         }
-        
+
         // Initializers
         public init(publicKey: PublicKey, isSigner: Bool, isWritable: Bool) {
             self.publicKey = publicKey
             self.isSigner = isSigner
             self.isWritable = isWritable
         }
-        
+
         public var debugDescription: String {
             "{\"publicKey\": \"\(publicKey.base58EncodedString)\", \"isSigner\": \(isSigner), \"isWritable\": \(isWritable)}"
         }

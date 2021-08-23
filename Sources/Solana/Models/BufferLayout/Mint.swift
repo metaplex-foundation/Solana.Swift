@@ -2,7 +2,7 @@ import Foundation
 
 public struct Mint: BufferLayout, Equatable, Hashable, Encodable {
     public static var BUFFER_LENGTH: UInt64 = 82
-    
+
     public let mintAuthorityOption: UInt32
     public let mintAuthority: PublicKey?
     public let supply: UInt64
@@ -12,10 +12,10 @@ public struct Mint: BufferLayout, Equatable, Hashable, Encodable {
     public let freezeAuthority: PublicKey?
 }
 
-extension Mint: BorshCodable{
+extension Mint: BorshCodable {
     public init(from reader: inout BinaryReader) throws {
         self.mintAuthorityOption = try .init(from: &reader)
-        self.mintAuthority = try? PublicKey.init(from: &reader) 
+        self.mintAuthority = try? PublicKey.init(from: &reader)
         self.supply = try .init(from: &reader)
         self.decimals = try .init(from: &reader)
         self.isInitialized = try UInt8.init(from: &reader) == 1
@@ -27,7 +27,7 @@ extension Mint: BorshCodable{
             self.freezeAuthority = freezeAuthorityTemp
         }
     }
-    
+
     public func serialize(to writer: inout Data) throws {
         try mintAuthorityOption.serialize(to: &writer)
         if let mintAuthority = mintAuthority {

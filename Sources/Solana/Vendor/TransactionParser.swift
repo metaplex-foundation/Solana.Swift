@@ -1,28 +1,28 @@
 import Foundation
 
 public protocol SolanaSDKTransactionParserType {
-    func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ())
+    func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> Void)
 }
 
 public struct TransactionParser: SolanaSDKTransactionParserType {
-    
+
     // MARK: - Properties
     private let solanaSDK: Solana
-    
+
     // MARK: - Initializers
     public init(solanaSDK: Solana) {
         self.solanaSDK = solanaSDK
     }
-    
+
     // MARK: - Methods
-    public func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> ()) {
+    public func parse(transactionInfo: TransactionInfo, myAccount: String?, myAccountSymbol: String?, onComplete: @escaping (Result<AnyTransaction, Error>) -> Void) {
         // get data
         let innerInstructions = transactionInfo.meta?.innerInstructions
         let instructions = transactionInfo.transaction.message.instructions
-        
+
         // single
         var single: ContResult<AnyHashable?, Error>
-        
+
         // swap (un-parsed type)
         if let instructionIndex = getSwapInstructionIndex(instructions: instructions) {
             let checkingInnerInstructions = innerInstructions?.first?.instructions
@@ -31,16 +31,16 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                checkingInnerInstructions![0].parsed?.type == "transfer",
                checkingInnerInstructions![1].parsed?.type == "transfer" {
                 let instruction = instructions[instructionIndex]
-                single = ContResult<SwapTransaction, Error>{ cb in
+                single = ContResult<SwapTransaction, Error> { cb in
                     parseSwapTransaction(
                         index: instructionIndex,
                         instruction: instruction,
                         innerInstructions: innerInstructions,
                         myAccountSymbol: myAccountSymbol
-                    ){ cb($0) }
+                    ) { cb($0) }
                 }.map {$0 as AnyHashable}
             }
-            
+
             // Later: provide liquidity to pool (unsupported yet)
             else if checkingInnerInstructions?.count == 3,
                     checkingInnerInstructions![0].parsed?.type == "transfer",
@@ -48,7 +48,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                     checkingInnerInstructions![2].parsed?.type == "mintTo" {
                 single = .success(nil)
             }
-            
+
             // Later: burn?
             else if checkingInnerInstructions?.count == 3,
                     checkingInnerInstructions![0].parsed?.type == "burn",
@@ -56,13 +56,13 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                     checkingInnerInstructions![2].parsed?.type == "transfer" {
                 single = .success(nil)
             }
-            
+
             // unsupported
             else {
                 single = .success(nil)
             }
         }
-        
+
         // create account
         else if instructions.count == 2,
                 instructions.first?.parsed?.type == "createAccount",
@@ -72,7 +72,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                 initializeAccountInstruction: instructions.last
             )).map {$0 as AnyHashable}
         }
-        
+
         // close account
         else if instructions.count == 1,
                 instructions.first?.parsed?.type == "closeAccount" {
@@ -84,33 +84,33 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                 )
             ).map {$0 as AnyHashable}
         }
-        
+
         // transfer
         else if instructions.count == 1 || instructions.count == 4 || instructions.count == 2,
                 instructions.last?.parsed?.type == "transfer" || instructions.last?.parsed?.type == "transferChecked",
                 let instruction = instructions.last {
             single = ContResult<TransferTransaction, Error> { cb in
-                
+
                 parseTransferTransaction(
                     instruction: instruction,
                     postTokenBalances: transactionInfo.meta?.postTokenBalances ?? [],
                     myAccount: myAccount,
                     accountKeys: transactionInfo.transaction.message.accountKeys
-                ){ cb($0) }
-                
+                ) { cb($0) }
+
             } .map {$0 as AnyHashable}
         }
-        
+
         // unknown transaction
         else {
             single = .success(nil)
         }
-        
+
         single.map {
                 AnyTransaction(signature: nil, value: $0, slot: nil, blockTime: nil, fee: transactionInfo.meta?.fee, blockhash: transactionInfo.transaction.message.recentBlockhash)
             }.run(onComplete)
     }
-    
+
     // MARK: - Create account
     fileprivate func parseCreateAccountTransaction(
         instruction: ParsedInstruction,
@@ -118,10 +118,10 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
     ) -> Result<CreateAccountTransaction, Error> {
         let info = instruction.parsed?.info
         let initializeAccountInfo = initializeAccountInstruction?.parsed?.info
-        
+
         let fee = info?.lamports?.convertToBalance(decimals: Decimals.SOL)
         let token = getTokenWithMint(initializeAccountInfo?.mint)
-        
+
         return .success(
             CreateAccountTransaction(
                 fee: fee,
@@ -133,7 +133,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             )
         )
     }
-    
+
     // MARK: - Close account
     fileprivate func parseCloseAccountTransaction(
         closedTokenPubkey: String?,
@@ -141,14 +141,14 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         preTokenBalance: TokenBalance?
     ) -> Result<CloseAccountTransaction, Error> {
         var reimbursedAmountLamports: Lamports?
-        
+
         if (preBalances?.count ?? 0) > 1 {
             reimbursedAmountLamports = preBalances![1]
         }
-        
+
         let reimbursedAmount = reimbursedAmountLamports?.convertToBalance(decimals: Decimals.SOL)
         let token = getTokenWithMint(preTokenBalance?.mint)
-        
+
         return .success(
             CloseAccountTransaction(
                 reimbursedAmount: reimbursedAmount,
@@ -160,31 +160,31 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             )
         )
     }
-    
+
     // MARK: - Transfer
     fileprivate func parseTransferTransaction(
         instruction: ParsedInstruction,
         postTokenBalances: [TokenBalance],
         myAccount: String?,
         accountKeys: [Account.Meta],
-        onComplete: @escaping (Result<TransferTransaction, Error>) -> ()
+        onComplete: @escaping (Result<TransferTransaction, Error>) -> Void
     ) {
         // construct wallets
         var source: Wallet?
         var destination: Wallet?
-        
+
         // get pubkeys
         let sourcePubkey = instruction.parsed?.info.source
         let destinationPubkey = instruction.parsed?.info.destination
-        
+
         // get lamports
         let lamports = instruction.parsed?.info.lamports ?? UInt64(instruction.parsed?.info.amount ?? instruction.parsed?.info.tokenAmount?.amount ?? "0")
-        
+
         // SOL to SOL
         if instruction.programId == PublicKey.programId.base58EncodedString {
             source = Wallet.nativeSolana(pubkey: sourcePubkey, lamport: nil)
             destination = Wallet.nativeSolana(pubkey: destinationPubkey, lamport: nil)
-            
+
             return onComplete(.success(
                                 TransferTransaction(
                                     source: source,
@@ -197,10 +197,10 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             // SPL to SPL token
             if let tokenBalance = postTokenBalances.first(where: {!$0.mint.isEmpty}) {
                 let token = getTokenWithMint(tokenBalance.mint)
-                
+
                 source = Wallet(pubkey: sourcePubkey, lamports: nil, token: token)
                 destination = Wallet(pubkey: destinationPubkey, lamports: nil, token: token)
-                
+
                 // if the wallet that is opening is SOL, then modify myAccount
                 var myAccount = myAccount
                 if sourcePubkey != myAccount && destinationPubkey != myAccount,
@@ -209,12 +209,12 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                     if myAccount == accountKeys[0].publicKey.base58EncodedString {
                         myAccount = sourcePubkey
                     }
-                    
+
                     if myAccount == accountKeys[3].publicKey.base58EncodedString {
                         myAccount = destinationPubkey
                     }
                 }
-                
+
                 return onComplete(.success(
                                     TransferTransaction(
                                         source: source,
@@ -224,14 +224,14 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                                     ))
                 )
             } else {
-                
-                ContResult<AccountInfo?, Error>.init{ cb in
+
+                ContResult<AccountInfo?, Error>.init { cb in
                     getAccountInfo(account: sourcePubkey, retryWithAccount: destinationPubkey) { cb($0) }
                 }.map { info in
                     let token = getTokenWithMint(info?.mint.base58EncodedString)
                     source = Wallet(pubkey: sourcePubkey, lamports: nil, token: token)
                     destination = Wallet(pubkey: destinationPubkey, lamports: nil, token: token)
-                    
+
                     return TransferTransaction(
                         source: source,
                         destination: destination,
@@ -242,7 +242,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             }
         }
     }
-    
+
     // MARK: - Swap
     fileprivate func getSwapInstructionIndex(
         instructions: [ParsedInstruction]
@@ -254,13 +254,13 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                     $0.programId == "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8" /*main deprecated*/
             })
     }
-    
+
     fileprivate func parseSwapTransaction(
         index: Int,
         instruction: ParsedInstruction,
         innerInstructions: [InnerInstruction]?,
         myAccountSymbol: String?,
-        onComplete: @escaping (Result<SwapTransaction, Error>) -> ()
+        onComplete: @escaping (Result<SwapTransaction, Error>) -> Void
     ) {
         // get data
         guard let data = instruction.data else {
@@ -268,7 +268,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             return
         }
         let buf = Base58.decode(data)
-        
+
         // get instruction index
         guard let instructionIndex = buf.first,
               instructionIndex == 1,
@@ -277,24 +277,24 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             onComplete(.success(SwapTransaction.empty))
             return
         }
-        
+
         // get instructions
         let transfersInstructions = swapInnerInstruction.instructions.filter {$0.parsed?.type == "transfer"}
         guard transfersInstructions.count >= 2 else {
             onComplete(.success(SwapTransaction.empty))
             return
         }
-        
+
         let sourceInstruction = transfersInstructions[0]
         let destinationInstruction = transfersInstructions[1]
         let sourceInfo = sourceInstruction.parsed?.info
         let destinationInfo = destinationInstruction.parsed?.info
-        
+
         // group request
         var request1: ContResult<AccountInfo?, Error>!
-        
+
         var request2: ContResult<AccountInfo?, Error>!
-        
+
         // get source
         var sourcePubkey: PublicKey?
         if let sourceString = sourceInfo?.source {
@@ -303,7 +303,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                 getAccountInfo(account: sourceString, retryWithAccount: sourceInfo?.destination) { cb($0) }
             }
         }
-        
+
         var destinationPubkey: PublicKey?
         if let destinationString = destinationInfo?.destination {
             destinationPubkey = PublicKey(string: destinationString)
@@ -318,7 +318,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             // get source, destination account info
             let sourceAccountInfo = params[0]
             let destinationAccountInfo = params[1]
-            
+
             // source
             let sourceToken = getTokenWithMint(sourceAccountInfo?.mint.base58EncodedString)
             let source = Wallet(
@@ -326,7 +326,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                 lamports: sourceAccountInfo?.lamports,
                 token: sourceToken
             )
-            
+
             // destination
             let destinationToken = getTokenWithMint(destinationAccountInfo?.mint.base58EncodedString)
             let destination = Wallet(
@@ -334,10 +334,10 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
                 lamports: destinationAccountInfo?.lamports,
                 token: destinationToken
             )
-            
+
             let sourceAmount = UInt64(sourceInfo?.amount ?? "0")?.convertToBalance(decimals: source.token.decimals)
             let destinationAmount = UInt64(destinationInfo?.amount ?? "0")?.convertToBalance(decimals: destination.token.decimals)
-            
+
             // get decimals
             return SwapTransaction(
                 source: source,
@@ -356,17 +356,17 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             ))
         }.run(onComplete)
     }
-    
+
     // MARK: - Helpers
     fileprivate func getTokenWithMint(_ mint: String?) -> Token {
         guard let mint = mint else {return .unsupported(mint: nil)}
         return solanaSDK.supportedTokens.first(where: {$0.address == mint}) ?? .unsupported(mint: mint)
     }
-    
-    fileprivate func getAccountInfo(account: String?, retryWithAccount retryAccount: String? = nil, onComplete: @escaping (Result<AccountInfo?, Error>) -> ()) {
-        
+
+    fileprivate func getAccountInfo(account: String?, retryWithAccount retryAccount: String? = nil, onComplete: @escaping (Result<AccountInfo?, Error>) -> Void) {
+
         guard let account = account else { return onComplete(.success(nil)) }
-        
+
         ContResult.init { cb in
             solanaSDK.api.getAccountInfo(
                 account: account,
@@ -374,9 +374,9 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
             ) { cb($0) }
         }.map { $0.data.value }
         .recover {
-            if case SolanaError.nullValue = $0, let retryAccount = retryAccount{
-                return ContResult<AccountInfo?, Error>.init{ cb in
-                    self.getAccountInfo(account: retryAccount, retryWithAccount: nil)  { cb($0) }
+            if case SolanaError.nullValue = $0, let retryAccount = retryAccount {
+                return ContResult<AccountInfo?, Error>.init { cb in
+                    self.getAccountInfo(account: retryAccount, retryWithAccount: nil) { cb($0) }
                 }
             }
             return .failure($0)
@@ -384,4 +384,3 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
         .run(onComplete)
     }
 }
-

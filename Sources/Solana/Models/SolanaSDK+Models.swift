@@ -11,7 +11,7 @@ public struct Response<T: Decodable>: Decodable {
     public let result: T?
     public let error: ResponseError?
     public let method: String?
-    
+
     // socket
     public let params: Params<T>?
 }
@@ -145,7 +145,7 @@ public struct SignatureInfo: Decodable, Hashable {
     public let slot: UInt64?
     public let err: TransactionError?
     public let memo: String?
-    
+
     public init(signature: String) {
         self.signature = signature
         self.slot = nil
@@ -181,7 +181,7 @@ public struct TransactionMeta: Decodable {
     public let preTokenBalances: [TokenBalance]?
 }
 public struct TransactionError: Decodable, Hashable {
-    
+
 }
 public struct InnerInstruction: Decodable {
     let index: UInt32
@@ -214,12 +214,12 @@ public struct TokenAccountBalance: Codable, Equatable, Hashable {
         self.decimals = decimals
         self.uiAmountString = uiAmountString
     }
-    
+
     public let uiAmount: Float64?
     public let amount: String
     public let decimals: UInt8?
     public let uiAmountString: String?
-    
+
     public var amountInUInt64: UInt64? {
         return UInt64(amount)
     }
@@ -236,7 +236,7 @@ public struct TokenAmount: Decodable {
 }
 public struct Version: Decodable {
     public let solanaCore: String
-    
+
     private enum CodingKeys: String, CodingKey {
         case solanaCore = "solana-core"
     }

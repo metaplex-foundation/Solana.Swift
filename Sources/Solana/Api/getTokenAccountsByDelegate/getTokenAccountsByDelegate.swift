@@ -2,7 +2,7 @@ import Foundation
 
 public extension Api {
     func getTokenAccountsByDelegate(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[TokenAccount<AccountInfo>], Error>) -> Void) {
-       
+
         var parameterMap = [String: String]()
         if let mint = mint {
             parameterMap["mint"] = mint
@@ -12,7 +12,7 @@ public extension Api {
             onComplete(Result.failure(SolanaError.other("mint or programId are mandatory parameters")))
             return
         }
-        
+
         router.request(parameters: [pubkey, parameterMap, configs]) { (result: Result<Rpc<[TokenAccount<AccountInfo>]?>, Error>) in
             switch result {
             case .success(let rpc):

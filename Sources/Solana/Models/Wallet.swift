@@ -6,12 +6,12 @@ public struct Wallet: Hashable {
     public var lamports: UInt64?
     public var token: Token
     public var userInfo: AnyHashable?
-    
+
     let liquidity: Bool?
     public var isLiquidity: Bool {
         liquidity == true
     }
-    
+
     // MARK: - Initializer
     public init(pubkey: String? = nil, lamports: UInt64? = nil, token: Token, liquidity: Bool? = false) {
         self.pubkey = pubkey
@@ -19,17 +19,17 @@ public struct Wallet: Hashable {
         self.token = token
         self.liquidity = liquidity
     }
-    
+
     // MARK: - Computed properties
     public var amount: Double? {
         lamports?.convertToBalance(decimals: token.decimals)
     }
-    
+
     public func shortPubkey(numOfSymbolsRevealed: Int = 4) -> String {
         guard let pubkey = pubkey else {return ""}
         return pubkey.prefix(numOfSymbolsRevealed) + "..." + pubkey.suffix(numOfSymbolsRevealed)
     }
-    
+
     // MARK: - Fabric methods
     public static func nativeSolana(
         pubkey: String?,

@@ -2,7 +2,7 @@ import Foundation
 
 public struct AccountInfo: BufferLayout {
     public static let BUFFER_LENGTH: UInt64 = 165
-    
+
     public let mint: PublicKey
     public let owner: PublicKey
     public let lamports: UInt64

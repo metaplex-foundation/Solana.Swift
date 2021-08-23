@@ -127,7 +127,7 @@ extension Action {
         }
     }
 
-    public func getSwapPools(onComplete: @escaping (Result<[Pool], Error>)-> Void) {
+    public func getSwapPools(onComplete: @escaping (Result<[Pool], Error>) -> Void) {
         getPools(swapProgramId: swapProgramId) { result in
             switch result {
             case .success(let pools):

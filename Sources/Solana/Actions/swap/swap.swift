@@ -189,7 +189,7 @@ extension Action {
 
     public func getAccountInfoData(account: String,
                                     tokenProgramId: PublicKey,
-                                    onComplete: @escaping (Result<AccountInfo, Error>)-> Void) {
+                                    onComplete: @escaping (Result<AccountInfo, Error>) -> Void) {
         self.api.getAccountInfo(account: account, decodedTo: AccountInfo.self) { accountInfoResult in
             switch accountInfoResult {
             case .success(let account):

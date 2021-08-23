@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Api {
-    func simulateTransaction(transaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!, onComplete: @escaping(Result<TransactionStatus, Error>)->Void) {
+    func simulateTransaction(transaction: String, configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!, onComplete: @escaping(Result<TransactionStatus, Error>) -> Void) {
         router.request(parameters: [transaction, configs]) { (result: Result<Rpc<TransactionStatus?>, Error>) in
             switch result {
             case .success(let rpc):

@@ -8,12 +8,12 @@ public struct Transfer {
         result.append(Data.encodeLength(keyIndeces.count)) // key size
         result.append(contentsOf: keyIndeces) // keyIndeces
         result.append(UInt8(12))   // FIXME transfer data size
-        
+
         result += UInt32(2).bytes // Program Index
-        
+
         let lamports = 3000
         result += UInt64(lamports).bytes
-        
+
         return result
     }
 }
@@ -28,7 +28,7 @@ public struct RequestConfiguration: Encodable {
     public let limit: Int?
     public let before: String?
     public let until: String?
-    
+
     public init?(commitment: Commitment? = nil, encoding: String? = nil, dataSlice: DataSlice? = nil, filters: [[String: EncodableWrapper]]? = nil, limit: Int? = nil, before: String? = nil, until: String? = nil) {
         if commitment == nil && encoding == nil && dataSlice == nil && filters == nil && limit == nil && before == nil && until == nil {
             return nil

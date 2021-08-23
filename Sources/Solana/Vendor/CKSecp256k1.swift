@@ -38,7 +38,7 @@ struct CKSecp256k1 {
         var pKey = secp256k1_pubkey()
 
         var result = secp256k1_ec_pubkey_create(context, &pKey, prvKey)
-        if (result != 1) {
+        if result != 1 {
             return nil
         }
 
@@ -46,14 +46,14 @@ struct CKSecp256k1 {
         let pubkey = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
         var s = size
 
-        result = secp256k1_ec_pubkey_serialize(context, pubkey, &s, &pKey, UInt32(isCompression ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED));
-        if (result != 1) {
+        result = secp256k1_ec_pubkey_serialize(context, pubkey, &s, &pKey, UInt32(isCompression ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED))
+        if result != 1 {
             return nil
         }
 
-        secp256k1_context_destroy(context);
+        secp256k1_context_destroy(context)
 
-        let data = NSMutableData(bytes: pubkey, length:size).copy()
+        let data = NSMutableData(bytes: pubkey, length: size).copy()
         return data as? Data
     }
     /*
@@ -89,15 +89,15 @@ struct CKSecp256k1 {
         var sig = secp256k1_ecdsa_signature()
 
         var result = secp256k1_ecdsa_sign(context, &sig, msg, prvKey, nil, nil)
-        result = secp256k1_ecdsa_signature_serialize_compact(context, siga, &sig);
+        result = secp256k1_ecdsa_signature_serialize_compact(context, siga, &sig)
 
-        if (result != 1) {
-            return nil;
+        if result != 1 {
+            return nil
         }
 
-        secp256k1_context_destroy(context);
+        secp256k1_context_destroy(context)
 
-        let data = NSMutableData(bytes: siga, length:64).copy()
+        let data = NSMutableData(bytes: siga, length: 64).copy()
         return data as? Data
     }
 
@@ -133,16 +133,16 @@ struct CKSecp256k1 {
         let pubKey = pubKeyData.bytes
         var pKey = secp256k1_pubkey()
 
-        let pubResult = secp256k1_ec_pubkey_parse(context, &pKey, pubKey, pubKeyData.count);
-        if (pubResult != 1){ return -3 }
+        let pubResult = secp256k1_ec_pubkey_parse(context, &pKey, pubKey, pubKeyData.count)
+        if pubResult != 1 { return -3 }
 
         var sig_ecdsa = secp256k1_ecdsa_signature()
-        let sigResult = secp256k1_ecdsa_signature_parse_compact(context, &sig_ecdsa, sig);
-        if (sigResult != 1){ return -4 }
+        let sigResult = secp256k1_ecdsa_signature_parse_compact(context, &sig_ecdsa, sig)
+        if sigResult != 1 { return -4 }
 
-        let result = secp256k1_ecdsa_verify(context, &sig_ecdsa, msg, &pKey);
+        let result = secp256k1_ecdsa_verify(context, &sig_ecdsa, msg, &pKey)
 
-        secp256k1_context_destroy(context);
+        secp256k1_context_destroy(context)
         return result
     }
 
