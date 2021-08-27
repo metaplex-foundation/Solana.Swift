@@ -71,3 +71,19 @@ extension Action {
         }.run(onComplete)
     }
 }
+
+extension ActionTemplates {
+    public struct SendSPLTokens: ActionTemplate {
+        public let mintAddress: String
+        public let fromPublicKey: String
+        public let destinationAddress: String
+        public let amount: UInt64
+        public let decimals: Decimals
+
+        public typealias Success = TransactionID
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
+            actionClass.sendSPLTokens(mintAddress: mintAddress, decimals: decimals, from: fromPublicKey, to: destinationAddress, amount: amount, onComplete: completion)
+        }
+    }
+}

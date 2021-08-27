@@ -48,3 +48,35 @@ public extension Action {
         }.run(onComplete)
     }
 }
+
+extension ActionTemplates {
+    public struct GetMintData: ActionTemplate {
+        public init(programId: PublicKey = .tokenProgramId, mintAddress: PublicKey) {
+            self.programId = programId
+            self.mintAddress = mintAddress
+        }
+
+        public typealias Success = Mint
+        public let programId: PublicKey
+        public let mintAddress: PublicKey
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Mint, Error>) -> Void) {
+            actionClass.getMintData(mintAddress: mintAddress, programId: programId, onComplete: completion)
+        }
+    }
+
+    public struct GetMultipleMintData: ActionTemplate {
+        public init(programId: PublicKey = .tokenProgramId, mintAddresses: [PublicKey]) {
+            self.programId = programId
+            self.mintAddresses = mintAddresses
+        }
+
+        public typealias Success = [PublicKey: Mint]
+        public let programId: PublicKey
+        public let mintAddresses: [PublicKey]
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[PublicKey : Mint], Error>) -> Void) {
+            actionClass.getMultipleMintDatas(mintAddresses: mintAddresses, programId: programId, onComplete: completion)
+        }
+    }
+}

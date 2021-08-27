@@ -64,3 +64,20 @@ extension Action {
 
     }
 }
+
+extension ActionTemplates {
+    public struct SendSOL: ActionTemplate {
+        public init(amount: UInt64, destination: String) {
+            self.amount = amount
+            self.destination = destination
+        }
+
+        public typealias Success = TransactionID
+        public let amount: UInt64
+        public let destination: String
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
+            actionClass.sendSOL(to: destination, amount: amount, onComplete: completion)
+        }
+    }
+}

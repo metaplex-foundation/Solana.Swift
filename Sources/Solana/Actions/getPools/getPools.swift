@@ -175,3 +175,29 @@ extension Array {
         }
     }
 }
+
+extension ActionTemplates {
+    public struct GetPools: ActionTemplate {
+        public init(swapProgramId: String) {
+            self.swapProgramId = swapProgramId
+        }
+
+        public typealias Success =  [Pool]
+
+        public let swapProgramId: String
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[Pool], Error>) -> Void) {
+            actionClass.getPools(swapProgramId: swapProgramId, onComplete: completion)
+        }
+    }
+
+    public struct GetSwapPools: ActionTemplate {
+        public init() { }
+
+        public typealias Success = [Pool]
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[Pool], Error>) -> Void) {
+            actionClass.getSwapPools(onComplete: completion)
+        }
+    }
+}

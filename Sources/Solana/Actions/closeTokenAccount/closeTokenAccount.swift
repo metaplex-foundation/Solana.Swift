@@ -26,3 +26,21 @@ extension Action {
         }
     }
 }
+
+extension ActionTemplates {
+    public struct CloseTokenAccountAction: ActionTemplate {
+        public init(account: Account?, tokenPubkey: String) {
+            self.account = account
+            self.tokenPubkey = tokenPubkey
+        }
+
+        public typealias Success = TransactionID
+
+        public let account: Account?
+        public let tokenPubkey: String
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {
+            actionClass.closeTokenAccount(account: account, tokenPubkey: tokenPubkey, onComplete: completion)
+        }
+    }
+}

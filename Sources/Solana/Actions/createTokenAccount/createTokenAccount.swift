@@ -102,3 +102,23 @@ extension Action {
         }
     }
 }
+
+extension ActionTemplates {
+    public struct GetCreatingTokenAccountFee: ActionTemplate {
+        public typealias Success = UInt64
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<UInt64, Error>) -> Void) {
+            actionClass.getCreatingTokenAccountFee(onComplete: completion)
+        }
+    }
+
+    public struct CreateTokenAccount: ActionTemplate {
+        public typealias Success = (signature: String, newPubkey: String)
+
+        public let mintAddress: String
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<(signature: String, newPubkey: String), Error>) -> Void) {
+            actionClass.createTokenAccount(mintAddress: mintAddress, onComplete: completion)
+        }
+    }
+}
