@@ -2,7 +2,7 @@
   "object": {
     "pins": [
       {
-        "package": "secp256k1",
+        "package": "secp256k1.swift",
         "repositoryURL": "https://github.com/Boilertalk/secp256k1.swift.git",
         "state": {
           "branch": null,
@@ -20,7 +20,7 @@
         }
       },
       {
-        "package": "TweetNacl",
+        "package": "tweetnacl-swiftwrap",
         "repositoryURL": "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
         "state": {
           "branch": null,

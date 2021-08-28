@@ -89,3 +89,43 @@ extension Action {
             }
     }
 }
+
+extension ActionTemplates {
+
+    public struct CreateAssociatedTokenAccountAction: ActionTemplate {
+        public init(owner: PublicKey, tokenMint: PublicKey, payer: Account?) {
+            self.owner = owner
+            self.tokenMint = tokenMint
+            self.payer = payer
+        }
+
+        public typealias Success = TransactionID
+        public let owner: PublicKey
+        public let tokenMint: PublicKey
+        public let payer: Account?
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
+            actionClass.createAssociatedTokenAccount(
+                for: owner,
+                   tokenMint: tokenMint,
+                   payer: payer,
+                   onComplete: completion
+            )
+        }
+    }
+
+    public struct GetOrCreateAssociatedTokenAccountAction: ActionTemplate {
+        public init(owner: PublicKey, tokenMint: PublicKey) {
+            self.owner = owner
+            self.tokenMint = tokenMint
+        }
+
+        public typealias Success = (transactionId: TransactionID?, associatedTokenAddress: PublicKey)
+        public let owner: PublicKey
+        public let tokenMint: PublicKey
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {
+            actionClass.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint, onComplete: completion)
+        }
+    }
+}

@@ -296,3 +296,65 @@ extension Action {
         return .success(newAccount)
     }
 }
+
+extension ActionTemplates {
+    public struct Swap: ActionTemplate {
+        public init(account: Account? = nil,
+                    pool: Pool? = nil,
+                    source: PublicKey,
+                    sourceMint: PublicKey,
+                    destination: PublicKey? = nil,
+                    destinationMint: PublicKey,
+                    slippage: Double,
+                    amount: UInt64) {
+            self.account = account
+            self.pool = pool
+            self.source = source
+            self.sourceMint = sourceMint
+            self.destination = destination
+            self.destinationMint = destinationMint
+            self.slippage = slippage
+            self.amount = amount
+        }
+
+        public let account: Account?// = nil
+        public let pool: Pool?// = nil
+        public let source: PublicKey
+        public let sourceMint: PublicKey
+        public let destination: PublicKey?// = nil
+        public let destinationMint: PublicKey
+        public let slippage: Double
+        public let amount: UInt64
+
+        public typealias Success = Action.SwapResponse
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Action.SwapResponse, Error>) -> Void) {
+            actionClass.swap(account: account,
+                             pool: pool,
+                             source: source,
+                             sourceMint: sourceMint,
+                             destination: destination,
+                             destinationMint: destinationMint,
+                             slippage: slippage,
+                             amount: amount,
+                             onComplete: completion)
+        }
+    }
+
+    public struct GetAccountInfoData: ActionTemplate {
+        public init(account: String, tokenProgramId: PublicKey) {
+            self.account = account
+            self.tokenProgramId = tokenProgramId
+        }
+
+
+        public let account: String
+        public let tokenProgramId: PublicKey
+
+        public typealias Success = AccountInfo
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<AccountInfo, Error>) -> Void) {
+            actionClass.getAccountInfoData(account: account, tokenProgramId: tokenProgramId, onComplete: completion)
+        }
+    }
+}

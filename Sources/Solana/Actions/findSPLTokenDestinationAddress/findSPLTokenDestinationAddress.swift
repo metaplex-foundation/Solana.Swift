@@ -65,3 +65,20 @@ extension Action {
         }.run(onComplete)
     }
 }
+
+extension ActionTemplates {
+    public struct FindSPLTokenDestinationAddress: ActionTemplate {
+        public init(mintAddress: String, destinationAddress: String) {
+            self.mintAddress = mintAddress
+            self.destinationAddress = destinationAddress
+        }
+
+        public typealias Success = Action.SPLTokenDestinationAddress
+        public let mintAddress: String
+        public let destinationAddress: String
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Action.SPLTokenDestinationAddress, Error>) -> Void) {
+            actionClass.findSPLTokenDestinationAddress(mintAddress: mintAddress, destinationAddress: destinationAddress, onComplete: completion)
+        }
+    }
+}

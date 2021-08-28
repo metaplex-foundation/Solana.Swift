@@ -36,3 +36,18 @@ extension Action {
         }.run(onComplete)
     }
 }
+
+extension ActionTemplates {
+    public struct GetTokenWallets: ActionTemplate {
+        public init(account: String? = nil) {
+            self.account = account
+        }
+
+        public typealias Success = [Wallet]
+        public let account: String?
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[Wallet], Error>) -> Void) {
+            actionClass.getTokenWallets(account: account, onComplete: completion)
+        }
+    }
+}

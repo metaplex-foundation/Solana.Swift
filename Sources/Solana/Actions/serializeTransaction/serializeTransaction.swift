@@ -44,3 +44,25 @@ extension Action {
         }
     }
 }
+
+extension ActionTemplates {
+    public struct SerializeTransaction: ActionTemplate {
+        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, feePayer: PublicKey? = nil) {
+            self.instructions = instructions
+            self.recentBlockhash = recentBlockhash
+            self.signers = signers
+            self.feePayer = feePayer
+        }
+
+        public typealias Success = String
+
+        public let instructions: [TransactionInstruction]
+        public let recentBlockhash: String?
+        public let signers: [Account]
+        public let feePayer: PublicKey?
+
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<String, Error>) -> Void) {
+            actionClass.serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers, feePayer: feePayer, onComplete: completion)
+        }
+    }
+}
