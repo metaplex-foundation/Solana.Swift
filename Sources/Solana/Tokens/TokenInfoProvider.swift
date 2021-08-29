@@ -11,11 +11,12 @@ public protocol TokenInfoProvider {
     var supportedTokens: [Token] { get }
 }
 
-class EmptyToken: TokenInfoProvider {
-    var supportedTokens: [Token] = []
+public class EmptyInfoTokenProvider: TokenInfoProvider {
+    public var supportedTokens: [Token] = []
+    public init(){}
 }
 
-class ListTokenProvider: TokenInfoProvider {
+class ListTokenInfoProvider: TokenInfoProvider {
     private let endpoint: RPCEndpoint
     init(endpoint: RPCEndpoint) {
         self.endpoint = endpoint

@@ -360,7 +360,7 @@ public struct TransactionParser: SolanaSDKTransactionParserType {
     // MARK: - Helpers
     fileprivate func getTokenWithMint(_ mint: String?) -> Token {
         guard let mint = mint else {return .unsupported(mint: nil)}
-        return solanaSDK.supportedTokens.first(where: {$0.address == mint}) ?? .unsupported(mint: mint)
+        return solanaSDK.tokens.supportedTokens.first(where: {$0.address == mint}) ?? .unsupported(mint: mint)
     }
 
     fileprivate func getAccountInfo(account: String?, retryWithAccount retryAccount: String? = nil, onComplete: @escaping (Result<AccountInfo?, Error>) -> Void) {
