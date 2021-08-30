@@ -37,8 +37,6 @@ public class NetworkingRouter: SolanaRouter {
         let bcMethod = bcMethod.replacingOccurrences(of: "\\([\\w\\s:]*\\)", with: "", options: .regularExpression)
         let requestAPI = SolanaRequest(method: bcMethod, params: params)
 
-        Logger.log(message: "\(method.rawValue) \(bcMethod) [id=\(requestAPI.id)] \(params.map(EncodableWrapper.init(wrapped:)).jsonString ?? "")", event: .request, apiMethod: bcMethod)
-
         ContResult<URLRequest, Error>.init { cb in
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = method.rawValue
@@ -66,9 +64,7 @@ public class NetworkingRouter: SolanaRouter {
                 }
                 task.resume()
             }
-            .onSuccess { (data: Data?, response: URLResponse?) in
-                Logger.log(message: String(data: data ?? Data(), encoding: .utf8) ?? "", event: .response, apiMethod: bcMethod)
-            }
+            .onSuccess { (data: Data?, response: URLResponse?) in }
         }
         .flatMap {
             if let httpURLResponse = $0.response as? HTTPURLResponse {
