@@ -1,4 +1,6 @@
 import Foundation
+import XCTest
+import Solana
 
 enum TokensListParserError: Error {
     case invalidData
@@ -9,16 +11,7 @@ public class TokensListParser {
     public init() {}
     public func parse(network: String) -> Result<[Token], Error> {
         // get json file
-        #if SWIFT_PACKAGE
-        let path = Bundle.module.url(forResource: network + ".tokens", withExtension: "json")?.path
-        #else
-        let path = Bundle(for: Solana.self).path(forResource: network + ".tokens", ofType: "json")
-        #endif
-
-        guard let jsonData = try? Data(contentsOf: URL(fileURLWithPath: path!)) else {
-            return .failure(TokensListParserError.invalidData)
-        }
-
+        let jsonData = getFileFrom("TokenInfo/\(network).tokens")
         // parse json
         guard var list = try? JSONDecoder().decode(TokensList.self, from: jsonData) else {
             return .failure(TokensListParserError.canNotDecode)
@@ -28,7 +21,7 @@ public class TokensListParser {
         list.tokens = list.tokens.map {
             var item = $0
             item.tags = item._tags.map {
-                list.tags[$0] ?? TokenTag(name: $0, description: $0)
+                return try! list.tags[$0] ?? TokenTag(name: $0, description: $0)
             }
             return item
         }
@@ -43,4 +36,21 @@ public class TokensListParser {
         }
         return .success(listTokens)
     }
+}
+
+func getFileFrom(_ filename: String) -> Data {
+    @objc class SolanaTests: NSObject { }
+    let thisSourceFile = URL(fileURLWithPath: #file)
+    let thisDirectory = thisSourceFile.deletingLastPathComponent()
+    let resourceURL = thisDirectory.appendingPathComponent("../Resources/\(filename).json")
+    return try! Data(contentsOf: resourceURL)
+}
+
+public struct TokensList: Decodable {
+    let name: String
+    let logoURI: String
+    let keywords: [String]
+    let tags: [String: TokenTag]
+    let timestamp: String
+    var tokens: [Token]
 }

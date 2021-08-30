@@ -4,7 +4,7 @@ public struct Wallet: Hashable {
     // MARK: - Properties
     public var pubkey: String?
     public var lamports: UInt64?
-    public var token: Token
+    public var token: Token?
     public var userInfo: AnyHashable?
 
     let liquidity: Bool?
@@ -13,7 +13,7 @@ public struct Wallet: Hashable {
     }
 
     // MARK: - Initializer
-    public init(pubkey: String? = nil, lamports: UInt64? = nil, token: Token, liquidity: Bool? = false) {
+    public init(pubkey: String? = nil, lamports: UInt64? = nil, token: Token?, liquidity: Bool? = false) {
         self.pubkey = pubkey
         self.lamports = lamports
         self.token = token
@@ -22,7 +22,7 @@ public struct Wallet: Hashable {
 
     // MARK: - Computed properties
     public var amount: Double? {
-        lamports?.convertToBalance(decimals: token.decimals)
+        lamports?.convertToBalance(decimals: token?.decimals)
     }
 
     public func shortPubkey(numOfSymbolsRevealed: Int = 4) -> String {
