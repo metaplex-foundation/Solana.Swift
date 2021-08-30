@@ -204,14 +204,14 @@ class Methods: XCTestCase {
         XCTAssertNotNil(value)
     }
     
-    func testGetEpochShedule() {
+    func testGetEpochSchedule() {
         let epoch = try! solana.api.getEpochSchedule()?.get()
         XCTAssertNotNil(epoch)
     }
     
     @available(iOS 15.0.0, *)
     @available(macOS 12.0.0, *)
-    func testGetEpochSheduleAsync() async {
+    func testGetEpochScheduleAsync() async {
         let template = ApiTemplates.GetEpochSchedule()
         let value: EpochSchedule = try! await solana.api.perform(template)
         XCTAssertNotNil(value)
