@@ -52,13 +52,13 @@ public struct AnyTransaction: Hashable {
         case is CreateAccountTransaction, is CloseAccountTransaction:
             return "SOL"
         case let transaction as TransferTransaction:
-            return transaction.source?.token.symbol ?? transaction.destination?.token.symbol ?? ""
+            return transaction.source?.token?.symbol ?? transaction.destination?.token?.symbol ?? ""
         case let transaction as SwapTransaction:
             switch transaction.direction {
             case .spend:
-                return transaction.source?.token.symbol ?? ""
+                return transaction.source?.token?.symbol ?? ""
             case .receive:
-                return transaction.destination?.token.symbol ?? ""
+                return transaction.destination?.token?.symbol ?? ""
             default:
                 return ""
             }
@@ -124,10 +124,10 @@ public struct SwapTransaction: Hashable {
     }
 
     public var direction: Direction? {
-        if myAccountSymbol == source?.token.symbol {
+        if myAccountSymbol == source?.token?.symbol {
             return .spend
         }
-        if myAccountSymbol == destination?.token.symbol {
+        if myAccountSymbol == destination?.token?.symbol {
             return .receive
         }
         return nil

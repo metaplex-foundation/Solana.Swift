@@ -1,21 +1,18 @@
 import Foundation
 
-public struct TokensList: Decodable {
-    let name: String
-    let logoURI: String
-    let keywords: [String]
-    let tags: [String: TokenTag]
-    let timestamp: String
-    var tokens: [Token]
+public struct TokenTag {
+    public let name: String
+    public let description: String
+    public init(name: String, description: String) throws {
+        self.name = name
+        self.description = description
+    }
 }
+extension TokenTag: Hashable, Decodable {}
 
-public struct TokenTag: Hashable, Decodable {
-    public var name: String
-    public var description: String
-}
-
-public enum WrappingToken: String {
-    case sollet, wormhole
+public struct TokenExtensions: Hashable, Decodable {
+    public let website: String?
+    public let bridgeContract: String?
 }
 
 public struct Token: Hashable, Decodable {
@@ -32,7 +29,7 @@ public struct Token: Hashable, Decodable {
         self.isNative = isNative
     }
 
-    let _tags: [String]
+    public let _tags: [String]
 
     public let chainId: Int
     public let address: String
@@ -47,38 +44,4 @@ public struct Token: Hashable, Decodable {
     enum CodingKeys: String, CodingKey {
         case chainId, address, symbol, name, decimals, logoURI, extensions, _tags = "tags"
     }
-
-    public static func unsupported(
-        mint: String?
-    ) -> Token {
-        Token(
-            _tags: [],
-            chainId: 101,
-            address: mint ?? "<undefined>",
-            symbol: "",
-            name: mint ?? "<undefined>",
-            decimals: 0,
-            logoURI: nil,
-            tags: [],
-            extensions: nil
-        )
-    }
-
-    public var wrappedBy: WrappingToken? {
-        if tags.contains(where: {$0.name == "wrapped-sollet"}) {
-            return .sollet
-        }
-
-        if tags.contains(where: {$0.name == "wrapped"}) &&
-            tags.contains(where: {$0.name == "wormhole"}) {
-            return .wormhole
-        }
-
-        return nil
-    }
-}
-
-public struct TokenExtensions: Hashable, Decodable {
-    public let website: String?
-    public let bridgeContract: String?
 }

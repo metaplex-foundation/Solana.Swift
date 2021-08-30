@@ -29,7 +29,7 @@ extension Action {
             let pubkeyValue = accountsValues.map { ($0.pubkey, $0.account.data.value!) }
             let wallets = pubkeyValue.map { (pubkey, accountInfo) -> Wallet in
                 let mintAddress = accountInfo.mint.base58EncodedString
-                let token = self.supportedTokens.first(where: {$0.address == mintAddress}) ?? .unsupported(mint: mintAddress)
+                let token = self.supportedTokens.first(where: {$0.address == mintAddress}) ?? nil
                 return Wallet(pubkey: pubkey, lamports: accountInfo.lamports, token: token, liquidity: false)
             }
             return wallets

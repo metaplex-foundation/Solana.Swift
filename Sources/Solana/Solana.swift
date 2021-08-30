@@ -12,15 +12,19 @@ public class Solana {
     public let auth: SolanaAccountStorage
     public let api: Api
     public let action: Action
-    public let supportedTokens: [Token]
+    public let tokens: TokenInfoProvider
 
-    public init(router: NetworkingRouter, accountStorage: SolanaAccountStorage) {
+    public init(
+        router: NetworkingRouter,
+        accountStorage: SolanaAccountStorage,
+        tokenProvider: TokenInfoProvider = EmptyInfoTokenProvider()
+    ) {
         self.router = router
         self.auth = accountStorage
         self.socket = SolanaSocket(endpoint: router.endpoint)
-        self.supportedTokens = (try? TokensListParser().parse(network: router.endpoint.network.cluster).get()) ?? []
-        self.api = Api(router: router, auth: accountStorage, supportedTokens: supportedTokens)
-        self.action = Action(api: self.api, router: router, auth: accountStorage, supportedTokens: supportedTokens)
+        self.tokens = tokenProvider
+        self.api = Api(router: router, auth: accountStorage, supportedTokens: self.tokens.supportedTokens)
+        self.action = Action(api: self.api, router: router, auth: accountStorage, supportedTokens: self.tokens.supportedTokens)
     }
 }
 
