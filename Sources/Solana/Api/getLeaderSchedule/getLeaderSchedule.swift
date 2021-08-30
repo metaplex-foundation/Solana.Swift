@@ -12,3 +12,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetLeaderSchedule: ApiTemplate {
+        public init(epoch: UInt64? = nil, commitment: Commitment? = nil) {
+            self.epoch = epoch
+            self.commitment = commitment
+        }
+        
+        public let epoch: UInt64?
+        public let commitment: Commitment?
+        
+        public typealias Success = [String: [Int]]?
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getLeaderSchedule(epoch: epoch, commitment: commitment, onComplete: completion)
+        }
+    }
+}

@@ -12,3 +12,19 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetBlockCommitment: ApiTemplate {
+        public init(block: UInt64) {
+            self.block = block
+        }
+        
+        public let block: UInt64
+        
+        public typealias Success = BlockCommitment
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getBlockCommitment(block: block, onComplete: completion)
+        }
+    }
+}

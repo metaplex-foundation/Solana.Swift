@@ -12,3 +12,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetMinimumBalanceForRentExemption: ApiTemplate {
+        public init(dataLength: UInt64, commitment: Commitment? = nil) {
+            self.dataLength = dataLength
+            self.commitment = commitment
+        }
+        
+        public let dataLength: UInt64
+        public let commitment: Commitment?
+        
+        public typealias Success = UInt64
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getMinimumBalanceForRentExemption(dataLength: dataLength, commitment: commitment, onComplete: completion)
+        }
+    }
+}

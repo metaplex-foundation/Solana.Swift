@@ -12,3 +12,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetConfirmedBlock: ApiTemplate {
+        public init(slot: UInt64, encoding: String = "json") {
+            self.slot = slot
+            self.encoding = encoding
+        }
+        
+        public let slot: UInt64
+        public let encoding: String
+        
+        public typealias Success = ConfirmedBlock
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getConfirmedBlock(slot: slot, encoding: encoding, onComplete: completion)
+        }
+    }
+}

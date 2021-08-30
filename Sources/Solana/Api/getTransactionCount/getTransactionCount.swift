@@ -12,3 +12,19 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetTransactionCount: ApiTemplate {
+        public init(commitment: Commitment? = nil) {
+            self.commitment = commitment
+        }
+        
+        public let commitment: Commitment?
+        
+        public typealias Success = UInt64
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getTransactionCount(commitment: commitment, onComplete: completion)
+        }
+    }
+}

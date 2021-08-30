@@ -22,3 +22,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetBalance: ApiTemplate {
+        public init(account: String? = nil, commitment: Commitment? = nil) {
+            self.account = account
+            self.commitment = commitment
+        }
+        
+        public let account: String?
+        public let commitment: Commitment?
+        
+        public typealias Success = UInt64
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getBalance(account: account, commitment: commitment, onComplete: completion)
+        }
+    }
+}

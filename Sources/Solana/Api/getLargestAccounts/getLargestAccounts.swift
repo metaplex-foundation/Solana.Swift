@@ -16,3 +16,15 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetLargestAccounts: ApiTemplate {
+        public init() {}
+        
+        public typealias Success = [LargestAccount]
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getLargestAccounts(onComplete: completion)
+        }
+    }
+}
