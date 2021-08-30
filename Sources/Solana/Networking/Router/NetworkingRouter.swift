@@ -16,9 +16,9 @@ public enum RPCError: Error {
     case retry
 }
 
-public class NetworkingRouter {
+public class NetworkingRouter: SolanaRouter {
 
-    let endpoint: RPCEndpoint
+    public let endpoint: RPCEndpoint
     private let urlSession: URLSession
     public init(endpoint: RPCEndpoint, session: URLSession = .shared) {
         self.endpoint = endpoint
