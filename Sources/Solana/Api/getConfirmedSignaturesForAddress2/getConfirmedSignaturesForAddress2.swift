@@ -12,3 +12,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetConfirmedSignaturesForAddress2: ApiTemplate {
+        public init(account: String, configs: RequestConfiguration? = nil) {
+            self.account = account
+            self.configs = configs
+        }
+        
+        public let account: String
+        public let configs: RequestConfiguration?
+        
+        public typealias Success = [SignatureInfo]
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getConfirmedSignaturesForAddress2(account: account, configs: configs, onComplete: completion)
+        }
+    }
+}

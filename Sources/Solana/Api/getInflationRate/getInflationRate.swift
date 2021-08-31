@@ -12,3 +12,15 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetInflationRate: ApiTemplate {
+        public init() {}
+        
+        public typealias Success = InflationRate
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getInflationRate(onComplete: completion)
+        }
+    }
+}

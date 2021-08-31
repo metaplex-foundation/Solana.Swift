@@ -15,3 +15,23 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetProgramAccounts<T: BufferLayout>: ApiTemplate {
+        public init(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) {
+            self.publicKey = publicKey
+            self.configs = configs
+            self.decodedTo = decodedTo
+        }
+        
+        public let publicKey: String
+        public let configs: RequestConfiguration?
+        public let decodedTo: T.Type
+        
+        public typealias Success = [ProgramAccount<T>]
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getProgramAccounts(publicKey: publicKey, configs: configs, decodedTo: decodedTo.self, onComplete: completion)
+        }
+    }
+}

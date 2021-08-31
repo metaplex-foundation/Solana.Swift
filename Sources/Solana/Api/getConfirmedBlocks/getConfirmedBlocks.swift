@@ -12,3 +12,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetConfirmedBlocks: ApiTemplate {
+        public init(startSlot: UInt64, endSlot: UInt64) {
+            self.startSlot = startSlot
+            self.endSlot = endSlot
+        }
+        
+        public let startSlot: UInt64
+        public let endSlot: UInt64
+        
+        public typealias Success = [UInt64]
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getConfirmedBlocks(startSlot: startSlot, endSlot: endSlot, onComplete: completion)
+        }
+    }
+}

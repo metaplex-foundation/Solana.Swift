@@ -19,3 +19,21 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetMultipleAccounts<T: BufferLayout>: ApiTemplate {
+        public init(pubkeys: [String], decodedTo: T.Type) {
+            self.pubkeys = pubkeys
+            self.decodedTo = decodedTo
+        }
+        
+        public let pubkeys: [String]
+        public let decodedTo: T.Type
+        
+        public typealias Success = [BufferInfo<T>]
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getMultipleAccounts(pubkeys: pubkeys, decodedTo: decodedTo.self, onComplete: completion)
+        }
+    }
+}

@@ -18,3 +18,22 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct SimulateTransaction: ApiTemplate {
+        public init(transaction: String,
+                    configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) {
+            self.transaction = transaction
+            self.configs = configs
+        }
+        
+        public let transaction: String
+        public let configs: RequestConfiguration
+        
+        public typealias Success = TransactionStatus
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.simulateTransaction(transaction: transaction, configs: configs, onComplete: completion)
+        }
+    }
+}

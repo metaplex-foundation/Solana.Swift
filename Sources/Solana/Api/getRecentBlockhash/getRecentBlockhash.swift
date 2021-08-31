@@ -20,3 +20,19 @@ public extension Api {
         }
     }
 }
+
+public extension ApiTemplates {
+    struct GetRecentBlockhash: ApiTemplate {
+        public init(commitment: Commitment? = nil) {
+            self.commitment = commitment
+        }
+        
+        public let commitment: Commitment?
+        
+        public typealias Success = String
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.getRecentBlockhash(commitment: commitment, onComplete: completion)
+        }
+    }
+}

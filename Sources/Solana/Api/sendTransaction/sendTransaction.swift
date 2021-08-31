@@ -39,3 +39,22 @@ public extension Api {
         return error
     }
 }
+
+public extension ApiTemplates {
+    struct SendTransaction: ApiTemplate {
+        public init(serializedTransaction: String,
+                    configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) {
+            self.serializedTransaction = serializedTransaction
+            self.configs = configs
+        }
+        
+        public let serializedTransaction: String
+        public let configs: RequestConfiguration
+        
+        public typealias Success = TransactionID
+        
+        public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
+            apiClass.sendTransaction(serializedTransaction: serializedTransaction, configs: configs, onComplete: completion)
+        }
+    }
+}
