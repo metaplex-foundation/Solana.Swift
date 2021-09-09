@@ -1,14 +1,9 @@
 import Foundation
 import CommonCrypto
 
-func hmac(hashName: String, message: Data, key: Data) -> Data? {
-    let algos = ["SHA1": (kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH),
-                 "MD5": (kCCHmacAlgMD5, CC_MD5_DIGEST_LENGTH),
-                 "SHA224": (kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH),
-                 "SHA256": (kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH),
-                 "SHA384": (kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH),
-                 "SHA512": (kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)]
-    guard let (hashAlgorithm, length) = algos[hashName]  else { return nil }
+func hmac(hmacAlgorithm: HMACAlgorithm, message: Data, key: Data) -> Data? {
+    let hashAlgorithm = hmacAlgorithm.HMACAlgorithm
+    let length = hmacAlgorithm.digestLength
     var macData = Data(count: Int(length))
 
     macData.withUnsafeMutableBytes { (macBytes) in
@@ -29,5 +24,31 @@ func hmac(hashName: String, message: Data, key: Data) -> Data? {
 func hmacSha512(message: Data, key: Data) -> Data? {
     let messageData = message
     let keyData = key
-    return hmac(hashName: "SHA512", message: messageData, key: keyData)
+    return hmac(hmacAlgorithm: .SHA512, message: messageData, key: keyData)
+}
+
+enum HMACAlgorithm {
+    case MD5, SHA1, SHA224, SHA256, SHA384, SHA512
+
+    var HMACAlgorithm: Int {
+        switch self {
+        case .MD5:      return kCCHmacAlgMD5
+        case .SHA1:     return kCCHmacAlgSHA1
+        case .SHA224:   return kCCHmacAlgSHA224
+        case .SHA256:   return kCCHmacAlgSHA256
+        case .SHA384:   return kCCHmacAlgSHA384
+        case .SHA512:   return kCCHmacAlgSHA512
+        }
+    }
+
+    var digestLength: Int32 {
+        switch self {
+        case .MD5:      return CC_MD5_DIGEST_LENGTH
+        case .SHA1:     return CC_SHA1_DIGEST_LENGTH
+        case .SHA224:   return CC_SHA224_DIGEST_LENGTH
+        case .SHA256:   return CC_SHA256_DIGEST_LENGTH
+        case .SHA384:   return CC_SHA384_DIGEST_LENGTH
+        case .SHA512:   return CC_SHA512_DIGEST_LENGTH
+        }
+    }
 }
