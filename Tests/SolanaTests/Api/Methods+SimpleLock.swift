@@ -461,12 +461,12 @@ extension Api {
         return result
     }
 
-    func getTokenAccountsByOwner(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) -> Result<[TokenAccount<AccountInfo>], Error>? {
-        var result: Result<[TokenAccount<AccountInfo>], Error>?
+    func getTokenAccountsByOwner<T: Decodable>(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) -> Result<[T], Error>? {
+        var result: Result<[T], Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            self?.getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs) {
-                result = $0
+            self?.getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs) { (r: Result<[T], Error>) in
+                result = r
                 lock.stop()
             }
         }

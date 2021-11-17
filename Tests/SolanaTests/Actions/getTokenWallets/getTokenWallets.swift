@@ -16,5 +16,6 @@ class getTokenWallets: XCTestCase {
     func testsGetTokenWallets() {
         let wallets = try? solana.action.getTokenWallets()?.get()
         XCTAssertNotNil(wallets)
+        XCTAssertNotEqual(wallets!.count, 0)
     }
 }

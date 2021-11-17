@@ -19,11 +19,8 @@ extension Action {
         ])
 
         ContResult.init { cb in
-            self.api.getProgramAccounts(
-                publicKey: PublicKey.tokenProgramId.base58EncodedString,
-                configs: configs,
-                decodedTo: AccountInfo.self
-            ) { cb($0) }
+            self.api.getTokenAccountsByOwner(pubkey: account, programId: PublicKey.tokenProgramId.base58EncodedString, configs: configs )
+            { (result: Result<[TokenAccount<AccountInfo>], Error>) in cb(result) }
         }.map { accounts in
             let accountsValues = accounts.compactMap { $0.account.data.value != nil ? $0: nil }
             let pubkeyValue = accountsValues.map { ($0.pubkey, $0.account.data.value!) }
