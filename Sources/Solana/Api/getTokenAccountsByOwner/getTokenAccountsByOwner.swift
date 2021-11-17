@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Api {
-    func getTokenAccountsByOwner(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[TokenAccount<AccountInfo>], Error>) -> Void) {
+    func getTokenAccountsByOwner<T: Decodable>(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[T], Error>) -> Void) {
         var parameterMap = [String: String]()
         if let mint = mint {
             parameterMap["mint"] = mint
@@ -11,7 +11,7 @@ public extension Api {
             onComplete(Result.failure(SolanaError.other("mint or programId are mandatory parameters")))
             return
         }
-        router.request(parameters: [pubkey, parameterMap, configs]) { (result: Result<Rpc<[TokenAccount<AccountInfo>]?>, Error>) in
+        router.request(parameters: [pubkey, parameterMap, configs]) { (result: Result<Rpc<[T]?>, Error>) in
             switch result {
             case .success(let rpc):
                 guard let value = rpc.value else {

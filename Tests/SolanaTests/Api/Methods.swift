@@ -208,8 +208,9 @@ class Methods: XCTestCase {
     
     func testGetTokenAccountsByOwner() {
         let address = "AoUnMozL1ZF4TYyVJkoxQWfjgKKtu8QUK9L4wFdEJick"
-        let balance = try! solana.api.getTokenAccountsByOwner(pubkey: address, mint: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")?.get()
-        XCTAssertTrue(balance!.isEmpty)
+        let result: Result<[TokenAccount<AccountInfo>], Error>? =  solana.api.getTokenAccountsByOwner(pubkey: address, mint: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")
+        let accounts: [TokenAccount<AccountInfo>] = try! result!.get()
+        XCTAssertTrue(accounts.isEmpty)
     }
     func testGetTokenSupply() {
         let tokenSupply = try! solana.api.getTokenSupply(pubkey: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!.get()
