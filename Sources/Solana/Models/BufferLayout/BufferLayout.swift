@@ -1,5 +1,8 @@
 import Foundation
 
+public enum BufferLayoutError: Error {
+    case NotImplemented
+}
 public protocol BufferLayout: Codable, BorshCodable {
     static var BUFFER_LENGTH: UInt64 { get }
 }
@@ -11,6 +14,11 @@ public struct Buffer<T: BufferLayout>: Codable {
         let container = try decoder.singleValueContainer()
 
         // decode parsedJSON
+        do {
+            let parsedData = try container.decode(T.self)
+        } catch(let e) {
+            print(e)
+        }
         if let parsedData = try? container.decode(T.self) {
             value = parsedData
             return

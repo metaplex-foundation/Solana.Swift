@@ -13,6 +13,14 @@ class getTokenWallets: XCTestCase {
         try solana.auth.save(account).get()
     }
     
+    func testsGetTokenWalletsParsing() {
+        let jsonData = getFileFrom("TokenInfo/getTokenWallets")
+
+        let wallets = try! JSONDecoder().decode(Response<Rpc<[TokenAccount<AccountInfoData>]>>.self, from: jsonData)
+        XCTAssertNotNil(wallets.result!.value)
+        XCTAssertNotEqual(wallets.result!.value.count, 0)
+    }
+    
     func testsGetTokenWallets() {
         let wallets = try? solana.action.getTokenWallets()?.get()
         XCTAssertNotNil(wallets)

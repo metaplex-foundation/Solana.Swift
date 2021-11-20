@@ -228,11 +228,11 @@ public struct TokenAccount<T: BufferLayout>: Decodable {
     public let pubkey: String
     public let account: BufferInfo<T>
 }
-public struct TokenAmount: Decodable {
-    public let address: String?
+public struct TokenAmount: Codable, Hashable {
     public let amount: String
     public let decimals: UInt8
     public let uiAmount: Float64
+    public let uiAmountString: String
 }
 public struct Version: Decodable {
     public let solanaCore: String
