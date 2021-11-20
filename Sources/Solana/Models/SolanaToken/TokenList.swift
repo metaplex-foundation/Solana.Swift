@@ -16,7 +16,7 @@ public struct TokenExtensions: Hashable, Decodable {
 }
 
 public struct Token: Hashable, Decodable {
-    public init(_tags: [String]?, chainId: Int?, address: String, symbol: String?, name: String?, logoURI: String?, tags: [TokenTag] = [], extensions: TokenExtensions?, isNative: Bool = false) {
+    public init(_tags: [String] = [], chainId: Int?, address: String, symbol: String?, name: String?, logoURI: String?, tags: [TokenTag] = [], extensions: TokenExtensions?, isNative: Bool = false) {
         self._tags = _tags
         self.chainId = chainId
         self.address = address
@@ -29,7 +29,7 @@ public struct Token: Hashable, Decodable {
     }
     
     public init(address: String) {
-        self._tags = nil
+        self._tags = []
         self.chainId = nil
         self.address = address
         self.symbol = nil
@@ -40,7 +40,7 @@ public struct Token: Hashable, Decodable {
         self.isNative = false
     }
 
-    public let _tags: [String]?
+    public let _tags: [String]
 
     public let chainId: Int?
     public let address: String
