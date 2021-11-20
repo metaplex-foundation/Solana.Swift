@@ -2,10 +2,9 @@ import Foundation
 
 public struct Wallet: Hashable {
     // MARK: - Properties
-    public var pubkey: String?
+    public var pubkey: String
     public var ammount: TokenAmount?
     public var token: Token?
-    public var userInfo: AnyHashable?
 
     let liquidity: Bool?
     public var isLiquidity: Bool {
@@ -13,7 +12,7 @@ public struct Wallet: Hashable {
     }
 
     // MARK: - Initializer
-    public init(pubkey: String? = nil, ammount: TokenAmount? = nil, token: Token?, liquidity: Bool? = false) {
+    public init(pubkey: String, ammount: TokenAmount? = nil, token: Token?, liquidity: Bool? = false) {
         self.pubkey = pubkey
         self.ammount = ammount
         self.token = token
@@ -26,13 +25,12 @@ public struct Wallet: Hashable {
     }
 
     public func shortPubkey(numOfSymbolsRevealed: Int = 4) -> String {
-        guard let pubkey = pubkey else {return ""}
         return pubkey.prefix(numOfSymbolsRevealed) + "..." + pubkey.suffix(numOfSymbolsRevealed)
     }
 
     // MARK: - Fabric methods
     public static func nativeSolana(
-        pubkey: String?,
+        pubkey: String,
         lamport: UInt64
     ) -> Wallet {
         let uiAmmount = Double(lamport)/pow(10, 9)
