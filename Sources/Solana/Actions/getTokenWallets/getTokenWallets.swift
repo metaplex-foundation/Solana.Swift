@@ -7,27 +7,18 @@ extension Action {
             return onComplete(.failure(SolanaError.unauthorized))
         }
 
-        let memcmp = EncodableWrapper(
-            wrapped:
-                ["offset": EncodableWrapper(wrapped: 32),
-                 "bytes": EncodableWrapper(wrapped: account)]
-        )
-
-        let configs = RequestConfiguration(commitment: "recent", encoding: "base64", dataSlice: nil, filters: [
-            ["memcmp": memcmp],
-            ["dataSize": .init(wrapped: 165)]
-        ])
+        let configs = RequestConfiguration(commitment: "recent", encoding: "jsonParsed")
 
         ContResult.init { cb in
             self.api.getTokenAccountsByOwner(pubkey: account, programId: PublicKey.tokenProgramId.base58EncodedString, configs: configs )
-            { (result: Result<[TokenAccount<AccountInfo>], Error>) in cb(result) }
+            { (result: Result<[TokenAccount<AccountInfoData>], Error>) in cb(result) }
         }.map { accounts in
             let accountsValues = accounts.compactMap { $0.account.data.value != nil ? $0: nil }
             let pubkeyValue = accountsValues.map { ($0.pubkey, $0.account.data.value!) }
             let wallets = pubkeyValue.map { (pubkey, accountInfo) -> Wallet in
-                let mintAddress = accountInfo.mint.base58EncodedString
+                let mintAddress = accountInfo.parsed.info.mint
                 let token = self.supportedTokens.first(where: {$0.address == mintAddress}) ?? nil
-                return Wallet(pubkey: pubkey, lamports: accountInfo.lamports, token: token, liquidity: false)
+                return Wallet(pubkey: pubkey, ammount: accountInfo.parsed.info.tokenAmount, token: token, liquidity: false)
             }
             return wallets
         }.run(onComplete)
@@ -47,4 +38,37 @@ extension ActionTemplates {
             actionClass.getTokenWallets(account: account, onComplete: completion)
         }
     }
+}
+
+
+public struct AccountInfoData: BufferLayout {
+    public static var BUFFER_LENGTH: UInt64 = 0;
+    
+    public func serialize(to writer: inout Data) throws {
+        throw BufferLayoutError.NotImplemented
+    }
+    
+    public init(from reader: inout BinaryReader) throws {
+        throw BufferLayoutError.NotImplemented
+    }
+    public let space: Int;
+    public let program: String;
+    public let parsed: AccountParsedContent;
+}
+
+public struct AccountParsedContent: Codable {
+    public let type: String;
+    public let accountType: String?;
+    public let info: AccountParsedContentInfo
+}
+
+public struct AccountParsedContentInfo: Codable {
+    public let tokenAmount: TokenAmount;
+    public let delegate: String?;
+    public let delegatedAmount: TokenAmount?;
+    public let owner: String;
+    public let mint: String;
+    public let isNative: Bool;
+    public let state: String;
+    
 }
