@@ -14,11 +14,6 @@ public struct Buffer<T: BufferLayout>: Codable {
         let container = try decoder.singleValueContainer()
 
         // decode parsedJSON
-        do {
-            let parsedData = try container.decode(T.self)
-        } catch(let e) {
-            print(e)
-        }
         if let parsedData = try? container.decode(T.self) {
             value = parsedData
             return
