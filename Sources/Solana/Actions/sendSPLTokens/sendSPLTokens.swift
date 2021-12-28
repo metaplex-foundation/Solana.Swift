@@ -3,7 +3,6 @@ import Foundation
 extension Action {
     public func sendSPLTokens(
         mintAddress: String,
-        decimals: Decimals,
         from fromPublicKey: String,
         to destinationAddress: String,
         amount: UInt64,
@@ -78,12 +77,11 @@ extension ActionTemplates {
         public let fromPublicKey: String
         public let destinationAddress: String
         public let amount: UInt64
-        public let decimals: Decimals
 
         public typealias Success = TransactionID
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
-            actionClass.sendSPLTokens(mintAddress: mintAddress, decimals: decimals, from: fromPublicKey, to: destinationAddress, amount: amount, onComplete: completion)
+            actionClass.sendSPLTokens(mintAddress: mintAddress, from: fromPublicKey, to: destinationAddress, amount: amount, onComplete: completion)
         }
     }
 }
