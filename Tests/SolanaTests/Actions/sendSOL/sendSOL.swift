@@ -37,23 +37,21 @@ class sendSOL: XCTestCase {
     }
     func testSendSOLIncorrectDestination() async {
         let toPublicKey = "XX"
-        do {
-            _ = try await solana.action.sendSOL(
+        await asyncAssertThrowing("sendSOL should fail when destination is incorrect") {
+            try await solana.action.sendSOL(
                 to: toPublicKey,
                 amount: 0.001.toLamport(decimals: 9)
             )
-            XCTFail("sendSOL should fail when destination is incorrect")
-        } catch {}
+        }
     }
     func testSendSOLBigAmmount() async {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
-        do {
-            let _ = try await solana.action.sendSOL(
+        await asyncAssertThrowing("sendSOL should fail when amount is too big") {
+            try await solana.action.sendSOL(
                 to: toPublicKey,
                 amount: 9223372036854775808
             )
-            XCTFail("sendSOL should fail when amount is too big")
-        } catch {}
+        }
 
     }
 }

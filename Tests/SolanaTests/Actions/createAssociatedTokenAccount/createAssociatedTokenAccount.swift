@@ -22,7 +22,7 @@ class createAssociatedTokenAccount: XCTestCase {
     
     func testFailCreateAssociatedTokenAccountItExisted() async throws {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        try await asyncAssertThrowing("Should fail to create associated token account if existed") {
+        await asyncAssertThrowing("Should fail to create associated token account if existed") {
             try await (solana.action.createAssociatedTokenAccount(for: try solana.auth.account.get().publicKey, tokenMint: tokenMint) as TransactionID?)
         }
 
