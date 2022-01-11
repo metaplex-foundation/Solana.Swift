@@ -165,8 +165,7 @@ public extension Action {
         recentBlockhash: String? = nil,
         signers: [Account],
         maxAttempts: Int = 3,
-        numberOfTries: Int = 0,
-        onComplete: @escaping ((Result<String, Error>) -> Void)
+        numberOfTries: Int = 0
     ) async throws -> String {
         try await withCheckedThrowingContinuation { c in
             self.serializeAndSendWithFee(
@@ -185,8 +184,7 @@ public extension Action {
         recentBlockhash: String? = nil,
         signers: [Account],
         maxAttempts: Int = 3,
-        numberOfTries: Int = 0,
-        onComplete: @escaping((Result<String, Error>) -> Void)
+        numberOfTries: Int = 0
     ) async throws -> String {
         try await withCheckedThrowingContinuation { c in
             self.serializeAndSendWithFeeSimulation(
