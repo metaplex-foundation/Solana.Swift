@@ -78,8 +78,7 @@ public extension Action {
         decimals: Decimals,
         from fromPublicKey: String,
         to destinationAddress: String,
-        amount: UInt64,
-        onComplete: @escaping (Result<TransactionID, Error>) -> Void
+        amount: UInt64
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
             self.sendSPLTokens(
