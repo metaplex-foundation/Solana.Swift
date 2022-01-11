@@ -158,6 +158,49 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Action {
+    func serializeAndSendWithFee(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account],
+        maxAttempts: Int = 3,
+        numberOfTries: Int = 0,
+        onComplete: @escaping ((Result<String, Error>) -> Void)
+    ) async throws -> String {
+        try await withCheckedThrowingContinuation { c in
+            self.serializeAndSendWithFee(
+                instructions: instructions,
+                recentBlockhash: recentBlockhash,
+                signers: signers,
+                maxAttempts: maxAttempts,
+                numberOfTries: numberOfTries,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+    
+    func serializeAndSendWithFeeSimulation(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account],
+        maxAttempts: Int = 3,
+        numberOfTries: Int = 0,
+        onComplete: @escaping((Result<String, Error>) -> Void)
+    ) async throws -> String {
+        try await withCheckedThrowingContinuation { c in
+            self.serializeAndSendWithFeeSimulation(
+                instructions: instructions,
+                recentBlockhash: recentBlockhash,
+                signers: signers,
+                maxAttempts: maxAttempts,
+                numberOfTries: numberOfTries,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct SerializeAndSendWithFee: ActionTemplate {
         public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, maxAttempts: Int = 3) {

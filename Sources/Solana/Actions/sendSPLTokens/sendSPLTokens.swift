@@ -71,6 +71,29 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Action {
+    func sendSPLTokens(
+        mintAddress: String,
+        decimals: Decimals,
+        from fromPublicKey: String,
+        to destinationAddress: String,
+        amount: UInt64,
+        onComplete: @escaping (Result<TransactionID, Error>) -> Void
+    ) async throws -> TransactionID {
+        try await withCheckedThrowingContinuation { c in
+            self.sendSPLTokens(
+                mintAddress: mintAddress,
+                decimals: decimals,
+                from: fromPublicKey,
+                to: destinationAddress,
+                amount: amount,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct SendSPLTokens: ActionTemplate {
         public let mintAddress: String

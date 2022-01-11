@@ -27,6 +27,18 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Action {
+    func closeTokenAccount(
+        account: Account? = nil,
+        tokenPubkey: String
+    ) async throws -> TransactionID {
+        try await withCheckedThrowingContinuation { c in
+            self.closeTokenAccount(account: account, tokenPubkey: tokenPubkey, onComplete: c.resume(with:))
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct CloseTokenAccountAction: ActionTemplate {
         public init(account: Account?, tokenPubkey: String) {

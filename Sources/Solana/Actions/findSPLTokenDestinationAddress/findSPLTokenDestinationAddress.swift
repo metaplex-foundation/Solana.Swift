@@ -66,6 +66,18 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Action {
+    func findSPLTokenDestinationAddress(
+        mintAddress: String,
+        destinationAddress: String
+    ) async throws -> SPLTokenDestinationAddress {
+        try await withCheckedThrowingContinuation { c in
+            self.findSPLTokenDestinationAddress(mintAddress: mintAddress, destinationAddress: destinationAddress, onComplete: c.resume(with:))
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct FindSPLTokenDestinationAddress: ActionTemplate {
         public init(mintAddress: String, destinationAddress: String) {
