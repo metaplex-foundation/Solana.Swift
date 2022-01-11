@@ -104,6 +104,7 @@ extension Action {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Action {
     func getCreatingTokenAccountFee() async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in

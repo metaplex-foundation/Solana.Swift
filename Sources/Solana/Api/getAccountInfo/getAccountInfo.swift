@@ -19,6 +19,7 @@ public extension Api {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Api {
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type = T.self) async throws -> BufferInfo<T> {
         try await withCheckedThrowingContinuation { c in

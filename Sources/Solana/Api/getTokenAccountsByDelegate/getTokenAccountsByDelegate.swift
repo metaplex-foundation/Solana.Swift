@@ -29,6 +29,7 @@ public extension Api {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Api {
     func getTokenAccountsByDelegate(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) async throws -> [TokenAccount<AccountInfo>] {
         try await withCheckedThrowingContinuation { c in

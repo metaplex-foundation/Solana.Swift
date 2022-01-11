@@ -14,6 +14,7 @@ public extension Api {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Api {
     func getIdentity() async throws -> Identity {
         try await withCheckedThrowingContinuation { c in

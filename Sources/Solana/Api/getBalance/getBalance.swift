@@ -24,6 +24,7 @@ public extension Api {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Api {
     func getBalance(account: String? = nil, commitment: Commitment? = nil) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in

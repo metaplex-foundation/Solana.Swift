@@ -2,6 +2,7 @@ import XCTest
 @testable import Solana
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 class Methods: XCTestCase {
     var endpoint = RPCEndpoint.devnetGenesysGo
     var solana: Solana!

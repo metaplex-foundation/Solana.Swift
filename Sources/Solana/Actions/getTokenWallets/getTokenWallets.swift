@@ -26,6 +26,7 @@ extension Action {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Action {
     func getTokenWallets(account: String? = nil) async throws -> [Wallet] {
         try await withCheckedThrowingContinuation { c in

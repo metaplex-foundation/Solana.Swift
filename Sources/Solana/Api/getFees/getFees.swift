@@ -18,6 +18,7 @@ public extension Api {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Api {
     func getFees(commitment: Commitment? = nil) async throws -> Fee {
         try await withCheckedThrowingContinuation { c in

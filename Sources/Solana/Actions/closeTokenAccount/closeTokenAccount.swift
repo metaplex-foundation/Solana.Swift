@@ -28,6 +28,7 @@ extension Action {
 }
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 public extension Action {
     func closeTokenAccount(
         account: Account? = nil,

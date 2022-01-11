@@ -2,6 +2,7 @@ import XCTest
 import Solana
 
 @available(iOS 13.0, *)
+@available(macOS 10.15, *)
 class createTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
