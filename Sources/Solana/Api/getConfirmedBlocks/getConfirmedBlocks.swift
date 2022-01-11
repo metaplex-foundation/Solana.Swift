@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getConfirmedBlocks(startSlot: UInt64, endSlot: UInt64) async throws -> [UInt64] {
+        try await withCheckedThrowingContinuation { c in
+            self.getConfirmedBlocks(startSlot: startSlot, endSlot: endSlot, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetConfirmedBlocks: ApiTemplate {
         public init(startSlot: UInt64, endSlot: UInt64) {

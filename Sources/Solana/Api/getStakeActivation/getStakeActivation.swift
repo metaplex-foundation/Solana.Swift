@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil) async throws -> StakeActivation {
+        try await withCheckedThrowingContinuation { c in
+            self.getStakeActivation(stakeAccount: stakeAccount, configs: configs, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetStakeActivation: ApiTemplate {
         public init(stakeAccount: String, configs: RequestConfiguration? = nil) {

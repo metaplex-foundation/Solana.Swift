@@ -17,6 +17,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getBlockTime(block: UInt64) async throws -> Date? {
+        try await withCheckedThrowingContinuation { c in
+            self.getBlockTime(block: block, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetBlockTime: ApiTemplate {
         public init(block: UInt64) {

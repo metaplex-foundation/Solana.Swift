@@ -40,6 +40,16 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func sendTransaction(serializedTransaction: String,
+                         configs: RequestConfiguration = RequestConfiguration(encoding: "base64")!) async throws -> TransactionID {
+        try await withCheckedThrowingContinuation { c in
+            self.sendTransaction(serializedTransaction: serializedTransaction, configs: configs, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct SendTransaction: ApiTemplate {
         public init(serializedTransaction: String,

@@ -23,6 +23,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getBalance(account: String? = nil, commitment: Commitment? = nil) async throws -> UInt64 {
+        try await withCheckedThrowingContinuation { c in
+            self.getBalance(account: account, commitment: commitment, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetBalance: ApiTemplate {
         public init(account: String? = nil, commitment: Commitment? = nil) {

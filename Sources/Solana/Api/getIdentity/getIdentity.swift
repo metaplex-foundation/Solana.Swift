@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getIdentity() async throws -> Identity {
+        try await withCheckedThrowingContinuation { c in
+            self.getIdentity(onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetIdentity: ApiTemplate {
         public init() {}

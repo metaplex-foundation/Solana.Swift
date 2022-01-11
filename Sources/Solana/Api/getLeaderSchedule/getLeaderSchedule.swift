@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) async throws -> [String: [Int]]? {
+        try await withCheckedThrowingContinuation { c in
+            self.getLeaderSchedule(epoch: epoch, commitment: commitment, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetLeaderSchedule: ApiTemplate {
         public init(epoch: UInt64? = nil, commitment: Commitment? = nil) {

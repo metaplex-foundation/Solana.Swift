@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getVersion() async throws -> Version {
+        try await withCheckedThrowingContinuation { c in
+            self.getVersion(onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetVersion: ApiTemplate {
         public init() {}

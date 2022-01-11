@@ -17,6 +17,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getLargestAccounts() async throws -> [LargestAccount] {
+        try await withCheckedThrowingContinuation { c in
+            self.getLargestAccounts(onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetLargestAccounts: ApiTemplate {
         public init() {}

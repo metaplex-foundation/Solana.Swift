@@ -13,6 +13,16 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func minimumLedgerSlot() async throws -> UInt64 {
+        try await withCheckedThrowingContinuation { c in
+            self.minimumLedgerSlot(onComplete: c.resume(with:))
+        }
+    }
+}
+
+
 public extension ApiTemplates {
     struct MinimumLedgerSlot: ApiTemplate {
         public init() {}

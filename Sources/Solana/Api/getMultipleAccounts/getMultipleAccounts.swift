@@ -20,6 +20,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) async throws -> [BufferInfo<T>] {
+        try await withCheckedThrowingContinuation { c in
+            self.getMultipleAccounts(pubkeys: pubkeys, decodedTo: decodedTo, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetMultipleAccounts<T: BufferLayout>: ApiTemplate {
         public init(pubkeys: [String], decodedTo: T.Type) {

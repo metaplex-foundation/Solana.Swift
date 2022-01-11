@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getEpochSchedule() async throws -> EpochSchedule {
+        try await withCheckedThrowingContinuation { c in
+            self.getEpochSchedule(onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetEpochSchedule: ApiTemplate {
         public init() {}

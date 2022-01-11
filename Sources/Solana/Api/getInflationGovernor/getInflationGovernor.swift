@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getInflationGovernor(commitment: Commitment? = nil) async throws -> InflationGovernor {
+        try await withCheckedThrowingContinuation { c in
+            self.getInflationGovernor(commitment: commitment, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetInflationGovernor: ApiTemplate {
         public init(commitment: Commitment? = nil) {

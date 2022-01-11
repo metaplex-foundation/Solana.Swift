@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getConfirmedTransaction(transactionSignature: String) async throws -> TransactionInfo {
+        try await withCheckedThrowingContinuation { c in
+            self.getConfirmedTransaction(transactionSignature: transactionSignature, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetConfirmedTransaction: ApiTemplate {
         public init(transactionSignature: String) {

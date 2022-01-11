@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) async throws -> [SignatureInfo] {
+        try await withCheckedThrowingContinuation { c in
+            self.getConfirmedSignaturesForAddress2(account: account, configs: configs, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetConfirmedSignaturesForAddress2: ApiTemplate {
         public init(account: String, configs: RequestConfiguration? = nil) {

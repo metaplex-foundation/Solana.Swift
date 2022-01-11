@@ -13,6 +13,15 @@ public extension Api {
     }
 }
 
+@available(iOS 13.0, *)
+public extension Api {
+    func getEpochInfo(commitment: Commitment? = nil) async throws -> EpochInfo {
+        try await withCheckedThrowingContinuation { c in
+            self.getEpochInfo(commitment: commitment, onComplete: c.resume(with:))
+        }
+    }
+}
+
 public extension ApiTemplates {
     struct GetEpochInfo: ApiTemplate {
         public init(commitment: Commitment? = nil) {
