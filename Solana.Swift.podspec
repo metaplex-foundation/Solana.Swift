@@ -21,5 +21,6 @@ Pod::Spec.new do |s|
     'Solana.Swift' => ['Sources/Solana/Resources/*.json']
   }
   s.dependency 'TweetNacl', '~> 1.0.2'
-  s.dependency 'CryptoSwift', '~> 1.4.0'
+  s.dependency 'Starscream', '~> 4.0.0'
+  s.dependency 'secp256k1', '~> 0.1.0'
 end
