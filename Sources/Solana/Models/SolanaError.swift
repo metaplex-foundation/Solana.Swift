@@ -1,6 +1,6 @@
 import Foundation
 
-enum SolanaError: Error {
+public enum SolanaError: Error {
     case unauthorized
     case notFoundProgramAddress
     case invalidRequest(reason: String? = nil)
