@@ -2,7 +2,7 @@ import XCTest
 @testable import Solana
 
 class Methods: XCTestCase {
-    var endpoint = RPCEndpoint.devnetSolana
+    var endpoint = RPCEndpoint.devnetGenesysGo
     var solana: Solana!
     var account: Account { try! solana.auth.account.get() }
 
@@ -47,32 +47,33 @@ class Methods: XCTestCase {
         XCTAssertTrue(nodes!.count > 0);
     }
     func testGetBlockTime() {
-        let date = try! solana.api.getBlockTime(block: 63426807)?.get()
+        testGetRecentBlockhash();
+        let date = try! solana.api.getBlockTime(block: 109479081)?.get()
         XCTAssertNotNil(date!)
     }
-    func testGetConfirmedBlock() {
-        let block = try! solana.api.getConfirmedBlock(slot: 63426807)?.get()
+    /*func testGetConfirmedBlock() {
+        let block = try! solana.api.getConfirmedBlock(slot: 109479081)?.get()
         XCTAssertNotNil(block)
-        XCTAssertEqual(63426806, block!.parentSlot);
-    }
+        XCTAssertEqual(109479081, block!.parentSlot);
+    }*/
     func testGetConfirmedBlocks() {
-        let blocks = try! solana.api.getConfirmedBlocks(startSlot:63426807, endSlot: 63426808)?.get()
+        let blocks = try! solana.api.getConfirmedBlocks(startSlot:109479079, endSlot: 109479081)?.get()
         XCTAssertNotNil(blocks)
         XCTAssertEqual(blocks!.count, 2);
     }
     func testGetConfirmedBlocksWithLimit() {
-        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:63426800, limit: 10)?.get()
+        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:109479071, limit: 10)?.get()
         XCTAssertNotNil(blocks)
         XCTAssertEqual(blocks!.count, 10);
     }
     func testGetConfirmedSignaturesForAddress2() {
-        let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx", configs: RequestConfiguration(limit: 4))?.get()
+        let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "5nA7ZpnrhapTRSuiQziKiXtMoWrJYGGG1PWBjzMYSgmD", configs: RequestConfiguration(limit: 4))?.get()
         XCTAssertEqual(result?.count, 4)
     }
     func testGetConfirmedTransaction() {
-        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "7Zk9yyJCXHapoKyHwd8AzPeW9fJWCvszR6VAcHUhvitN5W9QG9JRnoYXR8SBQPTh27piWEmdybchDt5j7xxoUth")?.get()
+        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "5w6yLNSVWwqaBRcpffpDi2NvxcSxMAvPDi39ehf5MrRqa2va94ibnxBiss8CZW7MDdmriECxWtN8doDnGUfZzbLA")?.get()
         XCTAssertNotNil(transaction)
-        XCTAssertEqual(transaction!.blockTime, 1623983206)
+        XCTAssertEqual(transaction!.blockTime, 1642843449)
     }
     func testGetEpochInfo() {
         let epoch = try! solana.api.getEpochInfo()?.get()
