@@ -34,10 +34,9 @@ extension PublicKey {
     ) -> Result<(Self, UInt8), Error> {
         for nonce in stride(from: UInt8(255), to: 0, by: -1) {
             let seedsWithNonce = seeds + [Data([nonce])]
-            return createProgramAddress(
-                seeds: seedsWithNonce,
-                programId: programId
-            ).map {($0, nonce) }
+            if case .success(let publicKey) = createProgramAddress(seeds: seedsWithNonce, programId: programId) {
+                return .success((publicKey, nonce))
+            }
         }
         return .failure(SolanaError.notFoundProgramAddress)
     }
