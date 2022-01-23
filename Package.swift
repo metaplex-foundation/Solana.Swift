@@ -23,15 +23,11 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Solana",
-            dependencies: ["TweetNacl", "Starscream", "secp256k1"],
-            resources: [ .process("Resources")
-            ]
+            dependencies: ["TweetNacl", "Starscream", "secp256k1"]
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1"],
-            resources: [ .process("Resources")
-            ]
+            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1"]
         )
     ]
 )
