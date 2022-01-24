@@ -84,7 +84,6 @@ public extension Action {
         try await withCheckedThrowingContinuation { c in
             self.sendSPLTokens(
                 mintAddress: mintAddress,
-                decimals: decimals,
                 from: fromPublicKey,
                 to: destinationAddress,
                 amount: amount,
