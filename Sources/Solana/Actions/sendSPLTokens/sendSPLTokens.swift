@@ -6,6 +6,7 @@ extension Action {
         from fromPublicKey: String,
         to destinationAddress: String,
         amount: UInt64,
+        allowUnfundedRecipient: Bool = false,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
         guard let account = try? self.auth.account.get() else {
@@ -15,7 +16,8 @@ extension Action {
         ContResult.init { cb in
             self.findSPLTokenDestinationAddress(
                 mintAddress: mintAddress,
-                destinationAddress: destinationAddress
+                destinationAddress: destinationAddress,
+                allowUnfundedRecipient: allowUnfundedRecipient
             ) { cb($0) }
         }.flatMap { (destination, isUnregisteredAsocciatedToken) in
 
@@ -77,11 +79,12 @@ extension ActionTemplates {
         public let fromPublicKey: String
         public let destinationAddress: String
         public let amount: UInt64
+        public let allowUnfundedRecipient: Bool
 
         public typealias Success = TransactionID
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
-            actionClass.sendSPLTokens(mintAddress: mintAddress, from: fromPublicKey, to: destinationAddress, amount: amount, onComplete: completion)
+            actionClass.sendSPLTokens(mintAddress: mintAddress, from: fromPublicKey, to: destinationAddress, amount: amount, allowUnfundedRecipient: allowUnfundedRecipient, onComplete: completion)
         }
     }
 }
