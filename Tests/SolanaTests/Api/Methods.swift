@@ -47,8 +47,8 @@ class Methods: XCTestCase {
         XCTAssertTrue(nodes!.count > 0);
     }
     func testGetBlockTime() {
-        testGetRecentBlockhash();
-        let date = try! solana.api.getBlockTime(block: 115469212)?.get()
+        let slot = try! solana.api.getSlot()?.get()
+        let date = try! solana.api.getBlockTime(block: slot!)?.get()
         XCTAssertNotNil(date!)
     }
     /*func testGetConfirmedBlock() {
@@ -57,14 +57,16 @@ class Methods: XCTestCase {
         XCTAssertEqual(109479081, block!.parentSlot);
     }*/
     func testGetConfirmedBlocks() {
-        let blocks = try! solana.api.getConfirmedBlocks(startSlot:115846311, endSlot: 115846321)?.get()
+        let slot = try! solana.api.getSlot()?.get()
+        let blocks = try! solana.api.getConfirmedBlocks(startSlot: slot! - 10, endSlot: slot!)?.get()
         XCTAssertNotNil(blocks)
-        XCTAssertEqual(blocks!.count, 7);
+        XCTAssertEqual(blocks!.count, 11);
     }
     func testGetConfirmedBlocksWithLimit() {
-        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot:109479071, limit: 10)?.get()
+        let slot = try! solana.api.getSlot()?.get()
+        let blocks = try! solana.api.getConfirmedBlocksWithLimit(startSlot: slot!, limit: 10)?.get()
         XCTAssertNotNil(blocks)
-        XCTAssertEqual(blocks!.count, 10);
+        XCTAssertEqual(blocks!.count > 0, true);
     }
     func testGetConfirmedSignaturesForAddress2() {
         let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "Vote111111111111111111111111111111111111111", configs: RequestConfiguration(limit: 4))?.get()
