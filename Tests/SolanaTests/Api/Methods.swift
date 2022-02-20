@@ -48,7 +48,7 @@ class Methods: XCTestCase {
     }
     func testGetBlockTime() {
         testGetRecentBlockhash();
-        let date = try! solana.api.getBlockTime(block: 115468390)?.get()
+        let date = try! solana.api.getBlockTime(block: 115468801)?.get()
         XCTAssertNotNil(date!)
     }
     /*func testGetConfirmedBlock() {
