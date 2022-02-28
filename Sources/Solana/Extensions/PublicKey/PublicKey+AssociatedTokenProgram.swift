@@ -28,7 +28,7 @@ extension PublicKey {
     }
 
     // MARK: - Helpers
-    private static func findProgramAddress(
+    public static func findProgramAddress(
         seeds: [Data],
         programId: Self
     ) -> Result<(Self, UInt8), Error> {
@@ -41,7 +41,7 @@ extension PublicKey {
         return .failure(SolanaError.notFoundProgramAddress)
     }
 
-    private static func createProgramAddress(
+    public static func createProgramAddress(
         seeds: [Data],
         programId: PublicKey
     ) ->  Result<PublicKey, Error> {
