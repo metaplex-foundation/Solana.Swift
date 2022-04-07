@@ -1,11 +1,7 @@
 import Foundation
 
 extension Action {
-    public func getTokenWallets(account: String? = nil, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
-
-        guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString else {
-            return onComplete(.failure(SolanaError.unauthorized))
-        }
+    public func getTokenWallets(account: String, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
 
         let configs = RequestConfiguration(commitment: "recent", encoding: "jsonParsed")
 
@@ -27,12 +23,12 @@ extension Action {
 
 extension ActionTemplates {
     public struct GetTokenWallets: ActionTemplate {
-        public init(account: String? = nil) {
+        public init(account: String) {
             self.account = account
         }
 
         public typealias Success = [Wallet]
-        public let account: String?
+        public let account: String
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[Wallet], Error>) -> Void) {
             actionClass.getTokenWallets(account: account, onComplete: completion)

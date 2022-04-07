@@ -8,7 +8,7 @@ extension Action {
     }
 
     public func swap(
-        account: Account? = nil,
+        account: Account,
         pool: Pool? = nil,
         source: PublicKey,
         sourceMint: PublicKey,
@@ -18,11 +18,7 @@ extension Action {
         amount: UInt64,
         onComplete: @escaping(Result<SwapResponse, Error>) -> Void
     ) {
-        // verify account
-        guard let owner = try? account ?? auth.account.get() else {
-             onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
+        let owner = account
 
         // reduce pools
         var getPoolRequest: ContResult<Pool, Error>
@@ -177,7 +173,8 @@ extension Action {
             return ContResult<String, Error>.init { cb in
                 self.serializeAndSendWithFee(
                     instructions: instructions + cleanupInstructions,
-                    signers: signers
+                    signers: signers,
+                    feePayer: account.publicKey
                 ) {
                     cb($0)
                 }
@@ -299,7 +296,7 @@ extension Action {
 
 extension ActionTemplates {
     public struct Swap: ActionTemplate {
-        public init(account: Account? = nil,
+        public init(account: Account,
                     pool: Pool? = nil,
                     source: PublicKey,
                     sourceMint: PublicKey,
@@ -317,7 +314,7 @@ extension ActionTemplates {
             self.amount = amount
         }
 
-        public let account: Account?// = nil
+        public let account: Account
         public let pool: Pool?// = nil
         public let source: PublicKey
         public let sourceMint: PublicKey

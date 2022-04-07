@@ -2,14 +2,10 @@ import Foundation
 
 extension Action {
     public func closeTokenAccount(
-        account: Account? = nil,
+        account: Account,
         tokenPubkey: String,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
-        guard let account = try? account ?? auth.account.get() else {
-            onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
         guard let tokenPubkey = PublicKey(string: tokenPubkey) else {
             onComplete(.failure(SolanaError.invalidPublicKey))
             return
@@ -20,7 +16,7 @@ extension Action {
             destination: account.publicKey,
             owner: account.publicKey
         )
-        serializeAndSendWithFee(instructions: [instruction], signers: [account]) {
+        serializeAndSendWithFee(instructions: [instruction], signers: [account], feePayer: account.publicKey) {
             onComplete($0)
             return
         }
@@ -29,14 +25,14 @@ extension Action {
 
 extension ActionTemplates {
     public struct CloseTokenAccountAction: ActionTemplate {
-        public init(account: Account?, tokenPubkey: String) {
+        public init(account: Account, tokenPubkey: String) {
             self.account = account
             self.tokenPubkey = tokenPubkey
         }
 
         public typealias Success = TransactionID
 
-        public let account: Account?
+        public let account: Account
         public let tokenPubkey: String
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {

@@ -4,13 +4,12 @@ import XCTest
 class Methods: XCTestCase {
     var endpoint = RPCEndpoint.devnetGenesysGo
     var solana: Solana!
-    var account: Account { try! solana.auth.account.get() }
+    var account: Account!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
-        let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solana.api.auth.save(account).get()
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
 
     func testGetAccountInfo() {
@@ -73,9 +72,9 @@ class Methods: XCTestCase {
         XCTAssertEqual(result?.count, 4)
     }
     func testGetConfirmedTransaction() {
-        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "4fzLXJdrtokJsLESKtvVxS5q2u7mcQEbjMZXZxbiYXUSaP9CJV4kLZak6SzSLCCWMhZKvrvtPs9W36gaBbrMLmGT")?.get()
+        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "4FoHNubE2XGc2ZNDrm1fBS3GZ33Q4qGHDiepLmsxUYmy2SV5nhyrwL3bcb3geohaVkaaw9gq6swSGsE7oXZKp1Y7")?.get()
         XCTAssertNotNil(transaction)
-        XCTAssertEqual(transaction!.blockTime, 1645332184)
+        XCTAssertEqual(transaction!.blockTime, 1649352445)
     }
     func testGetEpochInfo() {
         let epoch = try! solana.api.getEpochInfo()?.get()

@@ -8,13 +8,9 @@ extension Action {
 
     public func createTokenAccount(
         mintAddress: String,
+        payer: Account,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
-        guard let payer = try? self.auth.account.get() else {
-            onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
-
         self.api.getRecentBlockhash { resultBlockhash in
             switch resultBlockhash {
             case .success(let recentBlockhash):
@@ -91,7 +87,8 @@ extension Action {
         self.serializeAndSendWithFee(
             instructions: instructions,
             recentBlockhash: recentBlockhash,
-            signers: [payer, newAccount]
+            signers: [payer, newAccount],
+            feePayer: payer.publicKey
         ) { result in
             switch result {
             case .success(let transaction):
@@ -116,9 +113,10 @@ extension ActionTemplates {
         public typealias Success = (signature: String, newPubkey: String)
 
         public let mintAddress: String
+        public let payer: Account
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<(signature: String, newPubkey: String), Error>) -> Void) {
-            actionClass.createTokenAccount(mintAddress: mintAddress, onComplete: completion)
+            actionClass.createTokenAccount(mintAddress: mintAddress, payer: payer, onComplete: completion)
         }
     }
 }

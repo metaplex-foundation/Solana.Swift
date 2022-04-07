@@ -9,7 +9,7 @@ import Foundation
 import Solana
 
 extension Api {
-    func getBalance(account: String? = nil, commitment: Commitment? = nil) -> Result<UInt64, Error>? {
+    func getBalance(account: String, commitment: Commitment? = nil) -> Result<UInt64, Error>? {
         var balance: Result<UInt64, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
@@ -27,12 +27,13 @@ extension Action {
 
     func sendSOL(
         to destination: String,
-        amount: UInt64
+        amount: UInt64,
+        from: Account
     ) -> Result<TransactionID, Error>? {
         var transaction: Result<TransactionID, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            self?.sendSOL(to: destination, amount: amount) {
+            self?.sendSOL(to: destination, from: from, amount: amount) {
                 transaction = $0
                 lock.stop()
             }
