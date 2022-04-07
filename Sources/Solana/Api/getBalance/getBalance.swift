@@ -1,13 +1,7 @@
 import Foundation
 
 public extension Api {
-    func getBalance(account: String? = nil, commitment: Commitment? = nil, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
-
-        guard let account = try? account ?? auth.account.get().publicKey.base58EncodedString
-        else {
-            onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
+    func getBalance(account: String, commitment: Commitment? = nil, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
         router.request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64?>, Error>) in
             switch result {
             case .success(let rpc):
@@ -25,12 +19,12 @@ public extension Api {
 
 public extension ApiTemplates {
     struct GetBalance: ApiTemplate {
-        public init(account: String? = nil, commitment: Commitment? = nil) {
+        public init(account: String, commitment: Commitment? = nil) {
             self.account = account
             self.commitment = commitment
         }
         
-        public let account: String?
+        public let account: String
         public let commitment: Commitment?
         
         public typealias Success = UInt64

@@ -7,11 +7,9 @@ extension Action {
         to destinationAddress: String,
         amount: UInt64,
         allowUnfundedRecipient: Bool = false,
+        payer: Account,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
-        guard let account = try? self.auth.account.get() else {
-            return onComplete(.failure(SolanaError.unauthorized))
-        }
 
         ContResult.init { cb in
             self.findSPLTokenDestinationAddress(
@@ -46,7 +44,7 @@ extension Action {
                     mint: mint,
                     associatedAccount: toPublicKey,
                     owner: owner,
-                    payer: account.publicKey
+                    payer: payer.publicKey
                 )
                 instructions.append(createATokenInstruction)
             }
@@ -56,16 +54,16 @@ extension Action {
                 tokenProgramId: .tokenProgramId,
                 source: fromPublicKey,
                 destination: toPublicKey,
-                owner: account.publicKey,
+                owner: payer.publicKey,
                 amount: amount
             )
 
             instructions.append(sendInstruction)
-            return .success((instructions: instructions, account: account))
+            return .success((instructions: instructions, account: payer))
 
         }.flatMap { (instructions, account) in
             ContResult.init { cb in
-                self.serializeAndSendWithFee(instructions: instructions, signers: [account]) {
+                self.serializeAndSendWithFee(instructions: instructions, signers: [account], feePayer: account.publicKey) {
                     cb($0)
                 }
             }
@@ -79,12 +77,13 @@ extension ActionTemplates {
         public let fromPublicKey: String
         public let destinationAddress: String
         public let amount: UInt64
+        public let payer: Account
         public let allowUnfundedRecipient: Bool
 
         public typealias Success = TransactionID
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
-            actionClass.sendSPLTokens(mintAddress: mintAddress, from: fromPublicKey, to: destinationAddress, amount: amount, allowUnfundedRecipient: allowUnfundedRecipient, onComplete: completion)
+            actionClass.sendSPLTokens(mintAddress: mintAddress, from: fromPublicKey, to: destinationAddress, amount: amount, allowUnfundedRecipient: allowUnfundedRecipient, payer: payer, onComplete: completion)
         }
     }
 }

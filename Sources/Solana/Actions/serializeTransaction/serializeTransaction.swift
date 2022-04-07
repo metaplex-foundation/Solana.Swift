@@ -5,14 +5,9 @@ extension Action {
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
-        feePayer: PublicKey? = nil,
+        feePayer: PublicKey,
         onComplete: @escaping ((Result<String, Error>) -> Void)
     ) {
-
-        guard let feePayer = try? feePayer ?? auth.account.get().publicKey else {
-            onComplete(.failure(SolanaError.invalidRequest(reason: "Fee-payer not found")))
-            return
-        }
 
         let getRecentBlockhashRequest: (Result<String, Error>) -> Void = { result in
             switch result {
@@ -47,7 +42,7 @@ extension Action {
 
 extension ActionTemplates {
     public struct SerializeTransaction: ActionTemplate {
-        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, feePayer: PublicKey? = nil) {
+        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, feePayer: PublicKey) {
             self.instructions = instructions
             self.recentBlockhash = recentBlockhash
             self.signers = signers
@@ -59,7 +54,7 @@ extension ActionTemplates {
         public let instructions: [TransactionInstruction]
         public let recentBlockhash: String?
         public let signers: [Account]
-        public let feePayer: PublicKey?
+        public let feePayer: PublicKey
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<String, Error>) -> Void) {
             actionClass.serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers, feePayer: feePayer, onComplete: completion)

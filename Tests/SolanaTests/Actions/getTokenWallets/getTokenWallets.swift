@@ -4,13 +4,12 @@ import Solana
 class getTokenWallets: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account { try! solana.auth.account.get() }
+    var account: Account!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .getWallets
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
-        let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solana.auth.save(account).get()
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
     
     func testsGetTokenWalletsParsing() {
@@ -22,7 +21,7 @@ class getTokenWallets: XCTestCase {
     }
     
     func testsGetTokenWallets() {
-        let wallets = try? solana.action.getTokenWallets()?.get()
+        let wallets = try? solana.action.getTokenWallets(account: account.publicKey.base58EncodedString)?.get()
         XCTAssertNotNil(wallets)
         XCTAssertNotEqual(wallets!.count, 0)
     }

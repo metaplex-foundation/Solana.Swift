@@ -3,14 +3,11 @@ import Foundation
 extension Action {
     public func sendSOL(
         to destination: String,
+        from: Account,
         amount: UInt64,
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
-        guard let account = try? self.auth.account.get() else {
-            onComplete(.failure(SolanaError.unauthorized))
-            return
-        }
-
+        let account = from
         let fromPublicKey = account.publicKey
         if fromPublicKey.base58EncodedString == destination {
             onComplete(.failure(SolanaError.other("You can not send tokens to yourself")))
@@ -51,7 +48,8 @@ extension Action {
             )
             self.serializeAndSendWithFee(
                 instructions: [instruction],
-                signers: [account]
+                signers: [account],
+                feePayer: account.publicKey
             ) {
                 switch $0 {
                 case .success(let transaction):
@@ -67,17 +65,19 @@ extension Action {
 
 extension ActionTemplates {
     public struct SendSOL: ActionTemplate {
-        public init(amount: UInt64, destination: String) {
+        public init(amount: UInt64, destination: String, from: Account) {
             self.amount = amount
             self.destination = destination
+            self.from = from
         }
 
         public typealias Success = TransactionID
         public let amount: UInt64
         public let destination: String
+        public let from: Account
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
-            actionClass.sendSOL(to: destination, amount: amount, onComplete: completion)
+            actionClass.sendSOL(to: destination, from: from, amount: amount, onComplete: completion)
         }
     }
 }

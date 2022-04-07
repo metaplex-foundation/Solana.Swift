@@ -4,18 +4,17 @@ import Solana
 class createTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account { try! solana.auth.account.get() }
+    var account: Account!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
-        let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solana.auth.save(account).get()
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
     
     func testCreateTokenAccount() {
         let mintAddress = "6AUM4fSvCAxCugrbJPFxTqYFp9r3axYx973yoSyzDYVH"
-        let account: (signature: String, newPubkey: String)? = try! solana.action.createTokenAccount( mintAddress: mintAddress)?.get()
+        let account: (signature: String, newPubkey: String)? = try! solana.action.createTokenAccount( mintAddress: mintAddress, payer: self.account)?.get()
         XCTAssertNotNil(account)
     }
     

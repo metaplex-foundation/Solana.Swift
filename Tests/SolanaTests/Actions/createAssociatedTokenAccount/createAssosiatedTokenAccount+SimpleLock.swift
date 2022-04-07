@@ -11,12 +11,13 @@ import Solana
 extension Action {
     public func getOrCreateAssociatedTokenAccount(
         for owner: PublicKey,
-        tokenMint: PublicKey
+        tokenMint: PublicKey,
+        payer: Account
     ) -> Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>? {
         var info: Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            self?.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint) {
+            self?.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint, payer: payer) {
                 info = $0
                 lock.stop()
             }
@@ -28,7 +29,7 @@ extension Action {
     public func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account? = nil
+        payer: Account
     ) -> Result<TransactionID, Error>? {
         var transactionId: Result<TransactionID, Error>?
         let lock = RunLoopSimpleLock()

@@ -4,13 +4,12 @@ import Solana
 class sendSPLTokens: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account { try! solana.auth.account.get() }
+    var account: Account!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint), accountStorage: InMemoryAccountStorage())
-        let account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
-        try solana.auth.save(account).get()
+        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
         _ = try solana.api.requestAirdrop(account: account.publicKey.base58EncodedString, lamports: 100.toLamport(decimals: 9))?.get()
     }
     
@@ -24,7 +23,8 @@ class sendSPLTokens: XCTestCase {
             decimals: 5,
             from: source,
             to: destination,
-            amount: Double(0.001).toLamport(decimals: 5)
+            amount: Double(0.001).toLamport(decimals: 5),
+            payer: account
         )?.get()
         XCTAssertNotNil(transactionId)
         
@@ -33,7 +33,8 @@ class sendSPLTokens: XCTestCase {
             decimals: 5,
             from: destination,
             to: source,
-            amount: Double(0.001).toLamport(decimals: 5)
+            amount: Double(0.001).toLamport(decimals: 5),
+            payer: account
         )?.get()
         XCTAssertNotNil(transactionIdB)
     }
