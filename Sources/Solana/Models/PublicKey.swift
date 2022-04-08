@@ -41,7 +41,7 @@ public struct PublicKey {
 }
 
 extension PublicKey {
-    static var `default`: PublicKey { PublicKey(string: "11111111111111111111111111111111")! }
+    public static var `default`: PublicKey { PublicKey(string: "11111111111111111111111111111111")! }
 }
 
 extension PublicKey: Equatable, CustomStringConvertible, Hashable {
