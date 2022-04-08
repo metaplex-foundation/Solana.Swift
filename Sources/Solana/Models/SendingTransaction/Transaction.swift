@@ -1,7 +1,7 @@
 import Foundation
 import TweetNacl
 
-struct Transaction {
+public struct Transaction {
     private var signatures = [Signature]()
     let feePayer: PublicKey
     var instructions = [TransactionInstruction]()
