@@ -16,7 +16,7 @@ public struct Transaction {
     }
 
     // MARK: - Methods
-    mutating func sign(signers: [Account]) -> Result<Void, Error> {
+    public mutating func sign(signers: [Account]) -> Result<Void, Error> {
         guard signers.count > 0 else {
             return .failure(SolanaError.invalidRequest(reason: "No signers"))
         }
