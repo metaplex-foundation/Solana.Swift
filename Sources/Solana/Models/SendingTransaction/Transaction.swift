@@ -39,7 +39,7 @@ public struct Transaction {
         }
     }
 
-    mutating func serialize(
+    public mutating func serialize(
         requiredAllSignatures: Bool = true,
         verifySignatures: Bool = false
     ) -> Result<Data, Error> {
