@@ -72,9 +72,10 @@ class Methods: XCTestCase {
         XCTAssertEqual(result?.count, 4)
     }
     func testGetConfirmedTransaction() {
-        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: "4FoHNubE2XGc2ZNDrm1fBS3GZ33Q4qGHDiepLmsxUYmy2SV5nhyrwL3bcb3geohaVkaaw9gq6swSGsE7oXZKp1Y7")?.get()
+        let result = try! solana.api.getConfirmedSignaturesForAddress2(account: "Vote111111111111111111111111111111111111111", configs: RequestConfiguration(limit: 4))?.get()
+        let transaction = try! solana.api.getConfirmedTransaction(transactionSignature: (result?.first!.signature)!)?.get()
         XCTAssertNotNil(transaction)
-        XCTAssertEqual(transaction!.blockTime, 1649352445)
+        XCTAssertEqual(result?.first!.slot!, transaction!.slot)
     }
     func testGetEpochInfo() {
         let epoch = try! solana.api.getEpochInfo()?.get()
