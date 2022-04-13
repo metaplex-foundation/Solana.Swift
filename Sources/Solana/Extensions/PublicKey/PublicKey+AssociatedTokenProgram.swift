@@ -28,7 +28,7 @@ extension PublicKey {
     }
 
     // MARK: - Helpers
-    private static func findProgramAddress(
+    public static func findProgramAddress(
         seeds: [Data],
         programId: Self
     ) -> Result<(Self, UInt8), Error> {
