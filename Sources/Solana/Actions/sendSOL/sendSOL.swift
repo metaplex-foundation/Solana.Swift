@@ -48,8 +48,7 @@ extension Action {
             )
             self.serializeAndSendWithFee(
                 instructions: [instruction],
-                signers: [account],
-                feePayer: account.publicKey
+                signers: [account]
             ) {
                 switch $0 {
                 case .success(let transaction):

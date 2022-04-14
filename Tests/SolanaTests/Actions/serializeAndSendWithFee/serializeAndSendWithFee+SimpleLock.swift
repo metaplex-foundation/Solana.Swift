@@ -12,7 +12,6 @@ extension Action {
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
-        feePayer: PublicKey,
         maxAttemps: Int = 3,
         numberOfTries: Int = 0
     ) -> Result<String, Error>? {
@@ -22,7 +21,6 @@ extension Action {
             self?.serializeAndSendWithFee(instructions: instructions,
                                           recentBlockhash: recentBlockhash,
                                           signers: signers,
-                                          feePayer: feePayer,
                                           maxAttemps: maxAttemps,
                                           numberOfTries: numberOfTries) {
                 transaction = $0
@@ -37,7 +35,6 @@ extension Action {
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
         signers: [Account],
-        feePayer: PublicKey,
         maxAttemps: Int = 3,
         numberOfTries: Int = 0
     ) -> Result<String, Error>? {
@@ -47,7 +44,6 @@ extension Action {
             self?.serializeAndSendWithFeeSimulation(instructions: instructions,
                                                     recentBlockhash: recentBlockhash,
                                                     signers: signers,
-                                                    feePayer: feePayer,
                                                     maxAttemps: maxAttemps,
                                                     numberOfTries: numberOfTries) {
                 transaction = $0

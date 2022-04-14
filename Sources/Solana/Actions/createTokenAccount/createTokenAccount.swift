@@ -87,8 +87,7 @@ extension Action {
         self.serializeAndSendWithFee(
             instructions: instructions,
             recentBlockhash: recentBlockhash,
-            signers: [payer, newAccount],
-            feePayer: payer.publicKey
+            signers: [payer, newAccount]
         ) { result in
             switch result {
             case .success(let transaction):

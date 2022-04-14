@@ -75,8 +75,7 @@ extension Action {
             // send transaction
             serializeAndSendWithFee(
                 instructions: [instruction],
-                signers: [payer],
-                feePayer: payer.publicKey
+                signers: [payer]
             ) { serializeResult in
                 switch serializeResult {
                 case .success(let reesult):
