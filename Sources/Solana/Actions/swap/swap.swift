@@ -173,8 +173,7 @@ extension Action {
             return ContResult<String, Error>.init { cb in
                 self.serializeAndSendWithFee(
                     instructions: instructions + cleanupInstructions,
-                    signers: signers,
-                    feePayer: account.publicKey
+                    signers: signers
                 ) {
                     cb($0)
                 }

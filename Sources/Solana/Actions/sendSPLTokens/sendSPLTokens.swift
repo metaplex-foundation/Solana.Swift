@@ -63,7 +63,7 @@ extension Action {
 
         }.flatMap { (instructions, account) in
             ContResult.init { cb in
-                self.serializeAndSendWithFee(instructions: instructions, signers: [account], feePayer: account.publicKey) {
+                self.serializeAndSendWithFee(instructions: instructions, signers: [account]) {
                     cb($0)
                 }
             }

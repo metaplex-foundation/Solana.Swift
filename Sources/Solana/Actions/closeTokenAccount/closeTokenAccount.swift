@@ -16,7 +16,7 @@ extension Action {
             destination: account.publicKey,
             owner: account.publicKey
         )
-        serializeAndSendWithFee(instructions: [instruction], signers: [account], feePayer: account.publicKey) {
+        serializeAndSendWithFee(instructions: [instruction], signers: [account]) {
             onComplete($0)
             return
         }
