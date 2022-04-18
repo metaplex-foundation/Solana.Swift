@@ -265,8 +265,8 @@ public struct Transaction {
     }
 }
 
-extension Transaction {
-    struct Signature {
+public extension Transaction {
+    public struct Signature {
         var signature: Data?
         var publicKey: PublicKey
     }
