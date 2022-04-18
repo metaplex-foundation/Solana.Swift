@@ -8,7 +8,7 @@ public struct Transaction {
     let recentBlockhash: String
     //        TODO: nonceInfo
 
-    init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
+    public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
         self.signatures = signatures
         self.feePayer = feePayer
         self.instructions = instructions
