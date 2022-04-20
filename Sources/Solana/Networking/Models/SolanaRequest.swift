@@ -30,6 +30,10 @@ struct SolanaRequest: Encodable {
 
 public struct EncodableWrapper: Encodable {
     let wrapped: Encodable
+    
+    public init(wrapped: Encodable){
+        self.wrapped = wrapped
+    }
 
     public func encode(to encoder: Encoder) throws {
         try self.wrapped.encode(to: encoder)
