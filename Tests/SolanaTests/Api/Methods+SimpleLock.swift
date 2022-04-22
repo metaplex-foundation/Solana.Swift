@@ -21,8 +21,8 @@ extension Api {
         return result
     }
     
-    func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) -> Result<[BufferInfo<T>], Error>? {
-        var result: Result<[BufferInfo<T>], Error>?
+    func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) -> Result<[BufferInfo<T>?], Error>? {
+        var result: Result<[BufferInfo<T>?], Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
             self?.getMultipleAccounts(pubkeys: pubkeys, decodedTo: decodedTo) {

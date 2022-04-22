@@ -29,6 +29,6 @@ public struct Buffer<T: BufferLayout>: Codable {
         }
 
         var reader = BinaryReader(bytes: data)
-        value = try T.init(from: &reader)
+        value = try? T.init(from: &reader)
     }
 }
