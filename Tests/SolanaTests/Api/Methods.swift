@@ -59,7 +59,7 @@ class Methods: XCTestCase {
         let slot = try! solana.api.getSlot()?.get()
         let blocks = try! solana.api.getConfirmedBlocks(startSlot: slot! - 10, endSlot: slot!)?.get()
         XCTAssertNotNil(blocks)
-        XCTAssertEqual(blocks!.count, 11);
+        XCTAssert(blocks!.count > 1);
     }
     func testGetConfirmedBlocksWithLimit() {
         let slot = try! solana.api.getSlot()?.get()

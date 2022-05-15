@@ -31,11 +31,11 @@ public extension Action {
             }
         }.flatMap {
             let account = $0
-            if account.contains(where: {$0.owner != programId.base58EncodedString}) == true {
+            if account.contains(where: {$0?.owner != programId.base58EncodedString}) == true {
                 return .failure(SolanaError.other("Invalid mint owner"))
             }
 
-            let values = account.compactMap { $0.data.value }
+            let values = account.compactMap { $0?.data.value }
             guard values.count == mintAddresses.count else {
                 return .failure(SolanaError.other("Some of mint data are missing"))
             }
