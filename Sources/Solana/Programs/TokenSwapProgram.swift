@@ -1,6 +1,6 @@
 import Foundation
 
-struct TokenSwapProgram {
+public struct TokenSwapProgram {
     // MARK: - Nested type
     private enum Index: UInt8, BytesEncodable {
         case initialize = 0

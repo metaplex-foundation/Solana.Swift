@@ -10,4 +10,10 @@ public struct TransactionInstruction: Decodable {
         self.programId = programId
         self.data = data.bytes
     }
+
+    public init(keys: [Account.Meta], programId: PublicKey, data: [UInt8]) {
+        self.keys = keys
+        self.programId = programId
+        self.data = data
+    }
 }
