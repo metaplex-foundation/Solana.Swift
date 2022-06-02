@@ -1,6 +1,6 @@
 import Foundation
 
-struct TokenProgram {
+public struct TokenProgram {
     // MARK: - Nested type
     private struct Index {
         static let initalizeMint: UInt8 = 0

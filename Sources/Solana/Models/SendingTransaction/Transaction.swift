@@ -35,7 +35,7 @@ public struct Transaction {
 
         // construct message
         return compile().flatMap { message in
-            return partialSign(message: message, signers: signers)
+            return _partialSign(message: message, signers: signers)
         }
     }
 
@@ -73,7 +73,26 @@ public struct Transaction {
     }
 
     // MARK: - Signing
-    private mutating func partialSign(message: Message, signers: [Account]) -> Result<Void, Error> {
+    public mutating func partialSign(signers: [Account]) -> Result<Void, Error> {
+        if signers.count == 0 {
+            return .failure(SolanaError.other("No signers"))
+        }
+
+        // unique signers
+        let signers = signers.reduce([Account](), {signers, signer in
+            var uniqueSigners = signers
+            if !uniqueSigners.contains(where: {$0.publicKey == signer.publicKey}) {
+                uniqueSigners.append(signer)
+            }
+            return uniqueSigners
+        })
+
+        return compile().flatMap { message in
+            _partialSign(message: message, signers: signers)
+        }
+    }
+
+    private mutating func _partialSign(message: Message, signers: [Account]) -> Result<Void, Error> {
         message.serialize()
             .flatMap { signData in
                 for signer in signers {
