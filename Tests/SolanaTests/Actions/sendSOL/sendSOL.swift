@@ -31,6 +31,7 @@ class sendSOL: XCTestCase {
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9),
             from: account
+            ,allowUnfundedRecipient: true
         )?.get()
         XCTAssertNotNil(transactionId)
     }

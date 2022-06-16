@@ -20,7 +20,20 @@ extension Api {
         lock.run()
         return result
     }
-    
+
+    func getAccountInfoForSolTransfer<T: BufferLayout>(account: String, decodedTo: T.Type, allowUnfundedRecipient: Bool) -> Result<BufferInfo<T>?, Error>? {
+        var result: Result<BufferInfo<T>?, Error>?
+        let lock = RunLoopSimpleLock()
+        lock.dispatch { [weak self] in
+            self?.getAccountInfo(account: account, decodedTo: decodedTo, allowUnfundedRecipient: allowUnfundedRecipient) {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+        return result
+    }
+
     func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) -> Result<[BufferInfo<T>?], Error>? {
         var result: Result<[BufferInfo<T>?], Error>?
         let lock = RunLoopSimpleLock()
@@ -33,6 +46,7 @@ extension Api {
         lock.run()
         return result
     }
+
     func getProgramAccounts<T: BufferLayout>(publicKey: String, configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"), decodedTo: T.Type) -> Result<[ProgramAccount<T>], Error>? {
         var result: Result<[ProgramAccount<T>], Error>?
         let lock = RunLoopSimpleLock()
@@ -45,6 +59,7 @@ extension Api {
         lock.run()
         return result
     }
+
     func getBlockCommitment(block: UInt64) -> Result<BlockCommitment, Error>? {
         var result: Result<BlockCommitment, Error>?
         let lock = RunLoopSimpleLock()
@@ -83,7 +98,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getConfirmedBlock(slot: UInt64, encoding: String = "json") -> Result<ConfirmedBlock, Error>? {
         var result: Result<ConfirmedBlock, Error>?
         let lock = RunLoopSimpleLock()
@@ -175,7 +190,7 @@ extension Api {
         return result
     }
 
-    func getRecentBlockhash(commitment: Commitment? = nil) ->  Result<String, Error>? {
+    func getRecentBlockhash(commitment: Commitment? = nil) -> Result<String, Error>? {
         var result: Result<String, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
@@ -187,7 +202,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getFeeRateGovernor() -> Result<Fee, Error>? {
         var result: Result<Fee, Error>?
         let lock = RunLoopSimpleLock()
@@ -239,7 +254,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getGenesisHash() -> Result<String, Error>? {
         var result: Result<String, Error>?
         let lock = RunLoopSimpleLock()
@@ -265,7 +280,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getVersion() -> Result<Version, Error>? {
         var result: Result<Version, Error>?
         let lock = RunLoopSimpleLock()
@@ -278,7 +293,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getInflationGovernor(commitment: Commitment? = nil) -> Result<InflationGovernor, Error>? {
         var result: Result<InflationGovernor, Error>?
         let lock = RunLoopSimpleLock()
@@ -291,7 +306,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getInflationRate() -> Result<InflationRate, Error>? {
         var result: Result<InflationRate, Error>?
         let lock = RunLoopSimpleLock()
@@ -304,7 +319,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getLargestAccounts() -> Result<[LargestAccount], Error>? {
         var result: Result<[LargestAccount], Error>?
         let lock = RunLoopSimpleLock()
@@ -344,7 +359,7 @@ extension Api {
         return result
     }
 
-    func getVoteAccounts(commitment: Commitment? = nil) ->  Result<VoteAccounts, Error>? {
+    func getVoteAccounts(commitment: Commitment? = nil) -> Result<VoteAccounts, Error>? {
         var result: Result<VoteAccounts, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
@@ -447,7 +462,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getTokenAccountsByDelegate(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) -> Result<[TokenAccount<AccountInfo>], Error>? {
         var result: Result<[TokenAccount<AccountInfo>], Error>?
         let lock = RunLoopSimpleLock()
@@ -473,7 +488,7 @@ extension Api {
         lock.run()
         return result
     }
-    
+
     func getTokenSupply(pubkey: String, commitment: Commitment? = nil) -> Result<TokenAmount, Error>? {
         var result: Result<TokenAmount, Error>?
         let lock = RunLoopSimpleLock()
