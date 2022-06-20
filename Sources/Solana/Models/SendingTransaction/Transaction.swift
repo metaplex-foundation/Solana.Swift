@@ -260,33 +260,38 @@ public struct Transaction {
     // MARK: - Serializing
     private mutating func _serialize(serializedMessage: Data) -> Result<Data, Error> {
         // signature length
-        var signaturesLength = signatures.count
-
-        // signature data
-        let signaturesData = signatures.reduce(Data(), {result, signature in
-            var data = result
-            if let signature = signature.signature {
-                data.append(signature)
-            } else {
-                signaturesLength -= 1
-            }
-            return data
-        })
-
+        let signaturesLength = signatures.count
         let encodedSignatureLength = Data.encodeLength(signaturesLength)
 
         // transaction length
-        var data = Data(capacity: encodedSignatureLength.count + signaturesData.count + serializedMessage.count)
-        data.append(encodedSignatureLength)
-        data.append(signaturesData)
-        data.append(serializedMessage)
+        let dataLength = encodedSignatureLength.count + signaturesLength * 64 + serializedMessage.count
+        var data = Data(count: dataLength)
+        data.replaceSubrange(0..<encodedSignatureLength.count, with: encodedSignatureLength)
+
+        // signature data
+        for (index, signature) in signatures.enumerated() {
+            if let signature = signature.signature {
+                let rangeStart = encodedSignatureLength.count + index * 64
+                data.replaceSubrange(rangeStart ..< rangeStart + 64, with: signature)
+            }
+        }
+
+        // message data
+        let messageRange = encodedSignatureLength.count + signaturesLength * 64 ..< dataLength
+        data.replaceSubrange(messageRange, with: serializedMessage)
+
         return .success(data)
     }
 }
 
 public extension Transaction {
-    public struct Signature {
+    struct Signature {
         var signature: Data?
         var publicKey: PublicKey
+
+        public init(signature: Data?, publicKey: PublicKey) {
+            self.signature = signature
+            self.publicKey = publicKey
+        }
     }
 }
