@@ -38,14 +38,13 @@ public struct Wallet: Hashable {
             pubkey: pubkey,
             ammount: TokenAmount(amount: "\(lamport)", decimals: 9, uiAmount: uiAmmount, uiAmountString: "\(uiAmmount)"),
             token: Token(
-                _tags: [],
                 chainId: 101,
                 address: "So11111111111111111111111111111111111111112",
                 symbol: "SOL",
                 name: "Solana",
                 logoURI: nil,
-                tags: [],
                 extensions: nil,
+                tags: [],
                 isNative: true
             ),
             liquidity: false

@@ -1,23 +1,33 @@
 import Foundation
 
-public struct TokenTag {
-    public let name: String
-    public let description: String
-    public init(name: String, description: String) throws {
-        self.name = name
-        self.description = description
-    }
-}
-extension TokenTag: Hashable, Decodable {}
-
 public struct TokenExtensions: Hashable, Decodable {
-    public let website: String?
+    public let address: String?
+    public let assetContract: String?
     public let bridgeContract: String?
+    public let coingeckoId: String?
+    public let description: String?
+    public let discord: String?
+    public let facebook: String?
+    public let instagram: String?
+    public let medium: String?
+    public let reddit: String?
+    public let telegram: String?
+    public let serumV3Usdc: String?
+    public let twitter: String?
+    public let website: String?
 }
 
 public struct Token: Hashable, Decodable {
-    public init(_tags: [String] = [], chainId: Int?, address: String, symbol: String?, name: String?, logoURI: String?, tags: [TokenTag] = [], extensions: TokenExtensions?, isNative: Bool = false) {
-        self._tags = _tags
+    public init(
+        chainId: Int?,
+        address: String,
+        symbol: String?,
+        name: String?,
+        logoURI: String?,
+        extensions: TokenExtensions?,
+        tags: [String] = [],
+        isNative: Bool = false
+    ) {
         self.chainId = chainId
         self.address = address
         self.symbol = symbol
@@ -29,29 +39,26 @@ public struct Token: Hashable, Decodable {
     }
     
     public init(address: String) {
-        self._tags = []
+        self.tags = []
         self.chainId = nil
         self.address = address
         self.symbol = nil
         self.name = nil
         self.logoURI = nil
-        self.tags = []
         self.extensions = nil
         self.isNative = false
     }
-
-    public let _tags: [String]
-
+    
     public let chainId: Int?
     public let address: String
     public let symbol: String?
     public let name: String?
     public let logoURI: String?
-    public var tags: [TokenTag] = []
     public let extensions: TokenExtensions?
+    public let tags: [String]?
     public private(set) var isNative = false
-
+    
     enum CodingKeys: String, CodingKey {
-        case chainId, address, symbol, name, logoURI, extensions, _tags = "tags"
+        case chainId, address, symbol, name, logoURI, extensions, tags
     }
 }
