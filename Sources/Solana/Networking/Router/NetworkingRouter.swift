@@ -64,7 +64,7 @@ public class NetworkingRouter: SolanaRouter {
                 }
                 task.resume()
             }
-            .onSuccess { (data: Data?, response: URLResponse?) in }
+            .onSuccess { (_: Data?, _: URLResponse?) in }
         }
         .flatMap {
             if let httpURLResponse = $0.response as? HTTPURLResponse {

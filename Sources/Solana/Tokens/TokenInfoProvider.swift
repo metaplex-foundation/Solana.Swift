@@ -6,5 +6,5 @@ public protocol TokenInfoProvider {
 
 public class EmptyInfoTokenProvider: TokenInfoProvider {
     public var supportedTokens: [Token] = []
-    public init(){}
+    public init() {}
 }

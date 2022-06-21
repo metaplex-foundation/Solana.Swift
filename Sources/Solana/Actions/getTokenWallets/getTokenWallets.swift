@@ -6,8 +6,7 @@ extension Action {
         let configs = RequestConfiguration(commitment: "recent", encoding: "jsonParsed")
 
         ContResult.init { cb in
-            self.api.getTokenAccountsByOwner(pubkey: account, programId: PublicKey.tokenProgramId.base58EncodedString, configs: configs )
-            { (result: Result<[TokenAccount<AccountInfoData>], Error>) in cb(result) }
+            self.api.getTokenAccountsByOwner(pubkey: account, programId: PublicKey.tokenProgramId.base58EncodedString, configs: configs ) { (result: Result<[TokenAccount<AccountInfoData>], Error>) in cb(result) }
         }.map { accounts in
             let accountsValues = accounts.compactMap { $0.account.data.value != nil ? $0: nil }
             let pubkeyValue = accountsValues.map { ($0.pubkey, $0.account.data.value!) }
@@ -36,35 +35,34 @@ extension ActionTemplates {
     }
 }
 
-
 public struct AccountInfoData: BufferLayout {
-    public static var BUFFER_LENGTH: UInt64 = 0;
-    
+    public static var BUFFER_LENGTH: UInt64 = 0
+
     public func serialize(to writer: inout Data) throws {
         throw BufferLayoutError.NotImplemented
     }
-    
+
     public init(from reader: inout BinaryReader) throws {
         throw BufferLayoutError.NotImplemented
     }
-    public let space: Int;
-    public let program: String;
-    public let parsed: AccountParsedContent;
+    public let space: Int
+    public let program: String
+    public let parsed: AccountParsedContent
 }
 
 public struct AccountParsedContent: Codable {
-    public let type: String;
-    public let accountType: String?;
+    public let type: String
+    public let accountType: String?
     public let info: AccountParsedContentInfo
 }
 
 public struct AccountParsedContentInfo: Codable {
-    public let tokenAmount: TokenAmount;
-    public let delegate: String?;
-    public let delegatedAmount: TokenAmount?;
-    public let owner: String;
-    public let mint: String;
-    public let isNative: Bool;
-    public let state: String;
-    
+    public let tokenAmount: TokenAmount
+    public weak var delegate: String?
+    public let delegatedAmount: TokenAmount?
+    public let owner: String
+    public let mint: String
+    public let isNative: Bool
+    public let state: String
+
 }

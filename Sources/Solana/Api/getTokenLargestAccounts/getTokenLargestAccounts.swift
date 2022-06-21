@@ -23,12 +23,12 @@ public extension ApiTemplates {
             self.pubkey = pubkey
             self.commitment = commitment
         }
-        
+
         public let pubkey: String
         public let commitment: Commitment?
-        
+
         public typealias Success = [TokenAmount]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getTokenLargestAccounts(pubkey: pubkey, commitment: commitment, onComplete: completion)
         }

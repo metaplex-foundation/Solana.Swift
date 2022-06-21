@@ -343,7 +343,6 @@ extension ActionTemplates {
             self.tokenProgramId = tokenProgramId
         }
 
-
         public let account: String
         public let tokenProgramId: PublicKey
 

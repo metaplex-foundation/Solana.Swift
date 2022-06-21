@@ -14,5 +14,4 @@ public extension Action {
     }
 }
 
-
 public enum ActionTemplates {}

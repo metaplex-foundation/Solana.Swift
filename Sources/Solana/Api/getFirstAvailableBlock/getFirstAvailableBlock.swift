@@ -16,9 +16,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetFirstAvailableBlock: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = UInt64
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getFirstAvailableBlock(onComplete: completion)
         }

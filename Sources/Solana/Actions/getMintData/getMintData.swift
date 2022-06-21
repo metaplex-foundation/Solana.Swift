@@ -75,7 +75,7 @@ extension ActionTemplates {
         public let programId: PublicKey
         public let mintAddresses: [PublicKey]
 
-        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[PublicKey : Mint], Error>) -> Void) {
+        public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<[PublicKey: Mint], Error>) -> Void) {
             actionClass.getMultipleMintDatas(mintAddresses: mintAddresses, programId: programId, onComplete: completion)
         }
     }

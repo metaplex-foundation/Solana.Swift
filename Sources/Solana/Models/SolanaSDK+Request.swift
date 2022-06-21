@@ -46,7 +46,7 @@ public struct RequestConfiguration: Encodable {
 public struct DataSlice: Encodable {
     public let offset: Int
     public let length: Int
-    public init(offset: Int, length: Int){
+    public init(offset: Int, length: Int) {
         self.offset = offset
         self.length = length
     }

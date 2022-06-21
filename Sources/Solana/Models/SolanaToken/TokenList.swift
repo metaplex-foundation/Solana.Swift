@@ -27,7 +27,7 @@ public struct Token: Hashable, Decodable {
         self.extensions = extensions
         self.isNative = isNative
     }
-    
+
     public init(address: String) {
         self._tags = []
         self.chainId = nil

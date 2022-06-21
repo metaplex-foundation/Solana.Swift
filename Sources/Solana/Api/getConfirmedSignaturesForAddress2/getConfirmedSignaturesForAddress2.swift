@@ -19,12 +19,12 @@ public extension ApiTemplates {
             self.account = account
             self.configs = configs
         }
-        
+
         public let account: String
         public let configs: RequestConfiguration?
-        
+
         public typealias Success = [SignatureInfo]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getConfirmedSignaturesForAddress2(account: account, configs: configs, onComplete: completion)
         }

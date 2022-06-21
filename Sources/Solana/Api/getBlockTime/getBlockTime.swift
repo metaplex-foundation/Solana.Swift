@@ -22,11 +22,11 @@ public extension ApiTemplates {
         public init(block: UInt64) {
             self.block = block
         }
-        
+
         public let block: UInt64
-        
+
         public typealias Success = Date?
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getBlockTime(block: block, onComplete: completion)
         }

@@ -18,11 +18,11 @@ public extension ApiTemplates {
         public init(limit: UInt64) {
             self.limit = limit
         }
-        
+
         public let limit: UInt64
-        
+
         public typealias Success = [PerformanceSample]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getRecentPerformanceSamples(limit: limit, onComplete: completion)
         }

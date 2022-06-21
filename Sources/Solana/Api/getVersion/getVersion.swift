@@ -16,9 +16,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetVersion: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = Version
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getVersion(onComplete: completion)
         }

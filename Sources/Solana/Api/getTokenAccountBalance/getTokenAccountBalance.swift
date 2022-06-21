@@ -27,12 +27,12 @@ public extension ApiTemplates {
             self.pubkey = pubkey
             self.commitment = commitment
         }
-        
+
         public let pubkey: String
         public let commitment: Commitment?
-        
+
         public typealias Success = TokenAccountBalance
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getTokenAccountBalance(pubkey: pubkey, commitment: commitment, onComplete: completion)
         }

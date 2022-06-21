@@ -2088,7 +2088,7 @@ public struct BDouble: ExpressibleByIntegerLiteral,
     public func isZero() -> Bool { return self.numerator.equalTo(0) }
 
     public mutating func negate() {
-        if !self.isZero() {
+        if !self.isZero {
             self.sign = !self.sign
         }
     }
