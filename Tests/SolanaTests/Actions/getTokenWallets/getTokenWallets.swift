@@ -12,14 +12,6 @@ class getTokenWallets: XCTestCase {
         account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
     
-    func testsGetTokenWalletsParsing() {
-        let jsonData = getFileFrom("TokenInfo/getTokenWallets")
-
-        let wallets = try! JSONDecoder().decode(Response<Rpc<[TokenAccount<AccountInfoData>]>>.self, from: jsonData)
-        XCTAssertNotNil(wallets.result!.value)
-        XCTAssertNotEqual(wallets.result!.value.count, 0)
-    }
-    
     func testsGetTokenWallets() {
         let wallets = try? solana.action.getTokenWallets(account: account.publicKey.base58EncodedString)?.get()
         XCTAssertNotNil(wallets)
