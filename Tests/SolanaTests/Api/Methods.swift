@@ -2,7 +2,7 @@
 import XCTest
 
 class Methods: XCTestCase {
-    var endpoint = RPCEndpoint.devnetGenesysGo
+    var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
     var account: Account!
 
@@ -20,7 +20,8 @@ class Methods: XCTestCase {
     }
 
     func testGetAccountInfoForSolTransfer() {
-        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfoForSolTransfer(account: "So11111111111111111111111111111111111111112", decodedTo: AccountInfo.self, allowUnfundedRecipient: true)?.get()
+        //zero balance account
+        let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfoForSolTransfer(account: "JCsD7AYV1pfsr7MUvBZXQRC7dec2XVamr4RCAjzSRQPp", decodedTo: AccountInfo.self, allowUnfundedRecipient: true)?.get()
         XCTAssertNil(info)
     }
 
