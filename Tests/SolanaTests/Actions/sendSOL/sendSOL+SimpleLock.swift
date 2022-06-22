@@ -28,12 +28,13 @@ extension Action {
     func sendSOL(
         to destination: String,
         amount: UInt64,
-        from: Account
+        from: Account,
+        allowUnfundedRecipient: Bool = false
     ) -> Result<TransactionID, Error>? {
         var transaction: Result<TransactionID, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
-            self?.sendSOL(to: destination, from: from, amount: amount) {
+            self?.sendSOL(to: destination, from: from, amount: amount,allowUnfundedRecipient: allowUnfundedRecipient) {
                 transaction = $0
                 lock.stop()
             }
