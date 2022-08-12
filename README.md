@@ -1,13 +1,11 @@
 # Solana.Swift
-[![Swift](https://github.com/ajamaica/Solana.Swift/actions/workflows/swift.yml/badge.svg?branch=master)](https://github.com/ajamaica/Solana.Swift/actions/workflows/swift.yml)
+[![Swift](https://github.com/metaplex-foundation/Solana.Swift/actions/workflows/swift.yml/badge.svg?branch=master)](https://github.com/metaplex-foundation/Solana.Swift/actions/workflows/swift.yml)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)  
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg?style=flat&colorA=28a745&&colorB=4E4E4E)](https://github.com/apple/swift-package-manager)
 
 This is a open source library on pure swift for Solana protocol.
 
 The objective is to create a cross platform, fully functional, highly tested and less depencies as posible. 
-
-Please check my wallet [Summer](https://github.com/ajamaica/Summer).
 
 # Features
 - [x] Sign and send transactions.
@@ -90,7 +88,7 @@ struct KeychainAccountStorageModule: SolanaAccountStorage {
 ```
 ### RPC api calls
 
-We support [45](https://github.com/ajamaica/Solana.Swift/tree/master/Sources/Solana/Api "Check the Api folder") rpc api calls. If a call requires address in base58 format and it is null it will default to the one returned by SolanaAccountStorage.
+We support [45](https://github.com/metaplex-foundation/Solana.Swift/tree/master/Sources/Solana/Api "Check the Api folder") rpc api calls. If a call requires address in base58 format and it is null it will default to the one returned by SolanaAccountStorage.
 
 Example using callback
 
@@ -155,7 +153,7 @@ let transactionId = try! solana.action.sendSOL(
 From Xcode 11, you can use [Swift Package Manager](https://swift.org/package-manager/) to add Solana.swift to your project.
 
 - File > Swift Packages > Add Package Dependency
-- Add `https://github.com/ajamaica/Solana.Swift`
+- Add `https://github.com/metaplex-foundation/Solana.Swift`
 - Select "brach" with "master"
 - Select Solana
 
