@@ -8,6 +8,20 @@ import Foundation
 import Solana
 
 extension Api {
+    
+    func getAccountInfo(account: String) -> Result<BufferInfoPureData, Error>? {
+        var result: Result<BufferInfoPureData, Error>?
+        let lock = RunLoopSimpleLock()
+        lock.dispatch { [weak self] in
+            self?.getAccountInfo(account: account) {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+        return result
+    }
+    
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type) -> Result<BufferInfo<T>, Error>? {
         var result: Result<BufferInfo<T>, Error>?
         let lock = RunLoopSimpleLock()
