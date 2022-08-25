@@ -12,6 +12,13 @@ class Methods: XCTestCase {
         account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
 
+    func testGetPureAccountInfo() {
+        let info: BufferInfoPureData? = try! solana.api.getAccountInfo(account: "5xN42RZCk7wA4GjQU2VVDhda8LBL8fAnrKZK921sybLF")?.get()
+        XCTAssertNotNil(info)
+        XCTAssertNotNil(info?.data)
+        XCTAssertTrue(info!.lamports > 0)
+    }
+    
     func testGetAccountInfo() {
         let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfo(account: "So11111111111111111111111111111111111111112", decodedTo: AccountInfo.self)?.get()
         XCTAssertNotNil(info)
