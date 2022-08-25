@@ -22,7 +22,7 @@ class Methods: XCTestCase {
     func testGetAccountInfoForSolTransfer() {
         //zero balance account
         let info: BufferInfo<AccountInfo>? = try! solana.api.getAccountInfoForSolTransfer(account: "JCsD7AYV1pfsr7MUvBZXQRC7dec2XVamr4RCAjzSRQPp", decodedTo: AccountInfo.self, allowUnfundedRecipient: true)?.get()
-        XCTAssertNil(info)
+        XCTAssertNil(info?.data.value)
     }
 
     func testGetMultipleAccounts() {
