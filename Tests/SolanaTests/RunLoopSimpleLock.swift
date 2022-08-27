@@ -28,7 +28,6 @@ final class RunLoopSimpleLock {
     }
 
     func stop() {
-        print("stop")
         CFRunLoopPerformBlock(self.currentRunLoop, runLoopSimpleModeRaw) {
             CFRunLoopStop(self.currentRunLoop)
         }

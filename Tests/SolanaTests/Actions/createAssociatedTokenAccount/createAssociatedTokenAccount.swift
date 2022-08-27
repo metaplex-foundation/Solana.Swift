@@ -3,19 +3,37 @@ import Solana
 
 class createAssociatedTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
+    var networkRouterMock: NetworkingRouterMock!
     var solana: Solana!
     var account: Account!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        networkRouterMock = NetworkingRouterMock()
+        solana = Solana(router: networkRouterMock)
         account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
     
+    override func tearDownWithError() throws {
+        networkRouterMock = nil
+        solana = nil
+        account = nil
+        try super.tearDownWithError()
+    }
+
     func testGetOrCreateAssociatedTokenAccount() {
+        // arrange
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
+        networkRouterMock.expectedResults.append(.success(.json(filename:"getAccountInfo")))
+
+        // act
         let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: account.publicKey, tokenMint: tokenMint, payer: account)?.get()
-        XCTAssertNotNil(account)
+
+        // assert
+        XCTAssertEqual(networkRouterMock.requestCalled.count, 1)
+        XCTAssertNil(account?.transactionId)
+        XCTAssertEqual(account?.associatedTokenAddress.base58EncodedString, "2ST2CedQ1QT7f2G31Qws9n7GFj7C56fKnhbxnvLymFwU")
     }
     
     func testFailCreateAssociatedTokenAccountItExisted() {
