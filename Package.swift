@@ -27,7 +27,8 @@ let package = Package(
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1"]
+            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1"],
+            resources: [.copy("Resources/Mocks")]
         )
     ]
 )
