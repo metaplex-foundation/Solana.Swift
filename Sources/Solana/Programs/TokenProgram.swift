@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias SolanaTokenProgram = TokenProgram
+
 public struct TokenProgram {
     // MARK: - Nested type
     private struct Index {
