@@ -165,6 +165,7 @@ public struct SignatureStatus: Decodable {
     public let slot: UInt64
     public let confirmations: UInt64?
     public let err: TransactionError?
+    public let confirmationStatus: Commitment?
 }
 public struct TransactionInfo: Decodable {
     public let blockTime: UInt64?

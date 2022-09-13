@@ -60,30 +60,6 @@ class BorshCodableTests: XCTestCase {
         XCTAssertEqual(new_value.r[0].a, PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!)
         XCTAssertEqual(new_value.r[0].b, 31)
     }
-
-    func testReaderAndWriter() {
-        let value = Test(x: 255, y: 20, z: "123", q: [1, 2, 3], r: [SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31), SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31), SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31)])
-        let buf = try! BorshEncoder().encode(value)
-        var binaryReader = BinaryReader(bytes: buf.bytes)
-        let newBuf = try! Test(from: &binaryReader)
-
-        XCTAssertEqual(newBuf.x, 255)
-        XCTAssertEqual(newBuf.y, 20)
-        XCTAssertEqual(newBuf.z, "123")
-        XCTAssertEqual(newBuf.q, [1, 2, 3])
-
-        var writtenBuf = Data()
-        try! newBuf.serialize(to: &writtenBuf)
-
-        var newReader = BinaryReader(bytes: writtenBuf.bytes)
-        let newTest = try! Test(from: &newReader)
-
-        XCTAssertEqual(buf.bytes, writtenBuf.bytes)
-        XCTAssertEqual(newBuf.x, newTest.x)
-        XCTAssertEqual(newBuf.y, newTest.y)
-        XCTAssertEqual(newBuf.z, newTest.z)
-        XCTAssertEqual(newBuf.q, newTest.q)
-    }
     
     func test_should_deserialize_mint(){
         let buf2 = Data(base64Encoded: "AQAAAAYa2dBThxVIU37ePiYYSaPft/0C+rx1siPI5GrbhT0MABCl1OgAAAAGAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==")!
@@ -179,5 +155,29 @@ class BorshCodableTests: XCTestCase {
         XCTAssertTrue(generatedTokenSwapInfo.isInitialized == true)
         XCTAssertEqual("11111111111111111111111111111111", generatedTokenSwapInfo.payer.base58EncodedString)
         
+    }
+
+    func testReaderAndWriter() {
+        let value = Test(x: 255, y: 20, z: "123", q: [1, 2, 3], r: [SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31), SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31), SubTest(a: PublicKey(string: "HG2gLyDxmYGUfNWnvf81bJQj38twnF2aQivpkxficJbn")!, b: 31)])
+        let buf = try! BorshEncoder().encode(value)
+        var binaryReader = BinaryReader(bytes: buf.bytes)
+        let newBuf = try! Test(from: &binaryReader)
+
+        XCTAssertEqual(newBuf.x, 255)
+        XCTAssertEqual(newBuf.y, 20)
+        XCTAssertEqual(newBuf.z, "123")
+        XCTAssertEqual(newBuf.q, [1, 2, 3])
+
+        var writtenBuf = Data()
+        try! newBuf.serialize(to: &writtenBuf)
+
+        var newReader = BinaryReader(bytes: writtenBuf.bytes)
+        let newTest = try! Test(from: &newReader)
+
+        XCTAssertEqual(buf.bytes, writtenBuf.bytes)
+        XCTAssertEqual(newBuf.x, newTest.x)
+        XCTAssertEqual(newBuf.y, newTest.y)
+        XCTAssertEqual(newBuf.z, newTest.z)
+        XCTAssertEqual(newBuf.q, newTest.q)
     }
 }

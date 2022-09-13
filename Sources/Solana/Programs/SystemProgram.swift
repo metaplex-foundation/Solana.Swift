@@ -19,7 +19,7 @@ public struct SystemProgram {
                 Account.Meta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
                 Account.Meta(publicKey: newPubkey, isSigner: true, isWritable: true)
             ],
-            programId: PublicKey.programId,
+            programId: PublicKey.systemProgramId,
             data: [Index.create, lamports, space, programPubkey]
         )
     }
