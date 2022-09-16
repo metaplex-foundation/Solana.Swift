@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct AccountInfo: BufferLayout {
     public static let BUFFER_LENGTH: UInt64 = 165

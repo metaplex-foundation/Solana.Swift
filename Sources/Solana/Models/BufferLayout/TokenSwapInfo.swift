@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct TokenSwapInfo: BufferLayout, Equatable, Hashable, Encodable {
     public static var BUFFER_LENGTH: UInt64 = 324

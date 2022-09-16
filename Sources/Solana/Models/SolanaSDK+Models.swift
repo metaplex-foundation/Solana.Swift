@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public typealias PublicKeyString = String
 public typealias TransactionID = String

@@ -1,6 +1,5 @@
 import Foundation
-
-import Foundation
+import Beet
 import XCTest
 @testable import Solana
 

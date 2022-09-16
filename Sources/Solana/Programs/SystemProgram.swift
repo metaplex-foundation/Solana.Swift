@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct SystemProgram {
     private struct Index {

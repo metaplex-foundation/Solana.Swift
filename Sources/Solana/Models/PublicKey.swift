@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct PublicKey {
     public static let NULL_PUBLICKEY_BYTES: [UInt8] = Array(repeating: UInt8(0), count: LENGTH)

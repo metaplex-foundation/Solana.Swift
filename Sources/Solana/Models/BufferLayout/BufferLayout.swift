@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public enum BufferLayoutError: Error {
     case NotImplemented
