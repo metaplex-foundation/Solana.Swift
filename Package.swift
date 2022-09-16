@@ -16,6 +16,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(name: "TweetNacl", url: "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git", from: "1.0.2"),
         .package(url: "https://github.com/daltoniam/Starscream.git", from: "4.0.0"),
+        .package(name: "Beet", url: "https://github.com/metaplex-foundation/beet-swift.git", from: "1.0.0"),
         .package(name: "secp256k1", url: "https://github.com/Boilertalk/secp256k1.swift.git", from: "0.1.0"),
     ],
     targets: [
@@ -23,11 +24,11 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "Solana",
-            dependencies: ["TweetNacl", "Starscream", "secp256k1"]
+            dependencies: ["TweetNacl", "Starscream", "secp256k1", "Beet"]
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1"]
+            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1", "Beet"]
         )
     ]
 )

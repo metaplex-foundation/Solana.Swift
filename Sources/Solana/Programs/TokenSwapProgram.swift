@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct TokenSwapProgram {
     // MARK: - Nested type

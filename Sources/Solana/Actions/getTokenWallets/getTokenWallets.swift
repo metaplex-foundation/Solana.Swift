@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 extension Action {
     public func getTokenWallets(account: String, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {

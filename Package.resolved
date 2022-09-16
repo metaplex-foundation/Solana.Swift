@@ -2,12 +2,21 @@
   "object": {
     "pins": [
       {
+        "package": "Beet",
+        "repositoryURL": "https://github.com/metaplex-foundation/beet-swift.git",
+        "state": {
+          "branch": null,
+          "revision": "0873ff2e674e64e1c40fceeb6c040064015bdc09",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "secp256k1",
         "repositoryURL": "https://github.com/Boilertalk/secp256k1.swift.git",
         "state": {
           "branch": null,
-          "revision": "823281fe9def21b384099b72a9a53ca988317b20",
-          "version": "0.1.4"
+          "revision": "45e458ec3be46cf0a6eb68bc947f797852dc65d8",
+          "version": "0.1.6"
         }
       },
       {
@@ -24,8 +33,8 @@
         "repositoryURL": "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git",
         "state": {
           "branch": null,
-          "revision": "d1552db4d907f2c5cb3d1bf1336496b2e16c8ecf",
-          "version": "1.0.2"
+          "revision": "f8fd111642bf2336b11ef9ea828510693106e954",
+          "version": "1.1.0"
         }
       }
     ]

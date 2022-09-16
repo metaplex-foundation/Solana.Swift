@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct TokenProgram {
     // MARK: - Nested type

@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct Transfer {
     public static func compile() -> Data {

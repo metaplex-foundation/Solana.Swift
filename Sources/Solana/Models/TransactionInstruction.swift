@@ -1,4 +1,5 @@
 import Foundation
+import Beet
 
 public struct TransactionInstruction: Decodable {
     public let keys: [Account.Meta]
