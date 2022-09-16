@@ -1,6 +1,8 @@
 import Foundation
 import Beet
 
+public typealias SolanaTokenProgram = TokenProgram
+
 public struct TokenProgram {
     // MARK: - Nested type
     private struct Index {
@@ -33,7 +35,7 @@ public struct TokenProgram {
                 decimals,
                 authority,
                 freezeAuthority != nil,
-                freezeAuthority?.bytes ?? Data(capacity: PublicKey.LENGTH).bytes
+                freezeAuthority?.bytes ?? PublicKey.NULL_PUBLICKEY_BYTES
             ]
         )
     }
@@ -123,7 +125,7 @@ public struct TokenProgram {
             keys: [
                 Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
                 Account.Meta(publicKey: destination, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: authority, isSigner: true, isWritable: true)
+                Account.Meta(publicKey: authority, isSigner: true, isWritable: false)
             ],
             programId: tokenProgramId,
             data: [Index.mintTo, amount]

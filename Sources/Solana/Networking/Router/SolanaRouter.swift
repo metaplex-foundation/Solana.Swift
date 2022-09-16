@@ -10,3 +10,18 @@ public protocol SolanaRouter {
 
     var endpoint: RPCEndpoint  { get }
 }
+
+
+public extension SolanaRouter {
+    func request<T: Decodable>(
+        method: HTTPMethod = .post,
+        bcMethod: String = #function,
+        parameters: [Encodable?] = [],
+        onComplete: @escaping (Result<T, Error>) -> Void
+    ) {
+        request(method: method,
+                bcMethod: bcMethod,
+                parameters: parameters,
+                onComplete: onComplete)
+    }
+}

@@ -16,7 +16,7 @@ public struct AssociatedTokenProgram {
                 .init(publicKey: associatedAccount, isSigner: false, isWritable: true),
                 .init(publicKey: owner, isSigner: false, isWritable: false),
                 .init(publicKey: mint, isSigner: false, isWritable: false),
-                .init(publicKey: .programId, isSigner: false, isWritable: false),
+                .init(publicKey: .systemProgramId, isSigner: false, isWritable: false),
                 .init(publicKey: programId, isSigner: false, isWritable: false),
                 .init(publicKey: .sysvarRent, isSigner: false, isWritable: false)
             ],

@@ -135,6 +135,14 @@ public struct BufferInfo<T: BufferLayout>: Decodable {
     public let rentEpoch: UInt64
 }
 
+public struct BufferInfoPureData: Decodable {
+    public let data: PureData?
+    public let lamports: Lamports
+    public let owner: String
+    public let executable: Bool
+    public let rentEpoch: UInt64
+}
+
 public struct PerformanceSample: Decodable {
     public let numSlots: UInt64
     public let numTransactions: UInt64
@@ -158,6 +166,7 @@ public struct SignatureStatus: Decodable {
     public let slot: UInt64
     public let confirmations: UInt64?
     public let err: TransactionError?
+    public let confirmationStatus: Commitment?
 }
 public struct TransactionInfo: Decodable {
     public let blockTime: UInt64?

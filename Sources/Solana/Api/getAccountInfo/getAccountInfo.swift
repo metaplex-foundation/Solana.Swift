@@ -1,6 +1,23 @@
 import Foundation
 
 public extension Api {
+    
+    func getAccountInfo(account: String, onComplete: @escaping (Result<BufferInfoPureData, Error>) -> Void) {
+        let configs = RequestConfiguration(encoding: "base64")
+        router.request(parameters: [account, configs]) { (result: Result<Rpc<BufferInfoPureData?>, Error>) in
+            switch result {
+            case let .success(rpc):
+                guard let value = rpc.value else {
+                    onComplete(.failure(SolanaError.nullValue))
+                    return
+                }
+                onComplete(.success(value))
+            case let .failure(error):
+                onComplete(.failure(error))
+            }
+        }
+    }
+    
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type, onComplete: @escaping (Result<BufferInfo<T>, Error>) -> Void) {
         let configs = RequestConfiguration(encoding: "base64")
         router.request(parameters: [account, configs]) { (result: Result<Rpc<BufferInfo<T>?>, Error>) in

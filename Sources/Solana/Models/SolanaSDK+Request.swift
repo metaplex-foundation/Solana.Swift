@@ -19,7 +19,13 @@ public struct Transfer {
     }
 }
 
-public typealias Commitment = String
+public enum Commitment: String, Codable {
+    case finalized
+    case confirmed
+    case processed
+    @available(*, deprecated)
+    case recent
+}
 
 public struct RequestConfiguration: Encodable {
     public let commitment: Commitment?
@@ -30,8 +36,23 @@ public struct RequestConfiguration: Encodable {
     public let before: String?
     public let until: String?
 
-    public init?(commitment: Commitment? = nil, encoding: String? = nil, dataSlice: DataSlice? = nil, filters: [[String: EncodableWrapper]]? = nil, limit: Int? = nil, before: String? = nil, until: String? = nil) {
-        if commitment == nil && encoding == nil && dataSlice == nil && filters == nil && limit == nil && before == nil && until == nil {
+    public init?(
+        commitment: Commitment? = nil,
+        encoding: String? = nil,
+        dataSlice: DataSlice? = nil,
+        filters: [[String: EncodableWrapper]]? = nil,
+        limit: Int? = nil,
+        before: String? = nil,
+        until: String? = nil
+    ) {
+        if commitment == nil
+            && encoding == nil
+            && dataSlice == nil
+            && filters == nil
+            && limit == nil
+            && before == nil
+            && until == nil
+        {
             return nil
         }
         self.commitment = commitment

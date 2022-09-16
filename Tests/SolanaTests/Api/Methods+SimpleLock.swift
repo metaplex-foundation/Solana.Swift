@@ -8,6 +8,20 @@ import Foundation
 import Solana
 
 extension Api {
+    
+    func getAccountInfo(account: String) -> Result<BufferInfoPureData, Error>? {
+        var result: Result<BufferInfoPureData, Error>?
+        let lock = RunLoopSimpleLock()
+        lock.dispatch { [weak self] in
+            self?.getAccountInfo(account: account) {
+                result = $0
+                lock.stop()
+            }
+        }
+        lock.run()
+        return result
+    }
+    
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type) -> Result<BufferInfo<T>, Error>? {
         var result: Result<BufferInfo<T>, Error>?
         let lock = RunLoopSimpleLock()
@@ -333,7 +347,7 @@ extension Api {
         return result
     }
 
-    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = "recent") -> Result<UInt64, Error>? {
+    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .recent) -> Result<UInt64, Error>? {
         var result: Result<UInt64, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in
