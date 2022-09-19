@@ -150,8 +150,9 @@ class MethodsAsync: XCTestCase {
         _ = try await solana.api.getTransactionCount()
     }
     func testGetStakeActivation() async throws {
-        // https://explorer.solana.com/address/HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf?cluster=devnet
-        let stakeActivation = try await solana.api.getStakeActivation(stakeAccount: "HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf")
+        // https://explorer.solana.com/address/AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G
+        let mainNetSolana = Solana(router: NetworkingRouter(endpoint: .mainnetBetaSolana))
+        let stakeActivation = try await mainNetSolana.api.getStakeActivation(stakeAccount: "AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G")
         XCTAssertEqual("active", stakeActivation.state)
         XCTAssertTrue(stakeActivation.active > 0)
         XCTAssertEqual(0, stakeActivation.inactive)
