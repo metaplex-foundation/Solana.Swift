@@ -10,7 +10,7 @@ import Solana
 import XCTest
 
 final class NetworkingRouterMock: SolanaRouter {
-
+    
     private enum Constants {
         static let mockFolder = "Mocks/"
     }
@@ -44,6 +44,11 @@ final class NetworkingRouterMock: SolanaRouter {
         }
     }
     
+    func request<T>(method: HTTPMethod, bcMethod: String, parameters: [Encodable?]) async throws -> T where T : Decodable {
+        try await withCheckedThrowingContinuation { c in
+            self.request(method: method, bcMethod: bcMethod, parameters: parameters, onComplete: c.resume(with:))
+        }
+    }
 }
 
 // MARK: - Private

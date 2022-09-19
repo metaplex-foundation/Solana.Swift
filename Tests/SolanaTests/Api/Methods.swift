@@ -222,8 +222,9 @@ class Methods: XCTestCase {
     }
 
     func testGetStakeActivation() {
-        // https://explorer.solana.com/address/HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf?cluster=devnet
-        let stakeActivation = try! solana.api.getStakeActivation(stakeAccount: "HDDhNo3H2t3XbLmRswHdTu5L8SvSMypz9UVFu68Wgmaf")?.get()
+        // https://explorer.solana.com/address/AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G
+        let mainNetSolana = Solana(router: NetworkingRouter(endpoint: .mainnetBetaSolana))
+        let stakeActivation = try! mainNetSolana.api.getStakeActivation(stakeAccount: "AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G")?.get()
         XCTAssertNotNil(stakeActivation)
         XCTAssertEqual("active", stakeActivation!.state)
         XCTAssertTrue(stakeActivation!.active > 0)
