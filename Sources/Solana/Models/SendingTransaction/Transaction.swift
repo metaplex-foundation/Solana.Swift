@@ -97,7 +97,7 @@ public struct Transaction {
             .flatMap { signData in
                 for signer in signers {
                     do {
-                        let data = try NaclSign.signDetached(message: signData, secretKey: signer.secretKey)
+                        let data = try signer.sign(serializedMessage: signData)
                         try _addSignature(Signature(signature: data, publicKey: signer.publicKey)).get()
                     } catch let error {
                         return .failure(error)
@@ -148,7 +148,7 @@ public struct Transaction {
 
         // programIds & accountMetas
         var programIds = [PublicKey]()
-        var accountMetas = [Account.Meta]()
+        var accountMetas = [AccountMeta]()
 
         for instruction in instructions {
             accountMetas.append(contentsOf: instruction.keys)
@@ -171,7 +171,7 @@ public struct Transaction {
         }
 
         // filterOut duplicate account metas, keeps writable one
-        accountMetas = accountMetas.reduce([Account.Meta](), {result, accountMeta in
+        accountMetas = accountMetas.reduce([AccountMeta](), {result, accountMeta in
             var uniqueMetas = result
             if let index = uniqueMetas.firstIndex(where: {$0.publicKey == accountMeta.publicKey}) {
                 // if accountMeta exists
@@ -185,7 +185,7 @@ public struct Transaction {
         // move fee payer to front
         accountMetas.removeAll(where: {$0.publicKey == feePayer})
         accountMetas.insert(
-            Account.Meta(publicKey: feePayer, isSigner: true, isWritable: true),
+            AccountMeta(publicKey: feePayer, isSigner: true, isWritable: true),
             at: 0
         )
 
@@ -205,8 +205,8 @@ public struct Transaction {
         // header
         var header = Message.Header()
 
-        var signedKeys = [Account.Meta]()
-        var unsignedKeys = [Account.Meta]()
+        var signedKeys = [AccountMeta]()
+        var unsignedKeys = [AccountMeta]()
 
         for accountMeta in accountMetas {
             // signed keys

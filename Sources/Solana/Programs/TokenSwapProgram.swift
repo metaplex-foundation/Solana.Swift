@@ -28,20 +28,20 @@ public struct TokenSwapProgram {
         minimumAmountOut: UInt64
     ) -> TransactionInstruction {
         var keys = [
-            Account.Meta(publicKey: tokenSwap, isSigner: false, isWritable: false),
-            Account.Meta(publicKey: authority, isSigner: false, isWritable: false),
-            Account.Meta(publicKey: userTransferAuthority, isSigner: true, isWritable: false),
-            Account.Meta(publicKey: userSource, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: poolSource, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: poolDestination, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: userDestination, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: poolMint, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: feeAccount, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: tokenProgramId, isSigner: false, isWritable: false)
+            AccountMeta(publicKey: tokenSwap, isSigner: false, isWritable: false),
+            AccountMeta(publicKey: authority, isSigner: false, isWritable: false),
+            AccountMeta(publicKey: userTransferAuthority, isSigner: true, isWritable: false),
+            AccountMeta(publicKey: userSource, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: poolSource, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: poolDestination, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: userDestination, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: poolMint, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: feeAccount, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: tokenProgramId, isSigner: false, isWritable: false)
         ]
 
         if let hostFeeAccount = hostFeeAccount {
-            keys.append(Account.Meta(publicKey: hostFeeAccount, isSigner: false, isWritable: true))
+            keys.append(AccountMeta(publicKey: hostFeeAccount, isSigner: false, isWritable: true))
         }
 
         return TransactionInstruction(
@@ -70,15 +70,15 @@ public struct TokenSwapProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: tokenSwap, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: authority, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: sourceA, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: sourceB, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: intoA, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: intoB, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: poolToken, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: poolAccount, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: tokenProgramId, isSigner: false, isWritable: true)
+                AccountMeta(publicKey: tokenSwap, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: authority, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: sourceA, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: sourceB, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: intoA, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: intoB, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: poolToken, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: poolAccount, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: tokenProgramId, isSigner: false, isWritable: true)
             ],
             programId: swapProgramId,
             data: [Index.deposit, poolTokenAmount, maximumTokenA, maximumTokenB]
@@ -105,16 +105,16 @@ public struct TokenSwapProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: tokenSwap, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: authority, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: poolMint, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: sourcePoolAccount, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: fromA, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: fromB, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: userAccountA, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: userAccountB, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: feeAccount, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: tokenProgramId, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: tokenSwap, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: authority, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: poolMint, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: sourcePoolAccount, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: fromA, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: fromB, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: userAccountA, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: userAccountB, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: feeAccount, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: tokenProgramId, isSigner: false, isWritable: false)
             ],
             programId: swapProgramId,
             data: [Index.withdraw, poolTokenAmount, minimumTokenA, minimumTokenB])
