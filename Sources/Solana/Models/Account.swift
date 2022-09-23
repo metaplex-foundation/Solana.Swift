@@ -1,11 +1,21 @@
 import Foundation
 import TweetNacl
 
-public struct Account: Codable, Hashable {
+public protocol Account {
+    var publicKey: PublicKey { get }
+    func sign(serializedMessage: Data) throws -> Data
+}
+
+public struct HotAccount: Codable, Hashable, Account {
     public let phrase: [String]
     public let publicKey: PublicKey
     public let secretKey: Data
-
+    
+    public func sign(serializedMessage: Data) throws -> Data {
+        let data = try NaclSign.signDetached(message: serializedMessage, secretKey: secretKey)
+        return data
+    }
+    
     public init?(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) {
         let mnemonic: Mnemonic
         var phrase = phrase.filter {!$0.isEmpty}
@@ -69,36 +79,34 @@ public struct Account: Codable, Hashable {
     }
 }
 
-public extension Account {
-    struct Meta: Decodable, CustomDebugStringConvertible {
-        public let publicKey: PublicKey
-        public var isSigner: Bool
-        public var isWritable: Bool
+public struct AccountMeta: Decodable, CustomDebugStringConvertible {
+    public let publicKey: PublicKey
+    public var isSigner: Bool
+    public var isWritable: Bool
 
-        // MARK: - Decodable
-        enum CodingKeys: String, CodingKey {
-            case pubkey, signer, writable
-        }
+    // MARK: - Decodable
+    enum CodingKeys: String, CodingKey {
+        case pubkey, signer, writable
+    }
 
-        public init(from decoder: Decoder) throws {
-            let values = try decoder.container(keyedBy: CodingKeys.self)
-            guard let newKey = PublicKey(string: try values.decode(String.self, forKey: .pubkey)) else {
-                throw SolanaError.invalidPublicKey
-            }
-            publicKey = newKey
-            isSigner = try values.decode(Bool.self, forKey: .signer)
-            isWritable = try values.decode(Bool.self, forKey: .writable)
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        guard let newKey = PublicKey(string: try values.decode(String.self, forKey: .pubkey)) else {
+            throw SolanaError.invalidPublicKey
         }
+        publicKey = newKey
+        isSigner = try values.decode(Bool.self, forKey: .signer)
+        isWritable = try values.decode(Bool.self, forKey: .writable)
+    }
 
-        // Initializers
-        public init(publicKey: PublicKey, isSigner: Bool, isWritable: Bool) {
-            self.publicKey = publicKey
-            self.isSigner = isSigner
-            self.isWritable = isWritable
-        }
+    // Initializers
+    public init(publicKey: PublicKey, isSigner: Bool, isWritable: Bool) {
+        self.publicKey = publicKey
+        self.isSigner = isSigner
+        self.isWritable = isWritable
+    }
 
-        public var debugDescription: String {
-            "{\"publicKey\": \"\(publicKey.base58EncodedString)\", \"isSigner\": \(isSigner), \"isWritable\": \(isWritable)}"
-        }
+    public var debugDescription: String {
+        "{\"publicKey\": \"\(publicKey.base58EncodedString)\", \"isSigner\": \(isSigner), \"isWritable\": \(isWritable)}"
     }
 }

@@ -110,7 +110,7 @@ class PublicKeyTests: XCTestCase {
         let secretKey = Base58.decode("4Z7cXSyeFR8wNGMVXUE1TwtKn5D5Vu7FzEv69dokLv7KrQk7h6pu4LF8ZRR9yQBhc7uSM6RTTZtU1fmaxiNrxXrs")
         XCTAssertNotNil(secretKey)
         
-        let account = Account(secretKey: Data(secretKey))!
+        let account = HotAccount(secretKey: Data(secretKey))!
         
         XCTAssertEqual("QqCCvshxtqMAL2CVALqiJB7uEeE5mjSPsseQdDzsRUo", account.publicKey.base58EncodedString)
         XCTAssertEqual(64, account.secretKey.count)
@@ -119,19 +119,19 @@ class PublicKeyTests: XCTestCase {
     func testRestoreAccountFromSeedPhrase() {
         let phrase12 = "miracle pizza supply useful steak border same again youth silver access hundred"
             .components(separatedBy: " ")
-        let account12 = Account(phrase: phrase12, network: .mainnetBeta)!
+        let account12 = HotAccount(phrase: phrase12, network: .mainnetBeta)!
         XCTAssertEqual(account12.publicKey.base58EncodedString, "HnXJX1Bvps8piQwDYEYC6oea9GEkvQvahvRj3c97X9xr")
         
         let phrase24 = "budget resource fluid mutual ankle salt demise long burst sting doctor ozone risk magic wrap clap post pole jungle great update air interest abandon"
             .components(separatedBy: " ")
-        let account24 = Account(phrase: phrase24, network: .mainnetBeta)!
+        let account24 = HotAccount(phrase: phrase24, network: .mainnetBeta)!
         XCTAssertEqual(account24.publicKey.base58EncodedString, "9avcmC97zLPwHKXiDz6GpXyjvPn9VcN3ggqM5gsRnjvv")
     }
     
     func testRestoreAccountFromSeedPhraseBip32Deprecated() {
         let phrase24 = "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side"
             .components(separatedBy: " ")
-        let account24 = Account(phrase: phrase24, network: .mainnetBeta, derivablePath: DerivablePath(
+        let account24 = HotAccount(phrase: phrase24, network: .mainnetBeta, derivablePath: DerivablePath(
             type: .bip32Deprecated,
             walletIndex: 0,
             accountIndex: 0

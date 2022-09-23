@@ -11,7 +11,7 @@ class TokenInfoTests: XCTestCase {
         let wallet: TestsWallet = .devnet
         let tokenProvider = try! TokenListProvider(path: getFileFrom("TokenInfo/mainnet-beta.tokens"))
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), tokenProvider: tokenProvider)
-        account = Account(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
     }
     
     func testCloseAccountInstruction() {

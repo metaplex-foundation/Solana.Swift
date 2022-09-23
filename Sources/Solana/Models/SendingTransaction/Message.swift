@@ -6,7 +6,7 @@ extension Transaction {
         private static let RECENT_BLOCK_HASH_LENGTH = 32
 
         // MARK: - Properties
-        var accountKeys: [Account.Meta]
+        var accountKeys: [AccountMeta]
         var recentBlockhash: String
         //        var instructions: [Transaction.Instruction]
         var programInstructions: [TransactionInstruction]

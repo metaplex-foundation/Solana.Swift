@@ -17,8 +17,8 @@ public struct SystemProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
-                Account.Meta(publicKey: newPubkey, isSigner: true, isWritable: true)
+                AccountMeta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
+                AccountMeta(publicKey: newPubkey, isSigner: true, isWritable: true)
             ],
             programId: PublicKey.systemProgramId,
             data: [Index.create, lamports, space, programPubkey]
@@ -33,8 +33,8 @@ public struct SystemProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
-                Account.Meta(publicKey: toPublicKey, isSigner: false, isWritable: true)
+                AccountMeta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
+                AccountMeta(publicKey: toPublicKey, isSigner: false, isWritable: true)
             ],
             programId: PublicKey.programId,
             data: [Index.transfer, lamports]
@@ -46,7 +46,7 @@ public struct SystemProgram {
     ) -> TransactionInstruction {
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: destinationAccount, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: destinationAccount, isSigner: false, isWritable: false)
             ],
             programId: .ownerValidationProgramId,
             data: [PublicKey.programId]

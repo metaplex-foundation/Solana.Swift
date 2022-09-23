@@ -26,8 +26,8 @@ public struct TokenProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: PublicKey.sysvarRent, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: mint, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: PublicKey.sysvarRent, isSigner: false, isWritable: false)
             ],
             programId: tokenProgramId,
             data: [
@@ -49,10 +49,10 @@ public struct TokenProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: account, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: mint, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: owner, isSigner: false, isWritable: false),
-                Account.Meta(publicKey: PublicKey.sysvarRent, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: account, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: mint, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: owner, isSigner: false, isWritable: false),
+                AccountMeta(publicKey: PublicKey.sysvarRent, isSigner: false, isWritable: false)
             ],
             programId: programId,
             data: [Index.initializeAccount]
@@ -68,9 +68,9 @@ public struct TokenProgram {
     ) -> TransactionInstruction {
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: source, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: destination, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: owner, isSigner: true, isWritable: true)
+                AccountMeta(publicKey: source, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: destination, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: owner, isSigner: true, isWritable: true)
             ],
             programId: tokenProgramId,
             data: [Index.transfer, amount]
@@ -86,22 +86,22 @@ public struct TokenProgram {
         amount: UInt64
     ) -> TransactionInstruction {
         var keys = [
-            Account.Meta(publicKey: account, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: delegate, isSigner: false, isWritable: false)
+            AccountMeta(publicKey: account, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: delegate, isSigner: false, isWritable: false)
         ]
 
         if multiSigners.isEmpty {
             keys.append(
-                Account.Meta(publicKey: owner, isSigner: true, isWritable: false)
+                AccountMeta(publicKey: owner, isSigner: true, isWritable: false)
             )
         } else {
             keys.append(
-                Account.Meta(publicKey: owner, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: owner, isSigner: false, isWritable: false)
             )
 
             for signer in multiSigners {
                 keys.append(
-                    Account.Meta(publicKey: signer.publicKey, isSigner: true, isWritable: false)
+                    AccountMeta(publicKey: signer.publicKey, isSigner: true, isWritable: false)
                 )
             }
         }
@@ -123,9 +123,9 @@ public struct TokenProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: mint, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: destination, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: authority, isSigner: true, isWritable: false)
+                AccountMeta(publicKey: mint, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: destination, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: authority, isSigner: true, isWritable: false)
             ],
             programId: tokenProgramId,
             data: [Index.mintTo, amount]
@@ -141,9 +141,9 @@ public struct TokenProgram {
 
         TransactionInstruction(
             keys: [
-                Account.Meta(publicKey: account, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: destination, isSigner: false, isWritable: true),
-                Account.Meta(publicKey: owner, isSigner: false, isWritable: false)
+                AccountMeta(publicKey: account, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: destination, isSigner: false, isWritable: true),
+                AccountMeta(publicKey: owner, isSigner: false, isWritable: false)
             ],
             programId: tokenProgramId,
             data: [Index.closeAccount]
@@ -161,9 +161,9 @@ public struct TokenProgram {
         decimals: Decimals
     ) -> TransactionInstruction {
         var keys = [
-            Account.Meta(publicKey: source, isSigner: false, isWritable: true),
-            Account.Meta(publicKey: mint, isSigner: false, isWritable: false),
-            Account.Meta(publicKey: destination, isSigner: false, isWritable: true)
+            AccountMeta(publicKey: source, isSigner: false, isWritable: true),
+            AccountMeta(publicKey: mint, isSigner: false, isWritable: false),
+            AccountMeta(publicKey: destination, isSigner: false, isWritable: true)
         ]
 
         if multiSigners.count == 0 {
