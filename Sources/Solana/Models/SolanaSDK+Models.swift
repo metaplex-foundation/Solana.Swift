@@ -119,6 +119,11 @@ public struct ProgramAccount<T: BufferLayout>: Decodable {
     public let pubkey: String
 }
 
+public struct ProgramAccountPureData: Decodable {
+    public let publicKey: String
+    public let account: BufferInfoPureData
+}
+
 public struct BufferInfoJson<T: Decodable>: Decodable {
     public let data: T?
     public let lamports: Lamports
