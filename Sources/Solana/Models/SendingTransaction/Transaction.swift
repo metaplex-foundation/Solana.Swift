@@ -3,9 +3,10 @@ import TweetNacl
 
 public struct Transaction {
     private var signatures = [Signature]()
-    let feePayer: PublicKey
-    var instructions = [TransactionInstruction]()
-    let recentBlockhash: String
+    private let feePayer: PublicKey
+    private let recentBlockhash: String
+
+    public private(set) var instructions = [TransactionInstruction]()
     //        TODO: nonceInfo
 
     public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
