@@ -38,7 +38,7 @@ public extension Bignum {
     /// Initialise a BInt from a hexadecimal string
     ///
     /// - Parameter hex: the hexadecimal string to convert to a big integer
-    init(hex: String) {
+    init?(hex: String) {
         self.init(number: hex.lowercased(), withBase: 16)
     }
 

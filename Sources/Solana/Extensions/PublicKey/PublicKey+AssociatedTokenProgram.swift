@@ -58,7 +58,9 @@ extension PublicKey {
 
         // hash it
         let hash = sha256(data: data)
-        let publicKeyBytes = Bignum(number: hash.hexString, withBase: 16).data
+        guard let publicKeyBytes = Bignum(number: hash.hexString, withBase: 16)?.data else {
+            return .failure(SolanaError.other("Can not get Bytes"))
+        }
 
         // check it
         if isOnCurve(publicKeyBytes: publicKeyBytes).toBool() {

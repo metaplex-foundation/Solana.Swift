@@ -36,7 +36,7 @@ public struct SystemProgram {
                 AccountMeta(publicKey: fromPublicKey, isSigner: true, isWritable: true),
                 AccountMeta(publicKey: toPublicKey, isSigner: false, isWritable: true)
             ],
-            programId: PublicKey.programId,
+            programId: PublicKey.systemProgramId,
             data: [Index.transfer, lamports]
         )
     }
@@ -49,7 +49,7 @@ public struct SystemProgram {
                 AccountMeta(publicKey: destinationAccount, isSigner: false, isWritable: false)
             ],
             programId: .ownerValidationProgramId,
-            data: [PublicKey.programId]
+            data: [PublicKey.systemProgramId]
         )
     }
 }

@@ -222,7 +222,9 @@ public class Keychain: NSObject {
         let digestArray = hmacSha512(message: data, key: chCode)!.bytes
 
 		let factor = BInt(data: Data(digestArray[0..<32]))
-		let curveOrder = BInt(hex: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
+        guard let curveOrder = BInt(hex: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141") else {
+            throw KeyDerivationError.publicKeyNil
+        }
 
         let derivedKeychain = Keychain(hmac: digestArray)
 

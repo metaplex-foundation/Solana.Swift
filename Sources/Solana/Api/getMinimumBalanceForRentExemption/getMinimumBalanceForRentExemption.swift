@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Api {
-    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .recent, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
+    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .processed, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
         router.request(parameters: [dataLength, RequestConfiguration(commitment: commitment)]) { (result: Result<UInt64, Error>) in
             switch result {
             case .success(let array):
@@ -16,7 +16,7 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
-    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .recent) async throws -> UInt64 {
+    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .processed) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
             self.getMinimumBalanceForRentExemption(dataLength: dataLength, commitment: commitment, onComplete: c.resume(with:))
         }
