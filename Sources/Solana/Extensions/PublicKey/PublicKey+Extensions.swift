@@ -10,4 +10,5 @@ public extension PublicKey {
     static let ownerValidationProgramId = PublicKey(string: "4MNPdKu9wFMvEeZBMt3Eipfs5ovVWTJb31pEXDJAAxX5")!
     static let swapHostFeeAddress = PublicKey(string: "AHLwq66Cg3CuDJTFtwjPfwjJhifiv6rFwApQNKgX57Yg")!
     static let splAssociatedTokenAccountProgramId = PublicKey(string: "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL")!
+    static let sysvarInstructionsPublicKey = PublicKey(string: "Sysvar1nstructions1111111111111111111111111")!
 }

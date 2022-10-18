@@ -7,7 +7,6 @@
 
 import Foundation
 import Solana
-import XCTest
 
 final class NetworkingRouterMock: SolanaRouter {
     
@@ -43,7 +42,9 @@ final class NetworkingRouterMock: SolanaRouter {
             onComplete(.failure(error))
         }
     }
-    
+
+    @available(iOS 13.0, *)
+    @available(macOS 10.15, *)
     func request<T>(method: HTTPMethod, bcMethod: String, parameters: [Encodable?]) async throws -> T where T : Decodable {
         try await withCheckedThrowingContinuation { c in
             self.request(method: method, bcMethod: bcMethod, parameters: parameters, onComplete: c.resume(with:))
