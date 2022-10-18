@@ -2,7 +2,7 @@ import Foundation
 import Beet
 
 public struct TransactionInstruction: Decodable {
-    public let keys: [AccountMeta]
+    public private(set) var keys: [AccountMeta]
     public let programId: PublicKey
     public let data: [UInt8]
 
@@ -16,5 +16,13 @@ public struct TransactionInstruction: Decodable {
         self.keys = keys
         self.programId = programId
         self.data = data
+    }
+
+    public mutating func append(_ key: AccountMeta) {
+        keys.append(key)
+    }
+
+    public mutating func append(_ keys: [AccountMeta]) {
+        self.keys.append(contentsOf: keys)
     }
 }
