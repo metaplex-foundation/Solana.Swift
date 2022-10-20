@@ -42,6 +42,25 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+@available(macOS 10.15, *)
+public extension Action {
+    func serializeTransaction(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account]
+    ) async throws -> String {
+        try await withCheckedThrowingContinuation { c in
+            self.serializeTransaction(
+                instructions: instructions,
+                recentBlockhash: recentBlockhash,
+                signers: signers,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct SerializeTransaction: ActionTemplate {
         public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil) {

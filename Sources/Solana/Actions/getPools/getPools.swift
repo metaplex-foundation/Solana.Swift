@@ -176,6 +176,21 @@ extension Array {
     }
 }
 
+@available(iOS 13.0, *)
+@available(macOS 10.15, *)
+public extension Action {
+    func getPools(swapProgramId: String) async throws -> [Pool] {
+        try await withCheckedThrowingContinuation { c in
+            self.getPools(swapProgramId: swapProgramId, onComplete: c.resume(with:))
+        }
+    }
+    func getSwapPools() async throws -> [Pool] {
+        try await withCheckedThrowingContinuation { c in
+            self.getSwapPools(onComplete: c.resume(with:))
+        }
+    }
+}
+
 extension ActionTemplates {
     public struct GetPools: ActionTemplate {
         public init(swapProgramId: String) {
