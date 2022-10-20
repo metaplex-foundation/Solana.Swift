@@ -174,7 +174,8 @@ public class Keychain: NSObject {
 			var temp = indexString
 			if indexString.hasSuffix(BTCKeychainHardenedSymbol) {
 				isHardened = true
-				temp = temp.substring(to: temp.index(temp.endIndex, offsetBy: -1))
+                let to = temp.index(temp.endIndex, offsetBy: -1)
+                temp = String(temp[..<to])
 			}
 			if let index = UInt32(temp) {
 				kc = try kc.derivedKeychain(at: index, hardened: isHardened)
@@ -222,7 +223,9 @@ public class Keychain: NSObject {
         let digestArray = hmacSha512(message: data, key: chCode)!.bytes
 
 		let factor = BInt(data: Data(digestArray[0..<32]))
-		let curveOrder = BInt(hex: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
+        guard let curveOrder = BInt(hex: "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141") else {
+            throw KeyDerivationError.publicKeyNil
+        }
 
         let derivedKeychain = Keychain(hmac: digestArray)
 

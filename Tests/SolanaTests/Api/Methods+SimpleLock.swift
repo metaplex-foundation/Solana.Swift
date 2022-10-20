@@ -347,7 +347,7 @@ extension Api {
         return result
     }
 
-    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .recent) -> Result<UInt64, Error>? {
+    func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .processed) -> Result<UInt64, Error>? {
         var result: Result<UInt64, Error>?
         let lock = RunLoopSimpleLock()
         lock.dispatch { [weak self] in

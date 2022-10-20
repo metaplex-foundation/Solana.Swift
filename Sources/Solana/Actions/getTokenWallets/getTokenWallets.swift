@@ -4,7 +4,7 @@ import Beet
 extension Action {
     public func getTokenWallets(account: String, onComplete: @escaping ((Result<[Wallet], Error>) -> Void)) {
 
-        let configs = RequestConfiguration(commitment: .recent, encoding: "jsonParsed")
+        let configs = RequestConfiguration(commitment: .processed, encoding: "jsonParsed")
 
         ContResult.init { cb in
             self.api.getTokenAccountsByOwner(pubkey: account, programId: PublicKey.tokenProgramId.base58EncodedString, configs: configs )

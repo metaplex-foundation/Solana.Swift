@@ -16,8 +16,9 @@ public extension Bignum {
     var data: Data {
 		let n = limbs.count
 		var data = Data(count: n * 8)
-		data.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt8>) -> Void in
-			var p = ptr
+		data.withUnsafeMutableBytes { (rawMutableBufferPointer) -> Void in
+            let ptr = rawMutableBufferPointer.bindMemory(to: UInt8.self)
+            var p = ptr.baseAddress!
 			for i in (0..<n).reversed() {
 				for j in (0..<8).reversed() {
 					p.pointee = UInt8((limbs[i] >> UInt64(j*8)) & 0xff)
@@ -38,7 +39,7 @@ public extension Bignum {
     /// Initialise a BInt from a hexadecimal string
     ///
     /// - Parameter hex: the hexadecimal string to convert to a big integer
-    init(hex: String) {
+    init?(hex: String) {
         self.init(number: hex.lowercased(), withBase: 16)
     }
 
@@ -88,7 +89,8 @@ extension Data {
 
     /// Hexadecimal string representation of the underlying data
     var hexString: String {
-        return withUnsafeBytes { (buf: UnsafePointer<UInt8>) -> String in
+        return withUnsafeBytes { (rawBufferPointer) -> String in
+            let buf = rawBufferPointer.bindMemory(to: UInt8.self)
             let charA = UInt8(UnicodeScalar("a").value)
             let char0 = UInt8(UnicodeScalar("0").value)
 

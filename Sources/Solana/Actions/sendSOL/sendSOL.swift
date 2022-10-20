@@ -34,7 +34,7 @@ extension Action {
                     return
                 }
 
-                guard info?.owner == PublicKey.programId.base58EncodedString else {
+                guard info?.owner == PublicKey.systemProgramId.base58EncodedString else {
                     onComplete(.failure(SolanaError.other("Invalid account info")))
                     return
                 }
