@@ -83,6 +83,49 @@ extension Action {
         .run(onComplete)
     }
 }
+
+@available(iOS 13.0, *)
+@available(macOS 10.15, *)
+public extension Action {
+    func serializeAndSendWithFee(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account],
+        maxAttempts: Int = 3,
+        numberOfTries: Int = 0
+    ) async throws -> String {
+        try await withCheckedThrowingContinuation { c in
+            self.serializeAndSendWithFee(
+                instructions: instructions,
+                recentBlockhash: recentBlockhash,
+                signers: signers,
+                maxAttempts: maxAttempts,
+                numberOfTries: numberOfTries,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+
+    func serializeAndSendWithFeeSimulation(
+        instructions: [TransactionInstruction],
+        recentBlockhash: String? = nil,
+        signers: [Account],
+        maxAttempts: Int = 3,
+        numberOfTries: Int = 0
+    ) async throws -> String {
+        try await withCheckedThrowingContinuation { c in
+            self.serializeAndSendWithFeeSimulation(
+                instructions: instructions,
+                recentBlockhash: recentBlockhash,
+                signers: signers,
+                maxAttempts: maxAttempts,
+                numberOfTries: numberOfTries,
+                onComplete: c.resume(with:)
+            )
+        }
+    }
+}
+
 extension Action {
     fileprivate func retrySimulateOrError(instructions: [TransactionInstruction],
                                           recentBlockhash: String? = nil,

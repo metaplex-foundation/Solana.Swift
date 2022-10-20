@@ -256,14 +256,32 @@ We support 12.
 
 ### Example
 
-Create an account token
+###  Create an account token
 
+Using await / async 
+
+```swift
+let account: (signature: String, newPubkey: String)? = try await solana.action.createTokenAccount( mintAddress: mintAddress, payer: account)
+```
+
+Using callback 
 ```swift
 solana.action.createTokenAccount( mintAddress: mintAddress) { result in
 // process
 }
 ```
-Sending sol
+### Sending sol
+
+Using await / async 
+
+```swift
+let transactionId = try await solana.action.sendSOL(
+    to: toPublicKey,
+    from: account,
+    amount: balance/10
+)
+```
+
 ```swift
 let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 let transactionId = try! solana.action.sendSOL(

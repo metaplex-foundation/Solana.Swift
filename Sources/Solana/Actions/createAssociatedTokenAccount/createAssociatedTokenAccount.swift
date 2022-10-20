@@ -88,6 +88,30 @@ extension Action {
     }
 }
 
+@available(iOS 13.0, *)
+@available(macOS 10.15, *)
+public extension Action {
+    func getOrCreateAssociatedTokenAccount(
+        owner: PublicKey,
+        tokenMint: PublicKey,
+        payer: Account
+    ) async throws -> (transactionId: TransactionID?, associatedTokenAddress: PublicKey) {
+        try await withCheckedThrowingContinuation { c in
+            self.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint, payer: payer, onComplete: c.resume(with:))
+        }
+    }
+
+    func createAssociatedTokenAccount(
+        for owner: PublicKey,
+        tokenMint: PublicKey,
+        payer: Account
+    ) async throws -> TransactionID {
+        try await withCheckedThrowingContinuation { c in
+            self.createAssociatedTokenAccount(for: owner, tokenMint: tokenMint, payer: payer, onComplete: c.resume(with:))
+        }
+    }
+}
+
 extension ActionTemplates {
 
     public struct CreateAssociatedTokenAccountAction: ActionTemplate {
