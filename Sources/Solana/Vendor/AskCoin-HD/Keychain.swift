@@ -17,7 +17,7 @@ let BTCMasterKeychainPath = "m"
 let BTCKeychainHardenedSymbol = "'"
 let BTCKeychainPathSeparator = "/"
 
-public class Keychain: NSObject {
+class Keychain: NSObject {
 
 	enum KeyDerivationError: Error {
 		case indexInvalid
