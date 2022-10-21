@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns the genesis hash
+    /// 
+    /// - Parameter onComplete: a Hash as base-58 encoded string
     func getGenesisHash(onComplete: @escaping(Result<String, Error>) -> Void) {
         router.request { (result: Result<String, Error>) in
             switch result {
@@ -16,6 +19,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the genesis hash
+    /// 
+    /// - Returns: a Hash as base-58 encoded string
     func getGenesisHash() async throws -> String {
         try await withCheckedThrowingContinuation { c in
             self.getGenesisHash(onComplete: c.resume(with:))
