@@ -1,6 +1,11 @@
 import Foundation
 
 public extension Api {
+    /// Returns transaction details for a confirmed transaction
+    /// 
+    /// - Parameters:
+    ///   - transactionSignature: transaction signature as base-58 encoded string
+    ///   - onComplete: A result type of transaction information (signature: String, slot: UInt64?, err: TransactionError? memo: String?)
     func getConfirmedTransaction(transactionSignature: String, onComplete: @escaping (Result<TransactionInfo, Error>) -> Void) {
         router.request(parameters: [transactionSignature, "jsonParsed"]) { (result: Result<TransactionInfo, Error>) in
             switch result {
@@ -16,6 +21,11 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns transaction details for a confirmed transaction
+    /// 
+    /// - Parameters:
+    ///   - transactionSignature: transaction signature as base-58 encoded string
+    /// - Returns: A result type of transaction information (signature: String, slot: UInt64?, err: TransactionError? memo: String?)
     func getConfirmedTransaction(transactionSignature: String) async throws -> TransactionInfo {
         try await withCheckedThrowingContinuation { c in
             self.getConfirmedTransaction(transactionSignature: transactionSignature, onComplete: c.resume(with:))
