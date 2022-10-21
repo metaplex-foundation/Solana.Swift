@@ -1,6 +1,10 @@
 import Foundation
 
 public extension Api {
+    /// Returns a recent block hash from the ledger, and a fee schedule that can be used to compute the cost of submitting a transaction using it.
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - onComplete: The result of a Hash as base-58 encoded string
     func getRecentBlockhash(commitment: Commitment? = nil, onComplete: @escaping(Result<String, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<Fee?>, Error>) in
             switch result {
@@ -24,6 +28,10 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns a recent block hash from the ledger, and a fee schedule that can be used to compute the cost of submitting a transaction using it.
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    /// - Returns: A Hash as base-58 encoded string
     func getRecentBlockhash(commitment: Commitment? = nil) async throws -> String {
         try await withCheckedThrowingContinuation { c in
             self.getRecentBlockhash(commitment: commitment, onComplete: c.resume(with:))
