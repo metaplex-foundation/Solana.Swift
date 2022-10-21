@@ -5,7 +5,7 @@ public extension Api {
     ///
     /// - Parameters:
     ///     - account: PublicKey of account to query, as base-58 encoded string
-    ///     - commitment (Optional): The commitment describes how finalized a block is at that point in time.
+    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
     ///     - onComplete : The result object of UInt64 balance of the account of provided PublicKey
     func getBalance(account: String, commitment: Commitment? = nil, onComplete: @escaping(Result<UInt64, Error>) -> Void) {
         router.request(parameters: [account, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<UInt64?>, Error>) in
