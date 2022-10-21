@@ -1,6 +1,11 @@
 import Foundation
 
 public extension Api {
+    /// Returns the statuses of a list of signatures. Unless the searchTransactionHistory configuration parameter is included, this method only searches the recent status cache of signatures, which retains statuses for all active slots plus MAX_RECENT_BLOCKHASHES rooted slots.
+    /// - Parameters:
+    ///   - pubkeys: 
+    ///   - configs: 
+    ///   - onComplete: 
     func getSignatureStatuses(pubkeys: [String], configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[SignatureStatus?], Error>) -> Void) {
         router.request(parameters: [pubkeys, configs]) { (result: Result<Rpc<[SignatureStatus?]?>, Error>) in
             switch result {
