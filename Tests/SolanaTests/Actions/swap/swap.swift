@@ -10,7 +10,7 @@ class swap: XCTestCase {
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
     /*func testSwapToken() {

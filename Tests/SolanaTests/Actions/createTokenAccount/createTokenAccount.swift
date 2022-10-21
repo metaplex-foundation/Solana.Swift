@@ -12,7 +12,7 @@ class createTokenAccount: XCTestCase {
         let wallet: TestsWallet = .devnet
         networkRouterMock = NetworkingRouterMock()
         solana = Solana(router: networkRouterMock)
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
     override func tearDownWithError() throws {
