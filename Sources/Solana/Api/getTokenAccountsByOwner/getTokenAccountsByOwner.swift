@@ -1,6 +1,14 @@
 import Foundation
 
 public extension Api {
+    /// Returns all SPL Token accounts by approved Delegate.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: Pubkey of account delegate to query, as base-58 encoded string
+    ///   - mint: Pubkey of the specific token Mint to limit accounts to, as base-58 encoded string
+    ///   - programId: Pubkey of the Token program that owns the accounts, as base-58 encoded string
+    ///   - configs: Configuration object
+    ///   - onComplete: The result will be a result object of arrray TokenAccount<AccountInfo>
     func getTokenAccountsByOwner<T: Decodable>(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[T], Error>) -> Void) {
         var parameterMap = [String: String]()
         if let mint = mint {
@@ -29,6 +37,14 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns all SPL Token accounts by approved Delegate.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: Pubkey of account delegate to query, as base-58 encoded string
+    ///   - mint: Pubkey of the specific token Mint to limit accounts to, as base-58 encoded string
+    ///   - programId: Pubkey of the Token program that owns the accounts, as base-58 encoded string
+    ///   - configs: Configuration object
+    /// - Returns: And arrray of TokenAccount<AccountInfo>
     func getTokenAccountsByOwner<T: Decodable>(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) async throws -> [T] {
         try await withCheckedThrowingContinuation { c in
             self.getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs, onComplete: c.resume(with:))
