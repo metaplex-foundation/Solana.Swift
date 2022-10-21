@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns the specific inflation values for the current epoch
+    /// 
+    /// - Parameter onComplete: The result object of InflationRate (epoch: Float64 foundation: Float64,  total: Float64, validator: Float64)
     func getInflationRate(onComplete: @escaping(Result<InflationRate, Error>) -> Void) {
         router.request { (result: Result<InflationRate, Error>) in
             switch result {
@@ -16,6 +19,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the specific inflation values for the current epoch
+    /// 
+    /// - Returns: The result object of InflationRate (epoch: Float64 foundation: Float64,  total: Float64, validator: Float64)
     func getInflationRate() async throws -> InflationRate {
         try await withCheckedThrowingContinuation { c in
             self.getInflationRate(onComplete: c.resume(with:))
