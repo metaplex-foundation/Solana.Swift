@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns the slot of the lowest confirmed block that has not been purged from the ledger
+    /// 
+    /// - Parameter onComplete: Result Object of UInt64 which is the slot number
     func getFirstAvailableBlock(onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         router.request { (result: Result<UInt64, Error>) in
             switch result {
@@ -16,6 +19,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+     /// Returns the slot of the lowest confirmed block that has not been purged from the ledger
+    /// 
+    /// - Returns: Result Object of UInt64 which is the slot number
     func getFirstAvailableBlock() async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
             self.getFirstAvailableBlock(onComplete: c.resume(with:))
