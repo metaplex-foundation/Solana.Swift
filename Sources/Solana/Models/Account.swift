@@ -16,7 +16,7 @@ public struct HotAccount: Codable, Hashable, Account {
         return data
     }
     
-    public init?(phrase: [String] = [], network: Network, derivablePath: DerivablePath? = nil) {
+    public init?(phrase: [String] = [], derivablePath: DerivablePath? = nil) {
         let mnemonic: Mnemonic
         var phrase = phrase.filter {!$0.isEmpty}
         if !phrase.isEmpty,
@@ -32,7 +32,7 @@ public struct HotAccount: Codable, Hashable, Account {
 
         switch derivablePath.type {
         case .bip32Deprecated:
-            guard let keychain = try? Keychain(seedString: phrase.joined(separator: " "), network: network.cluster)  else {
+            guard let keychain = try? Keychain(seedString: phrase.joined(separator: " "))  else {
                 return nil
             }
             guard let seed = try? keychain.derivedKeychain(at: derivablePath.rawValue).privateKey else {

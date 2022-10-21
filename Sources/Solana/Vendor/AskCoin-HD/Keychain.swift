@@ -17,7 +17,7 @@ let BTCMasterKeychainPath = "m"
 let BTCKeychainHardenedSymbol = "'"
 let BTCKeychainPathSeparator = "/"
 
-public class Keychain: NSObject {
+class Keychain: NSObject {
 
 	enum KeyDerivationError: Error {
 		case indexInvalid
@@ -32,8 +32,7 @@ public class Keychain: NSObject {
 	private var chainCode: Data?
 
 	fileprivate var isMasterKey = false
-    var isTestnet = false
-
+    
 	var depth: UInt8 = 0
 	var hardened = false
 	var index: UInt32 = 0
@@ -42,7 +41,7 @@ public class Keychain: NSObject {
 
 	}
 
-    public convenience init?(seedString: String, network: String) throws {
+    public convenience init?(seedString: String) throws {
         guard let seedData = Mnemonic(phrase: seedString.components(separatedBy: " ")) else {
             return nil
         }
@@ -54,7 +53,6 @@ public class Keychain: NSObject {
         }
         self.init(hmac: hmac.bytes)
         isMasterKey = true
-        isTestnet = network == "devnet" || network == "testnet"
 	}
 
 	public init(hmac: [UInt8]) {
@@ -97,7 +95,7 @@ public class Keychain: NSObject {
 
 		var toReturn = Data()
 
-		let version = !isTestnet ? BTCKeychainMainnetPrivateVersion : BTCKeychainTestnetPrivateVersion
+		let version = BTCKeychainMainnetPrivateVersion
 		toReturn += self.extendedKeyPrefix(with: version)
 
 		toReturn += UInt8(0).ask_hexToData()
@@ -121,7 +119,7 @@ public class Keychain: NSObject {
 
 		var toReturn = Data()
 
-		let version = !isTestnet ? BTCKeychainMainnetPublicVersion : BTCKeychainTestnetPublicVersion
+		let version = BTCKeychainMainnetPublicVersion
 		toReturn += self.extendedKeyPrefix(with: version)
 
 		if let pubkey = self.publicKey {

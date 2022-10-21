@@ -93,21 +93,21 @@ public struct HotAccount:  Account {
 Create Hot Account.
 
 ```swift
-let account = HotAccount(network: .mainnetBeta)
+let account = HotAccount()
 ```
 
 Create Hot Account from the seed phrase.
 
 ```swift
 let phrase12 = "miracle pizza supply useful steak border same again youth silver access hundred".components(separatedBy: " ")
-let account12 = HotAccount(phrase: phrase12, network: .mainnetBeta)
+let account12 = HotAccount(phrase: phrase12)
 ```
 
 Create a Hot Account from bip32Deprecated("m/501'") seed phrase. Yes, we support Wallet Index and several accounts from the same Mnemonic. This is helpful for wallet creation. 
 
 ```swift
 let phrase24 = "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side".components(separatedBy: " ")
-let account24 = HotAccount(phrase: phrase24, network: .mainnetBeta, derivablePath: DerivablePath( 
+let account24 = HotAccount(phrase: phrase24, derivablePath: DerivablePath( 
         type: .bip32Deprecated,
         walletIndex: 0,
         accountIndex: 0
@@ -125,7 +125,7 @@ To create a new seed phrase only use `Mnemonic()`. It will create a 256 strength
 
 ```swift
 let phrase= Mnemonic())
-let account = HotAccount(phrase: phrase, network: .mainnetBeta)
+let account = HotAccount(phrase: phrase)
 ```
 
 ## RPC API calls

@@ -119,19 +119,19 @@ class PublicKeyTests: XCTestCase {
     func testRestoreAccountFromSeedPhrase() {
         let phrase12 = "miracle pizza supply useful steak border same again youth silver access hundred"
             .components(separatedBy: " ")
-        let account12 = HotAccount(phrase: phrase12, network: .mainnetBeta)!
+        let account12 = HotAccount(phrase: phrase12)!
         XCTAssertEqual(account12.publicKey.base58EncodedString, "HnXJX1Bvps8piQwDYEYC6oea9GEkvQvahvRj3c97X9xr")
         
         let phrase24 = "budget resource fluid mutual ankle salt demise long burst sting doctor ozone risk magic wrap clap post pole jungle great update air interest abandon"
             .components(separatedBy: " ")
-        let account24 = HotAccount(phrase: phrase24, network: .mainnetBeta)!
+        let account24 = HotAccount(phrase: phrase24)!
         XCTAssertEqual(account24.publicKey.base58EncodedString, "9avcmC97zLPwHKXiDz6GpXyjvPn9VcN3ggqM5gsRnjvv")
     }
     
     func testRestoreAccountFromSeedPhraseBip32Deprecated() {
         let phrase24 = "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side"
             .components(separatedBy: " ")
-        let account24 = HotAccount(phrase: phrase24, network: .mainnetBeta, derivablePath: DerivablePath(
+        let account24 = HotAccount(phrase: phrase24, derivablePath: DerivablePath(
             type: .bip32Deprecated,
             walletIndex: 0,
             accountIndex: 0

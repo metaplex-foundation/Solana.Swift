@@ -13,7 +13,7 @@ class createAssociatedTokenAccountAsync: XCTestCase {
         try super.setUpWithError()
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: .devnetSolana))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "), network: endpoint.network)!
+        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testGetOrCreateAssociatedTokenAccount() async throws {
