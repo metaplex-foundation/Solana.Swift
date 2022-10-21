@@ -1,6 +1,8 @@
 import Foundation
 
 public extension Api {
+    /// Returns the 20 largest accounts, by lamport balance (results may be cached up to two hours)
+    /// - Parameter onComplete: The Result object of an array of LargestAccount (lamports: Lamports, address: String)
     func getLargestAccounts(onComplete: @escaping(Result<[LargestAccount], Error>) -> Void) {
         router.request { (result: Result<Rpc<[LargestAccount]?>, Error>) in
             switch result {
@@ -20,6 +22,8 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the 20 largest accounts, by lamport balance (results may be cached up to two hours)
+    /// - Returns object of an array of LargestAccount (lamports: Lamports, address: String)
     func getLargestAccounts() async throws -> [LargestAccount] {
         try await withCheckedThrowingContinuation { c in
             self.getLargestAccounts(onComplete: c.resume(with:))
