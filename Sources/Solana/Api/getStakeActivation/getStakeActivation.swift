@@ -27,7 +27,7 @@ public extension Api {
     /// - Parameters:
     ///   - stakeAccount: Publickey of stake account to query, as base-58 encoded string
     ///   - configs: Configuration object
-    /// - Returns: The result object of StakeActivation(active: UInt64, inactive: UInt64, state: String)
+    /// - Returns: A StakeActivation(active: UInt64, inactive: UInt64, state: String)
     func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil) async throws -> StakeActivation {
         try await withCheckedThrowingContinuation { c in
             self.getStakeActivation(stakeAccount: stakeAccount, configs: configs, onComplete: c.resume(with:))
