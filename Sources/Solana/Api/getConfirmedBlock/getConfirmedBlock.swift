@@ -5,8 +5,8 @@ public extension Api {
     /// 
     /// - Parameters:
     ///   - slot: slot, as u64 integer
-    ///   - encoding: encoding for each returned Transaction, either "json", "jsonParsed", "base58" (slow), "base64".
-    ///   - onComplete: The result type will be a ConfirmedBlock object.
+    ///   - encoding: encoding for each returned Transaction, either "json", "jsonParsed", "base58" (slow), "base64"
+    ///   - onComplete: The result type will be a ConfirmedBlock object
     func getConfirmedBlock(slot: UInt64, encoding: String = "json", onComplete: @escaping(Result<ConfirmedBlock, Error>) -> Void) {
         router.request(parameters: [slot, encoding]) { (result: Result<ConfirmedBlock, Error>)  in
             switch result {
