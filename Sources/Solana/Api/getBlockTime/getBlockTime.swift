@@ -5,13 +5,13 @@ public extension Api {
     /// 
     /// Each validator reports their UTC time to the ledger 
     /// on a regular interval by intermittently adding a timestamp
-    ///  to a Vote for a particular block. A requested block's time 
+    /// to a Vote for a particular block. A requested block's time 
     /// is calculated from the stake-weighted mean of the Vote timestamps
     /// in a set of recent blocks recorded on the ledger.
     /// 
     /// - Parameters:
     ///   - block: block, identified by Slot
-    ///   - onComplete: A Result type of estimated production time, as Date or null (timestamp is not available for this block).
+    ///   - onComplete: A Result type of estimated production time, as `Date` or `nil` (timestamp is not available for this block)
     func getBlockTime(block: UInt64, onComplete: @escaping( (Result<Date?, Error>) -> Void)) {
         router.request(parameters: [block]) { (result: Result<Int64?, Error>) in
             switch result {
