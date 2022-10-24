@@ -6,7 +6,7 @@ public extension Api {
     /// - Parameters:
     ///   - startSlot: start_slot, as u64 integer
     ///   - limit: limit, as u64 integer
-    ///   - onComplete: The result field will be an array of u64 integers listing confirmed blocks starting at start_slot for up to limit blocks, inclusive.
+    ///   - onComplete: The result field will be an array of u64 integers listing confirmed blocks starting at start_slot for up to limit blocks, inclusive
     func getConfirmedBlocksWithLimit(startSlot: UInt64, limit: UInt64, onComplete: @escaping (Result<[UInt64], Error>) -> Void) {
         router.request(parameters: [startSlot, limit]) { (result: Result<[UInt64], Error>) in
             switch result {
