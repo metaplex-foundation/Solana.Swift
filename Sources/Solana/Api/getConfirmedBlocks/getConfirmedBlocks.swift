@@ -6,7 +6,7 @@ public extension Api {
     /// - Parameters:
     ///   - startSlot: start_slot, as u64 integer
     ///   - endSlot: end_slot, as u64 integer
-    ///   - onComplete: The result field will be an array of u64 integers listing confirmed blocks between start_slot and either end_slot, if provided, or latest confirmed block, inclusive. Max range allowed is 500,000 slots.
+    ///   - onComplete: The result field will be an array of u64 integers listing confirmed blocks between start_slot and either end_slot, if provided, or latest confirmed block, inclusive. Max range allowed is 500,000 slots
     func getConfirmedBlocks(startSlot: UInt64, endSlot: UInt64, onComplete:@escaping (Result<[UInt64], Error>) -> Void) {
         router.request(parameters: [startSlot, endSlot]) { (result: Result<[UInt64], Error>) in
             switch result {
