@@ -35,13 +35,13 @@ public extension Api {
     /// 
     /// Each validator reports their UTC time to the ledger 
     /// on a regular interval by intermittently adding a timestamp
-    ///  to a Vote for a particular block. A requested block's time 
+    /// to a Vote for a particular block. A requested block's time 
     /// is calculated from the stake-weighted mean of the Vote timestamps
     /// in a set of recent blocks recorded on the ledger.
     /// 
     /// - Parameters:
     ///   - block: block, identified by Slot
-    /// - Returns: estimated production time, as Date or null (timestamp is not available for this block).
+    /// - Returns: estimated production time, as `Date` or `nil` (timestamp is not available for this block)
     func getBlockTime(block: UInt64) async throws -> Date? {
         try await withCheckedThrowingContinuation { c in
             self.getBlockTime(block: block, onComplete: c.resume(with:))
