@@ -30,7 +30,7 @@ public extension Api {
     /// 
     /// - Parameters:
     ///   - blockhash: query blockhash as a Base58 encoded string
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: The result will be Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFeeCalculatorForBlockhash(blockhash: String, commitment: Commitment? = nil) async throws -> Fee {
         try await withCheckedThrowingContinuation { c in
