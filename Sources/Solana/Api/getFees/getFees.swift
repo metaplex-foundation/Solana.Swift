@@ -28,7 +28,7 @@ public extension Api {
 @available(macOS 10.15, *)
 public extension Api {
     /// Returns a recent block hash from the ledger, a fee schedule that can be used to
-    ///  compute the cost of submitting a transaction using it, and the last slot in 
+    /// compute the cost of submitting a transaction using it, and the last slot in 
     /// which the blockhash will be valid.
     /// 
     /// - Parameters:
