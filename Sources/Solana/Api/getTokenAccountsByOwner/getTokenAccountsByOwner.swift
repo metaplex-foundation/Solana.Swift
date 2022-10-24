@@ -40,10 +40,10 @@ public extension Api {
     /// Returns all SPL Token accounts by approved Delegate.
     /// 
     /// - Parameters:
-    ///   - pubkey: Pubkey of account delegate to query, as base-58 encoded string
-    ///   - mint: Pubkey of the specific token Mint to limit accounts to, as base-58 encoded string
-    ///   - programId: Pubkey of the Token program that owns the accounts, as base-58 encoded string
-    ///   - configs: Configuration object
+    ///   - pubkey: `PublicKey` of account delegate to query, as base-58 encoded string
+    ///   - mint: `PublicKey` of the specific token Mint to limit accounts to, as base-58 encoded string
+    ///   - programId: `PublicKey` of the Token program that owns the accounts, as base-58 encoded string
+    ///   - configs: `RequestConfiguration` object
     /// - Returns: And arrray of TokenAccount<AccountInfo>
     func getTokenAccountsByOwner<T: Decodable>(pubkey: String, mint: String? = nil, programId: String? = nil, configs: RequestConfiguration? = nil) async throws -> [T] {
         try await withCheckedThrowingContinuation { c in
