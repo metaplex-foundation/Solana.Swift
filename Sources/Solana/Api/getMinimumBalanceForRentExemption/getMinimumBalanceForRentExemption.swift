@@ -26,7 +26,7 @@ public extension Api {
     /// 
     /// - Parameters:
     ///   - dataLength: account data length
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: The Result type of UInt64 minimum lamports required in account
     func getMinimumBalanceForRentExemption(dataLength: UInt64, commitment: Commitment? = .processed) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
