@@ -72,11 +72,11 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
-    /// Returns all information associated with the account of provided Publickey
+    /// Returns all information associated with the account of provided `PublicKey`
     /// 
     /// - Parameters:
-    ///   - account: Publickey of account to query, as base-58 encoded string
-    /// - Returns: BufferInfoPureData of the account of provided PublicKey. Fails if empty
+    ///   - account: `PublicKey` of account to query, as base-58 encoded string
+    /// - Returns: `BufferInfoPureData` of the account of provided `PublicKey`. Fails if empty
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type = T.self) async throws -> BufferInfo<T> {
         try await withCheckedThrowingContinuation { c in
             self.getAccountInfo(account: account, decodedTo: decodedTo, onComplete: c.resume(with:))
