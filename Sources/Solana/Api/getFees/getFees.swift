@@ -6,7 +6,7 @@ public extension Api {
     /// which the blockhash will be valid.
     /// 
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     ///   - onComplete: The result will be Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFees(commitment: Commitment? = nil, onComplete: @escaping (Result<Fee, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<Fee?>, Error>) in
