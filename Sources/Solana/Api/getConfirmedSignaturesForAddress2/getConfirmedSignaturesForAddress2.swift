@@ -8,7 +8,7 @@ public extension Api {
     /// - Parameters:
     ///   - account: account address as base-58 encoded string
     ///   - configs: RequestConfiguration object 
-    ///   - onComplete: The result type will be an array of transaction signature information, ordered from newest to oldest transaction.
+    ///   - onComplete: The result type will be an array of transaction signature information, ordered from newest to oldest transaction
     func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[SignatureInfo], Error>) -> Void) {
         router.request(parameters: [account, configs]) { (result: Result<[SignatureInfo], Error>) in
             switch result {
