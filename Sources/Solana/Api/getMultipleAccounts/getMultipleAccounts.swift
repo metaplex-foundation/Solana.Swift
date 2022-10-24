@@ -32,9 +32,9 @@ public extension Api {
     /// Returns the account information for a list of PublicKey.
     /// 
     /// - Parameters:
-    ///   - pubkeys: An array of Pubkeys to query, as base-58 encoded strings (up to a maximum of 100).
+    ///   - pubkeys: An array of Pubkeys to query, as base-58 encoded strings (up to a maximum of 100)
     ///   - decodedTo: Object from which the data value will be mapped. Must be BufferLayout implementation
-    /// - Returns: The result object of Arrays of BufferInfo<T>. Where T is the decodedTo object. 
+    /// - Returns: The result object of Arrays of BufferInfo<T>. Where T is the decodedTo object
     func getMultipleAccounts<T: BufferLayout>(pubkeys: [String], decodedTo: T.Type) async throws -> [BufferInfo<T>?] {
         try await withCheckedThrowingContinuation { c in
             self.getMultipleAccounts(pubkeys: pubkeys, decodedTo: decodedTo, onComplete: c.resume(with:))
