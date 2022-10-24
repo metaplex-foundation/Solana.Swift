@@ -27,7 +27,7 @@ public extension Api {
     /// - Parameters:
     ///   - startSlot: start_slot, as u64 integer
     ///   - endSlot: end_slot, as u64 integer
-    /// - Returns: will be an array of u64 integers listing confirmed blocks between start_slot and either end_slot, if provided, or latest confirmed block, inclusive. Max range allowed is 500,000 slots.
+    /// - Returns: will be an array of u64 integers listing confirmed blocks between start_slot and either end_slot, if provided, or latest confirmed block, inclusive. Max range allowed is 500,000 slots
     func getConfirmedBlocks(startSlot: UInt64, endSlot: UInt64) async throws -> [UInt64] {
         try await withCheckedThrowingContinuation { c in
             self.getConfirmedBlocks(startSlot: startSlot, endSlot: endSlot, onComplete: c.resume(with:))
