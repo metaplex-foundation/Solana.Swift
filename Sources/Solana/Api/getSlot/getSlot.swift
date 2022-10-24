@@ -3,7 +3,7 @@ import Foundation
 public extension Api {
     /// Returns the slot that has reached the given or default commitment level
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     ///   - onComplete: Result of Current slot UInt64
     func getSlot(commitment: Commitment? = nil, onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<UInt64, Error>) in
