@@ -45,13 +45,13 @@ public extension Api {
         }
     }
 
-    /// Returns all information associated with the account of provided Publickey parsed
+    /// Returns all information associated with the account of provided `PublicKey` parsed
     ///
     /// - Parameters:
-    ///   - account: Publickey of account to query, as base-58 encoded string
-    ///   - decodedTo: Object from which the data value will be mapped. Must be BufferLayout implementation
+    ///   - account: `PublicKey` of account to query, as base-58 encoded string
+    ///   - decodedTo: Object from which the data value will be mapped. Must be `BufferLayout` implementation
     ///   - allowUnfundedRecipient: If the account is empty it will not return a failure
-    ///   - onComplete: The result object of BufferInfo<T>. Where T is the decodedTo object. 
+    ///   - onComplete: The result object of `BufferInfo<T>`. Where `T` is the decodedTo object.
     func getAccountInfo<T: BufferLayout>(account: String, decodedTo: T.Type, allowUnfundedRecipient: Bool = false, onComplete: @escaping (Result<BufferInfo<T>?, Error>) -> Void) {
         let configs = RequestConfiguration(encoding: "base64")
         router.request(parameters: [account, configs]) { (result: Result<Rpc<BufferInfo<T>?>, Error>) in
