@@ -22,7 +22,7 @@ public extension Api {
 public extension Api {
     /// Returns the current inflation governor
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: The InflationGovernor(foundation: Float64, foundationTerm: Float64, initial: Float64, taper: Float64, terminal: Float64)
     func getInflationGovernor(commitment: Commitment? = nil) async throws -> InflationGovernor {
         try await withCheckedThrowingContinuation { c in
