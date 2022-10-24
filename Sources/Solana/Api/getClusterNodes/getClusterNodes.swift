@@ -21,7 +21,7 @@ public extension Api {
 public extension Api {
     /// Returns information about all the nodes participating in the cluster
     /// 
-    /// - Returns: The result type will be an array of ClusterNodes objects
+    /// - Returns: The result type will be an array of `ClusterNodes` objects
     func getClusterNodes() async throws -> [ClusterNodes] {
         try await withCheckedThrowingContinuation { c in
             self.getClusterNodes(onComplete: c.resume(with:))
