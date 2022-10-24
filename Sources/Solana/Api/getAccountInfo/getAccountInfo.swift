@@ -2,11 +2,11 @@ import Foundation
 
 public extension Api {
     
-    /// Returns all information associated with the account of provided Publickey
+    /// Returns all information associated with the account of provided `PublicKey`
     /// 
     /// - Parameters:
-    ///   - account: Publickey of account to query, as base-58 encoded string
-    ///   - onComplete: The result object of BufferInfoPureData of the account of provided PublicKey.  Fails if empty
+    ///   - account: `PublicKey` of account to query, as base-58 encoded string
+    ///   - onComplete: The result object of BufferInfoPureData of the account of provided `PublicKey`. Fails if empty
     func getAccountInfo(account: String, onComplete: @escaping (Result<BufferInfoPureData, Error>) -> Void) {
         let configs = RequestConfiguration(encoding: "base64")
         router.request(parameters: [account, configs]) { (result: Result<Rpc<BufferInfoPureData?>, Error>) in
