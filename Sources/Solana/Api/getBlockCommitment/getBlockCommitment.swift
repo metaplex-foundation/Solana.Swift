@@ -26,8 +26,8 @@ public extension Api {
     ///
     /// - Parameters:
     ///     - block: block, identified by Slot
-    ///     - commitment (Optional): The commitment describes how finalized a block is at that point in time.
-    /// - Returns: The  BlockCommitment
+    ///     - commitment (Optional): The commitment describes how finalized a block is at that point in time
+    /// - Returns: The `BlockCommitment`
     func getBlockCommitment(block: UInt64) async throws -> BlockCommitment {
         try await withCheckedThrowingContinuation { c in
             self.getBlockCommitment(block: block, onComplete: c.resume(with:))
