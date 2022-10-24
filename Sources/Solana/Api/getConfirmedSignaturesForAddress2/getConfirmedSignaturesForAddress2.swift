@@ -31,7 +31,7 @@ public extension Api {
     /// - Parameters:
     ///   - account: account address as base-58 encoded string
     ///   - configs: RequestConfiguration object 
-    /// - Returns: will be an array of transaction signature information, ordered from newest to oldest transaction.
+    /// - Returns: will be an array of transaction signature information, ordered from newest to oldest transaction
     func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) async throws -> [SignatureInfo] {
         try await withCheckedThrowingContinuation { c in
             self.getConfirmedSignaturesForAddress2(account: account, configs: configs, onComplete: c.resume(with:))
