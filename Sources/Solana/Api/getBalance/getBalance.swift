@@ -26,12 +26,12 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
-    /// Returns the balance of the account of provided PublicKey
+    /// Returns the balance of the account of provided `PublicKey`
     ///
     /// - Parameters:
-    ///     - account: PublicKey of account to query, as base-58 encoded string
-    ///     - commitment (Optional): The commitment describes how finalized a block is at that point in time.
-    /// - Returns: The balance UInt64 of the account of provided PublicKey
+    ///     - account: `PublicKey` of account to query, as base-58 encoded string
+    ///     - commitment (Optional): The commitment describes how finalized a block is at that point in time
+    /// - Returns: The balance `UInt64` of the account of provided `PublicKey`
     func getBalance(account: String, commitment: Commitment? = nil) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
             self.getBalance(account: account, commitment: commitment, onComplete: c.resume(with:))
