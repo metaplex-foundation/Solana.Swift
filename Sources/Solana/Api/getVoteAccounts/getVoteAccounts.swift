@@ -4,7 +4,7 @@ public extension Api {
     /// Returns the account info and associated stake for all the voting accounts in the current bank.
     /// 
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     ///   - onComplete: The result object of VoteAccounts(current: [VoteAccount], delinquent: [VoteAccount])
     func getVoteAccounts(commitment: Commitment? = nil, onComplete: @escaping(Result<VoteAccounts, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<VoteAccounts, Error>) in
@@ -24,7 +24,7 @@ public extension Api {
     /// Returns the account info and associated stake for all the voting accounts in the current bank.
     /// 
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: The result object of VoteAccounts(current: [VoteAccount], delinquent: [VoteAccount])
     func getVoteAccounts(commitment: Commitment? = nil) async throws -> VoteAccounts {
         try await withCheckedThrowingContinuation { c in

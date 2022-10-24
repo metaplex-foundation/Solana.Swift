@@ -75,7 +75,7 @@ public extension Api {
     /// - Parameters:
     ///   - publicKey: `PublicKey` of program, as base-58 encoded string
     ///   - configs: Configuration object containing 
-    /// - Returns: Arrays of ProgramAccountPureData(which is ProgramAccount<Data>).
+    /// - Returns: Arrays of ProgramAccountPureData(which is ProgramAccount<Data>)
     func getProgramAccounts(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64")

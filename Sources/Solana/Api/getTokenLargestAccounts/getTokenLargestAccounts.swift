@@ -30,7 +30,7 @@ public extension Api {
     /// 
     /// - Parameters:
     ///   - pubkey: Pubkey of token Mint to query, as base-58 encoded string
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: An Result object of an array of TokenAmount(amount: String decimals: UInt8, uiAmount: Float64, uiAmountString: String)
     func getTokenLargestAccounts(pubkey: String, commitment: Commitment? = nil) async throws -> [TokenAmount] {
         try await withCheckedThrowingContinuation { c in

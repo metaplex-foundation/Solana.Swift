@@ -4,7 +4,7 @@ public extension Api {
     /// Returns the current slot leader
     /// 
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     ///   - onComplete: Node identity PublicKey as base-58 encoded string
     func getSlotLeader(commitment: Commitment? = nil, onComplete: @escaping (Result<String, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<String, Error>) in
@@ -24,7 +24,7 @@ public extension Api {
     /// Returns the current slot leader
     /// 
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: Node identity PublicKey as base-58 encoded string
     func getSlotLeader(commitment: Commitment? = nil) async throws -> String {
         try await withCheckedThrowingContinuation { c in

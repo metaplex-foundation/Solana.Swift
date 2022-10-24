@@ -22,7 +22,7 @@ public extension Api {
 public extension Api {
     /// Returns the slot that has reached the given or default commitment level
     /// - Parameters:
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: Result of Current slot UInt64
     func getSlot(commitment: Commitment? = nil) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
