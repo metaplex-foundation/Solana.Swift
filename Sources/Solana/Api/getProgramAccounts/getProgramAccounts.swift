@@ -54,7 +54,7 @@ public extension Api {
     ///   - publicKey: Pubkey of program, as base-58 encoded string
     ///   - configs: Configuration object containing 
     ///   - decodedTo: Object from which the data value will be mapped. Must be `BufferLayout` implementation
-    /// - Returns: Arrays of ProgramAccount<T>. Where T is the decodedTo object. 
+    /// - Returns: Arrays of ProgramAccount<T>. Where T is the decodedTo object
     func getProgramAccounts<T: BufferLayout>(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
