@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns the identity PublicKey for the current node
+    /// 
+    /// - Parameter onComplete: Result object of the identity, which is the PublicKey of the current node (as a base-58 encoded string)
     func getIdentity(onComplete: @escaping(Result<Identity, Error>) -> Void) {
         router.request { (result: Result<Identity, Error>) in
             switch result {
@@ -16,6 +19,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the identity PublicKey for the current node
+    /// 
+    /// - Returns: The identity, which is the PublicKey of the current node (as a base-58 encoded string)
     func getIdentity() async throws -> Identity {
         try await withCheckedThrowingContinuation { c in
             self.getIdentity(onComplete: c.resume(with:))

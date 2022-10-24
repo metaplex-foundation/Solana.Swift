@@ -1,6 +1,13 @@
 import Foundation
 
 public extension Api {
+    /// Returns a recent block hash from the ledger, a fee schedule that can be used to
+    /// compute the cost of submitting a transaction using it, and the last slot in 
+    /// which the blockhash will be valid.
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: The result will be Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFees(commitment: Commitment? = nil, onComplete: @escaping (Result<Fee, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<Fee?>, Error>) in
             switch result {
@@ -20,6 +27,13 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns a recent block hash from the ledger, a fee schedule that can be used to
+    /// compute the cost of submitting a transaction using it, and the last slot in 
+    /// which the blockhash will be valid.
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: The Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFees(commitment: Commitment? = nil) async throws -> Fee {
         try await withCheckedThrowingContinuation { c in
             self.getFees(commitment: commitment, onComplete: c.resume(with:))

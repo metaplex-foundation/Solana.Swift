@@ -1,6 +1,10 @@
 import Foundation
 
 public extension Api {
+    /// Returns the slot that has reached the given or default commitment level
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: Result of Current slot UInt64
     func getSlot(commitment: Commitment? = nil, onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<UInt64, Error>) in
             switch result {
@@ -16,6 +20,10 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the slot that has reached the given or default commitment level
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: Result of Current slot UInt64
     func getSlot(commitment: Commitment? = nil) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
             self.getSlot(commitment: commitment, onComplete: c.resume(with:))

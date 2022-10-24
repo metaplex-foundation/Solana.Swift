@@ -1,6 +1,12 @@
 import Foundation
 
 public extension Api {
+    /// Returns the token balance of an SPL Token account.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: `PublicKey` of Token account to query, as base-58 encoded string
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: Result Object of TokenAccountBalance(uiAmount: Float64?, amount: String, decimals: UInt8?, uiAmountString: String?)
     func getTokenAccountBalance(pubkey: String, commitment: Commitment? = nil, onComplete: @escaping (Result<TokenAccountBalance, Error>) -> Void) {
         router.request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<TokenAccountBalance?>, Error>) in
             switch result {
@@ -24,6 +30,12 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the token balance of an SPL Token account.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: `PublicKey` of Token account to query, as base-58 encoded string
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: TokenAccountBalance(uiAmount: Float64?, amount: String, decimals: UInt8?, uiAmountString: String?)
     func getTokenAccountBalance(pubkey: String, commitment: Commitment? = nil) async throws -> TokenAccountBalance {
         try await withCheckedThrowingContinuation { c in
             self.getTokenAccountBalance(pubkey: pubkey, commitment: commitment, onComplete: c.resume(with:))

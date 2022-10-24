@@ -1,6 +1,11 @@
 import Foundation
 
 public extension Api {
+    /// Returns the current Transaction count from the ledger
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: The Result object of count UInt64
     func getTransactionCount(commitment: Commitment? = nil, onComplete: @escaping (Result<UInt64, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<UInt64, Error>) in
             switch result {
@@ -16,6 +21,11 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the current Transaction count from the ledger
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: The count UInt64
     func getTransactionCount(commitment: Commitment? = nil) async throws -> UInt64 {
         try await withCheckedThrowingContinuation { c in
             self.getTransactionCount(commitment: commitment, onComplete: c.resume(with:))

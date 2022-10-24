@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns information about all the nodes participating in the cluster
+    /// 
+    /// - Parameter onComplete: The result type will be an array of ClusterNodes objects
     func getClusterNodes(onComplete: @escaping (Result<[ClusterNodes], Error>) -> Void) {
         router.request { (result: Result<[ClusterNodes], Error>) in
             switch result {
@@ -16,6 +19,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns information about all the nodes participating in the cluster
+    /// 
+    /// - Returns: The result type will be an array of `ClusterNodes` objects
     func getClusterNodes() async throws -> [ClusterNodes] {
         try await withCheckedThrowingContinuation { c in
             self.getClusterNodes(onComplete: c.resume(with:))

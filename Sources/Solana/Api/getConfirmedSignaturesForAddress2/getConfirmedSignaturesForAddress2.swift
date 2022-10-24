@@ -1,6 +1,14 @@
 import Foundation
 
 public extension Api {
+    /// Returns signatures for confirmed transactions that include the given 
+    /// address in their accountKeys list. Returns signatures backwards in time 
+    /// from the provided signature or most recent confirmed block
+    /// 
+    /// - Parameters:
+    ///   - account: account address as base-58 encoded string
+    ///   - configs: RequestConfiguration object 
+    ///   - onComplete: The result type will be an array of transaction signature information, ordered from newest to oldest transaction
     func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<[SignatureInfo], Error>) -> Void) {
         router.request(parameters: [account, configs]) { (result: Result<[SignatureInfo], Error>) in
             switch result {
@@ -16,6 +24,14 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns signatures for confirmed transactions that include the given 
+    /// address in their accountKeys list. Returns signatures backwards in time 
+    /// from the provided signature or most recent confirmed block
+    /// 
+    /// - Parameters:
+    ///   - account: account address as base-58 encoded string
+    ///   - configs: RequestConfiguration object 
+    /// - Returns: will be an array of transaction signature information, ordered from newest to oldest transaction
     func getConfirmedSignaturesForAddress2(account: String, configs: RequestConfiguration? = nil) async throws -> [SignatureInfo] {
         try await withCheckedThrowingContinuation { c in
             self.getConfirmedSignaturesForAddress2(account: account, configs: configs, onComplete: c.resume(with:))

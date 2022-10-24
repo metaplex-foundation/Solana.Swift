@@ -1,6 +1,11 @@
 import Foundation
 
 public extension Api {
+    /// Returns information about the current supply.
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: The result object of  Supply(circulating: Lamports, nonCirculating: Lamports, nonCirculatingAccounts: [String], total: Lamports)
     func getSupply(commitment: Commitment? = nil, onComplete: @escaping(Result<Supply, Error>) -> Void) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<Supply?>, Error>) in
             switch result {
@@ -20,6 +25,11 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns information about the current supply.
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: The result object of  Supply(circulating: Lamports, nonCirculating: Lamports, nonCirculatingAccounts: [String], total: Lamports)
     func getSupply(commitment: Commitment? = nil) async throws -> Supply {
         try await withCheckedThrowingContinuation { c in
             self.getSupply(commitment: commitment, onComplete: c.resume(with:))

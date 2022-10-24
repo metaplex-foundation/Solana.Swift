@@ -1,6 +1,12 @@
 import Foundation
 
 public extension Api {
+    /// Returns epoch activation information for a stake account
+    /// 
+    /// - Parameters:
+    ///   - stakeAccount: Publickey of stake account to query, as base-58 encoded string
+    ///   - configs: Configuration object
+    ///   - onComplete: The result object of StakeActivation(active: UInt64, inactive: UInt64, state: String)
     func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil, onComplete: @escaping (Result<StakeActivation, Error>) -> Void) {
         router.request(parameters: [stakeAccount, configs]) { (result: Result<StakeActivation, Error>) in
             switch result {
@@ -16,6 +22,12 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns epoch activation information for a stake account
+    /// 
+    /// - Parameters:
+    ///   - stakeAccount: Publickey of stake account to query, as base-58 encoded string
+    ///   - configs: Configuration object
+    /// - Returns: A StakeActivation(active: UInt64, inactive: UInt64, state: String)
     func getStakeActivation(stakeAccount: String, configs: RequestConfiguration? = nil) async throws -> StakeActivation {
         try await withCheckedThrowingContinuation { c in
             self.getStakeActivation(stakeAccount: stakeAccount, configs: configs, onComplete: c.resume(with:))

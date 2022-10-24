@@ -1,6 +1,11 @@
 import Foundation
 
 public extension Api {
+    /// Returns information about the current epoch
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - onComplete: The result field will be an object with the following fields: (absoluteSlot: UInt64, blockHeight: UInt64, epoch: UInt64, slotIndex: UInt64, slotsInEpoch: UInt64)
     func getEpochInfo(commitment: Commitment? = nil, onComplete: @escaping ((Result<EpochInfo, Error>) -> Void)) {
         router.request(parameters: [RequestConfiguration(commitment: commitment)]) { (result: Result<EpochInfo, Error>) in
             switch result {
@@ -16,6 +21,11 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns information about the current epoch
+    /// 
+    /// - Parameters:
+    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    /// - Returns: will be an object with the following fields: (absoluteSlot: UInt64, blockHeight: UInt64, epoch: UInt64, slotIndex: UInt64, slotsInEpoch: UInt64)
     func getEpochInfo(commitment: Commitment? = nil) async throws -> EpochInfo {
         try await withCheckedThrowingContinuation { c in
             self.getEpochInfo(commitment: commitment, onComplete: c.resume(with:))

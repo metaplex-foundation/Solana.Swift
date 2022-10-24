@@ -1,6 +1,13 @@
 import Foundation
 
 public extension Api {
+    /// Returns all accounts owned by the provided program Pubkey parsed
+    ///
+    /// - Parameters:
+    ///   - publicKey: Pubkey of program, as base-58 encoded string
+    ///   - configs: Configuration object containing 
+    ///   - decodedTo: Object from which the data value will be mapped. Must be BufferLayout implementation
+    ///   - onComplete: The result object of Arrays of ProgramAccount<T>. Where T is the decodedTo object
     func getProgramAccounts<T: BufferLayout>(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
@@ -16,7 +23,12 @@ public extension Api {
             }
         }
     }
-
+    /// Returns all accounts owned by the provided program Pubkey
+    ///
+    /// - Parameters:
+    ///   - publicKey: Pubkey of program, as base-58 encoded string
+    ///   - configs: Configuration object containing 
+    ///   - onComplete: The result object of Arrays of ProgramAccountPureData(which is ProgramAccount<Data>)
     func getProgramAccounts(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
@@ -36,6 +48,13 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns all accounts owned by the provided program Pubkey parsed
+    ///
+    /// - Parameters:
+    ///   - publicKey: Pubkey of program, as base-58 encoded string
+    ///   - configs: Configuration object containing 
+    ///   - decodedTo: Object from which the data value will be mapped. Must be `BufferLayout` implementation
+    /// - Returns: Arrays of ProgramAccount<T>. Where T is the decodedTo object
     func getProgramAccounts<T: BufferLayout>(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64"),
@@ -51,6 +70,12 @@ public extension Api {
         }
     }
 
+    /// Returns all accounts owned by the provided program Pubkey
+    ///
+    /// - Parameters:
+    ///   - publicKey: `PublicKey` of program, as base-58 encoded string
+    ///   - configs: Configuration object containing 
+    /// - Returns: Arrays of ProgramAccountPureData(which is ProgramAccount<Data>)
     func getProgramAccounts(
         publicKey: String,
         configs: RequestConfiguration? = RequestConfiguration(encoding: "base64")

@@ -1,6 +1,12 @@
 import Foundation
 
 public extension Api {
+    /// Returns the total supply of an SPL Token type.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: Pubkey of token Mint to query, as base-58 encoded string
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    ///   - onComplete: An Result object of TokenAmount(amount: String decimals: UInt8, uiAmount: Float64, uiAmountString: String)
     func getTokenSupply(pubkey: String, commitment: Commitment? = nil, onComplete: @escaping (Result<TokenAmount, Error>) -> Void) {
         router.request(parameters: [pubkey, RequestConfiguration(commitment: commitment)]) { (result: Result<Rpc<TokenAmount?>, Error>) in
             switch result {
@@ -20,6 +26,12 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the total supply of an SPL Token type.
+    /// 
+    /// - Parameters:
+    ///   - pubkey: `PublicKey` of token Mint to query, as base-58 encoded string
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
+    /// - Returns: An Result object of TokenAmount(amount: String decimals: UInt8, uiAmount: Float64, uiAmountString: String)
     func getTokenSupply(pubkey: String, commitment: Commitment? = nil) async throws -> TokenAmount {
         try await withCheckedThrowingContinuation { c in
             self.getTokenSupply(pubkey: pubkey, commitment: commitment, onComplete: c.resume(with:))

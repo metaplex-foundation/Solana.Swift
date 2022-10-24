@@ -1,6 +1,9 @@
 import Foundation
 
 public extension Api {
+    /// Returns the fee rate governor information from the root bank
+    /// 
+    /// - Parameter onComplete: The result will be Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFeeRateGovernor(onComplete: @escaping (Result<Fee, Error>) -> Void) {
         router.request { (result: Result<Rpc<Fee?>, Error>) in
             switch result {
@@ -20,6 +23,9 @@ public extension Api {
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 public extension Api {
+    /// Returns the fee rate governor information from the root bank
+    /// 
+    /// - Returns: The result will be Fee (feeCalculator: FeeCalculator?, feeRateGovernor: FeeRateGovernor?, blockhash: String?, lastValidSlot: UInt64?)
     func getFeeRateGovernor() async throws -> Fee {
         try await withCheckedThrowingContinuation { c in
             self.getFeeRateGovernor(onComplete: c.resume(with:))
