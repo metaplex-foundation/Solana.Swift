@@ -73,7 +73,7 @@ public extension Api {
     /// Returns all accounts owned by the provided program Pubkey
     ///
     /// - Parameters:
-    ///   - publicKey: Pubkey of program, as base-58 encoded string
+    ///   - publicKey: `PublicKey` of program, as base-58 encoded string
     ///   - configs: Configuration object containing 
     /// - Returns: Arrays of ProgramAccountPureData(which is ProgramAccount<Data>).
     func getProgramAccounts(
