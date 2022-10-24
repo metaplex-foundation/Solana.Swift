@@ -26,7 +26,7 @@ public extension Api {
     /// 
     /// - Parameters:
     ///   - epoch: Fetch the leader schedule for the epoch that corresponds to the provided slot. If unspecified, the leader schedule for the current epoch is fetched
-    ///   - commitment: The commitment describes how finalized a block is at that point in time. (finalized, confirmed, processed)
+    ///   - commitment: The commitment describes how finalized a block is at that point in time (finalized, confirmed, processed)
     /// - Returns: A dictionary of validator identities, as base-58 encoded strings, and their corresponding leader slot indices as values (indices are relative to the first slot in the requested epoch)
     func getLeaderSchedule(epoch: UInt64? = nil, commitment: Commitment? = nil) async throws -> [String: [Int]]? {
         try await withCheckedThrowingContinuation { c in
