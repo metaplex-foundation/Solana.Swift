@@ -23,7 +23,7 @@ public extension Api {
         }
     }
 
-    /// Returns all information associated with the account of provided Publickey parsed
+    /// Returns all information associated with the account of provided `PublicKey` parsed
     /// 
     /// - Parameters:
     ///   - account: Publickey of account to query, as base-58 encoded string
