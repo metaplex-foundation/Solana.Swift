@@ -2,7 +2,7 @@ import Foundation
 
 extension Action {
     public typealias SPLTokenDestinationAddress = (destination: PublicKey, isUnregisteredAsocciatedToken: Bool)
-    
+
     public func findSPLTokenDestinationAddress(
         mintAddress: String,
         destinationAddress: String,
@@ -23,7 +23,7 @@ extension Action {
             )
         }
     }
-    
+
     fileprivate func checkSPLTokenAccountExistence(
         mintAddress: String,
         destinationAddress: String,
@@ -37,10 +37,10 @@ extension Action {
             onComplete(.failure(SolanaError.invalidPublicKey))
             return
         }
-        
+
         self.api.getAccountInfo(account: associatedTokenAddress.base58EncodedString, decodedTo: AccountInfo.self) { result in
             let hasAssociatedTokenAccount: Bool
-            
+
             switch result {
             case .failure(let error):
                 guard let solanaError = error as? SolanaError,
@@ -49,16 +49,16 @@ extension Action {
                     onComplete(.failure(error))
                     return
                 }
-                
+
                 hasAssociatedTokenAccount = false
             case .success:
                 hasAssociatedTokenAccount = true
             }
-            
+
             onComplete(.success((associatedTokenAddress, !hasAssociatedTokenAccount)))
         }
     }
-    
+
     fileprivate func findSPLTokenDestinationAddressOfExistingAccount(
         mintAddress: String,
         destinationAddress: String,

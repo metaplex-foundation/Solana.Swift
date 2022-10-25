@@ -48,12 +48,12 @@ public extension ApiTemplates {
             self.transaction = transaction
             self.configs = configs
         }
-        
+
         public let transaction: String
         public let configs: RequestConfiguration
-        
+
         public typealias Success = TransactionStatus
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.simulateTransaction(transaction: transaction, configs: configs, onComplete: completion)
         }

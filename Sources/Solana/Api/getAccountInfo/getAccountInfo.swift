@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Api {
-    
+
     /// Returns all information associated with the account of provided `PublicKey`
     /// 
     /// - Parameters:

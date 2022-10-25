@@ -45,12 +45,12 @@ public extension ApiTemplates {
             self.blockhash = blockhash
             self.commitment = commitment
         }
-        
+
         public let blockhash: String
         public let commitment: Commitment?
-        
+
         public typealias Success = Fee
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getFeeCalculatorForBlockhash(blockhash: blockhash, commitment: commitment, onComplete: completion)
         }

@@ -36,9 +36,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetFeeRateGovernor: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = Fee
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getFeeRateGovernor(onComplete: completion)
         }

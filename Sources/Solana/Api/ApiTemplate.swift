@@ -3,7 +3,7 @@ public protocol ApiTemplate {
 
     func perform(withConfigurationFrom actionClass: Api,
                  completion: @escaping (Result<Success, Error>) -> Void)
-    
+
     @available(iOS 13.0, *)
     @available(macOS 10.15, *)
     func perform(withConfigurationFrom actionClass: Api) async throws -> Success
@@ -31,7 +31,7 @@ public extension Api {
             self.perform(modeledApi, completion: c.resume(with:))
         }
     }
-    
+
 }
 
 public enum ApiTemplates {}

@@ -37,7 +37,7 @@ public struct Token: Hashable, Decodable {
         self.extensions = extensions
         self.isNative = isNative
     }
-    
+
     public init(address: String) {
         self.tags = []
         self.chainId = nil
@@ -48,7 +48,7 @@ public struct Token: Hashable, Decodable {
         self.extensions = nil
         self.isNative = false
     }
-    
+
     public let chainId: Int?
     public let address: String
     public let symbol: String?
@@ -57,7 +57,7 @@ public struct Token: Hashable, Decodable {
     public let extensions: TokenExtensions?
     public let tags: [String]?
     public private(set) var isNative = false
-    
+
     enum CodingKeys: String, CodingKey {
         case chainId, address, symbol, name, logoURI, extensions, tags
     }

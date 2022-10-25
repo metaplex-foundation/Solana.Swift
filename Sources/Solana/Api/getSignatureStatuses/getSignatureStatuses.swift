@@ -47,12 +47,12 @@ public extension ApiTemplates {
             self.pubkeys = pubkeys
             self.configs = configs
         }
-        
+
         public let pubkeys: [String]
         public let configs: RequestConfiguration?
-        
+
         public typealias Success = [SignatureStatus?]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getSignatureStatuses(pubkeys: pubkeys, configs: configs, onComplete: completion)
         }

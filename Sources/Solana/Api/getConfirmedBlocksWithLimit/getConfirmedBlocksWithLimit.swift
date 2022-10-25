@@ -41,12 +41,12 @@ public extension ApiTemplates {
             self.startSlot = startSlot
             self.limit = limit
         }
-        
+
         public let startSlot: UInt64
         public let limit: UInt64
-        
+
         public typealias Success = [UInt64]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getConfirmedBlocksWithLimit(startSlot: startSlot, limit: limit, onComplete: completion)
         }

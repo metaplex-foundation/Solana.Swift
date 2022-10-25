@@ -17,14 +17,14 @@ public enum RPCError: Error {
 }
 
 public class NetworkingRouter: SolanaRouter {
-    
+
     public let endpoint: RPCEndpoint
     private let urlSession: URLSession
     public init(endpoint: RPCEndpoint, session: URLSession = .shared) {
         self.endpoint = endpoint
         self.urlSession = session
     }
-    
+
     public func request<T: Decodable>(
         method: HTTPMethod = .post,
         bcMethod: String = #function,
@@ -33,15 +33,15 @@ public class NetworkingRouter: SolanaRouter {
     ) {
         let url = endpoint.url
         let params = parameters.compactMap {$0}
-        
+
         let bcMethod = bcMethod.replacingOccurrences(of: "\\([\\w\\s:]*\\)", with: "", options: .regularExpression)
         let requestAPI = SolanaRequest(method: bcMethod, params: params)
-        
+
         ContResult<URLRequest, Error>.init { cb in
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = method.rawValue
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
+
             do {
                 urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
                 cb(.success(urlRequest))
@@ -50,7 +50,7 @@ public class NetworkingRouter: SolanaRouter {
                 cb(.failure(ecodingError))
                 return
             }
-            
+
         }
         .flatMap { urlRequest in
             ContResult<(data: Data?, response: URLResponse?), Error>.init { cb in
@@ -64,7 +64,7 @@ public class NetworkingRouter: SolanaRouter {
                 }
                 task.resume()
             }
-            .onSuccess { (data: Data?, response: URLResponse?) in }
+            .onSuccess { (_: Data?, _: URLResponse?) in }
         }
         .flatMap {
             if let httpURLResponse = $0.response as? HTTPURLResponse {
@@ -108,7 +108,7 @@ public class NetworkingRouter: SolanaRouter {
         }
         .run(onComplete)
     }
-    
+
     @available(iOS 13.0, *)
     @available(macOS 10.15, *)
     public func request<T: Decodable>(method: HTTPMethod = .post, bcMethod: String = #function, parameters: [Encodable?] = []) async throws -> T {

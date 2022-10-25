@@ -60,14 +60,14 @@ public extension ApiTemplates {
             self.programId = programId
             self.configs = configs
         }
-        
+
         public let pubkey: String
         public let mint: String?
         public let programId: String?
         public let configs: RequestConfiguration?
-        
+
         public typealias Success = [TokenAccount<AccountInfo>]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getTokenAccountsByOwner(pubkey: pubkey, mint: mint, programId: programId, configs: configs, onComplete: completion)
         }

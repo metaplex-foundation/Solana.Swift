@@ -41,12 +41,12 @@ public extension ApiTemplates {
             self.stakeAccount = stakeAccount
             self.configs = configs
         }
-        
+
         public let stakeAccount: String
         public let configs: RequestConfiguration?
-        
+
         public typealias Success = StakeActivation
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getStakeActivation(stakeAccount: stakeAccount, configs: configs, onComplete: completion)
         }

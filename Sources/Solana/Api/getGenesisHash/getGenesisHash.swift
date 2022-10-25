@@ -32,9 +32,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetGenesisHash: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = String
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getGenesisHash(onComplete: completion)
         }

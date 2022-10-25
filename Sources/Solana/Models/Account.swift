@@ -10,12 +10,12 @@ public struct HotAccount: Codable, Hashable, Account {
     public let phrase: [String]
     public let publicKey: PublicKey
     public let secretKey: Data
-    
+
     public func sign(serializedMessage: Data) throws -> Data {
         let data = try NaclSign.signDetached(message: serializedMessage, secretKey: secretKey)
         return data
     }
-    
+
     public init?(phrase: [String] = [], derivablePath: DerivablePath? = nil) {
         let mnemonic: Mnemonic
         var phrase = phrase.filter {!$0.isEmpty}

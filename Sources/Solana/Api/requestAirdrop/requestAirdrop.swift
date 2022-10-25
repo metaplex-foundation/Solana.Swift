@@ -44,13 +44,13 @@ public extension ApiTemplates {
             self.lamports = lamports
             self.commitment = commitment
         }
-        
+
         public let account: String
         public let lamports: UInt64
         public let commitment: Commitment?
-        
+
         public typealias Success = String
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.requestAirdrop(account: account, lamports: lamports, commitment: commitment, onComplete: completion)
         }

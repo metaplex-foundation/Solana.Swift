@@ -14,7 +14,7 @@ extension Data {
     public init(hex: String) {
         self.init([UInt8](hex: hex))
     }
-    
+
     public func toHexString() -> String {
         self.bytes.toHexString()
     }
