@@ -171,7 +171,7 @@ public struct Transaction {
         accountMetas.sort { (x, y) -> Bool in
             if x.isSigner != y.isSigner {return x.isSigner}
             if x.isWritable != y.isWritable {return x.isWritable}
-            return false
+            return x.publicKey.base58EncodedString < y.publicKey.base58EncodedString
         }
 
         // filterOut duplicate account metas, keeps writable one
