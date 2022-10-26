@@ -2,7 +2,10 @@ import Foundation
 import TweetNacl
 
 public struct Transaction {
-    private var signatures = [Signature]()
+    static let SIGNATURE_LENGTH: Int = 64
+    static let DEFAULT_SIGNATURE = Data(capacity: 0)
+    
+    var signatures = [Signature]()
     private let feePayer: PublicKey
     private let recentBlockhash: String
 
@@ -136,7 +139,7 @@ public struct Transaction {
                     return message
                 }
             }
-            signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
+            //signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
             return message
         }
     }
@@ -286,6 +289,7 @@ public struct Transaction {
 }
 
 public extension Transaction {
+    
     struct Signature {
         var signature: Data?
         var publicKey: PublicKey
@@ -294,5 +298,84 @@ public extension Transaction {
             self.signature = signature
             self.publicKey = publicKey
         }
+    }
+    
+    static func from(buffer: Data) throws -> Transaction {
+        // Slice up wire data
+        var byteArray = buffer
+        
+        let signatureCount = Shortvec.decodeLength(buffer: byteArray)
+        byteArray = signatureCount.1
+        
+        var signatures: [[UInt8]] = []
+        for _ in 0...(signatureCount.0) - 1 {
+            let signature = byteArray[0..<SIGNATURE_LENGTH]
+            byteArray = Data(byteArray.dropFirst(SIGNATURE_LENGTH))
+
+            signatures.append(signature.bytes)
+        }
+        
+        return try populateTransaction(fromMessage: Message.from(buffer: byteArray), signatures: signatures)
+    }
+    
+    private static func populateTransaction(fromMessage: Message, signatures: [[UInt8]]) throws -> Transaction {
+        
+        // TODO: Should check against required number of signatures if there are any
+        let feePayer = fromMessage.accountKeys[0].publicKey
+       
+        var sigs: [Transaction.Signature] = []
+        for i in 0...(signatures.count - 1) {
+            let signature = Base58.encode(signatures[i]) == Base58.encode(DEFAULT_SIGNATURE.bytes) ? nil : signatures[i]
+            
+            let publicKey = fromMessage.accountKeys[i].publicKey
+            
+            if (signature == nil) {
+                let sig = Transaction.Signature(signature: nil, publicKey: publicKey)
+                sigs.append(sig)
+            } else {
+                let sig = Transaction.Signature(signature: Data(signature!), publicKey: publicKey)
+                sigs.append(sig)
+            }
+        }
+        
+        sigs.forEach {
+            print("Signatures are " + $0.publicKey.base58EncodedString)
+        }
+        
+        return Transaction(signatures: sigs, feePayer: feePayer, instructions: fromMessage.programInstructions, recentBlockhash: fromMessage.recentBlockhash)
+    }
+}
+
+public class Shortvec {
+    static func decodeLength(buffer: Data) -> (Int, Data) {
+        var newBytes = buffer
+        var len = 0
+        var size = 0
+        while (true) {
+            guard let elem = newBytes.firstAsInt() else {
+                break
+            }
+            
+            newBytes = Data(newBytes.dropFirst(1))
+            
+            len = len | (elem & 0x7f) << (size * 7)
+            size += 1
+            
+            if ((elem & 0x80) == 0) {
+                break
+            }
+        }
+        
+        return (len, newBytes)
+    }
+}
+
+public extension Data {
+    func firstAsInt(withDefault: Int? = nil) -> Int? {
+        guard let first = self.first else {
+            return withDefault
+        }
+        
+        return Int(first)
     }
 }
