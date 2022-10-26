@@ -41,7 +41,7 @@ public class SolanaPay {
         if let splToken = splToken {
             solanaPayURL += "&spl-token=\(splToken)"
         }
-        do{
+        do {
             guard let url = URL(string: solanaPayURL) else {
                 throw SolanaPayError.couldNotDecodeURL
             }
@@ -52,30 +52,29 @@ public class SolanaPay {
             return .failure(SolanaPayError.other(e))
         }
     }
-    
+
     func parseSolanaPay(urlString: String) -> Result<SolanaPaySpecification, SolanaPayError> {
         let newURL = urlString
             .replacingOccurrences(of: "\(PROTOCOL):", with: "\(PROTOCOL)://")
             .replacingOccurrences(of: "?", with: "/?")
             .replacingOccurrences(of: "%3F", with: "/?")
             .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-        
+
         let components = URLComponents(
             url: URL(string: newURL!)!,
             resolvingAgainstBaseURL: false
         )!
-        
+
         guard components.scheme == PROTOCOL else {
             return .failure(SolanaPayError.unsupportedProtocol)
         }
 
-        
         guard let host = components.host, let address = PublicKey(string: host)  else {
             return .failure(SolanaPayError.pathNotProvided)
         }
 
-        var doubleAmount: Double? = nil
-        var splTokenPubKey: PublicKey? = nil
+        var doubleAmount: Double?
+        var splTokenPubKey: PublicKey?
         if let amount: String = getParamURL(components: components, name: "amount") {
             let parsedAmount = Double(amount) ?? -1
             if parsedAmount < 0 {
@@ -83,7 +82,7 @@ public class SolanaPay {
             }
             doubleAmount = parsedAmount
         }
-        
+
         let label: String? = getParamURL(components: components, name: "label")
         let message: String? = getParamURL(components: components, name: "message")
         let memo: String? = getParamURL(components: components, name: "memo")
@@ -91,11 +90,11 @@ public class SolanaPay {
         if let splToken: String = getParamURL(components: components, name: "spl-token") {
             splTokenPubKey = PublicKey(string: splToken) ?? nil
         }
-        
+
         let spec = SolanaPaySpecification(address: address, label: label, splToken: splTokenPubKey, message: message, memo: memo, reference: reference, amount: doubleAmount)
         return .success(spec)
     }
-    
+
     private func getParamURL(components: URLComponents, name: String) -> String? {
         return components.queryItems?.first(where: { $0.name == name })?.value
     }

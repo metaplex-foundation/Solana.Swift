@@ -38,11 +38,11 @@ public extension ApiTemplates {
         public init(transactionSignature: String) {
             self.transactionSignature = transactionSignature
         }
-        
+
         public let transactionSignature: String
-        
+
         public typealias Success = TransactionInfo
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getConfirmedTransaction(transactionSignature: transactionSignature, onComplete: completion)
         }

@@ -32,9 +32,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetClusterNodes: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = [ClusterNodes]
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getClusterNodes(onComplete: completion)
         }

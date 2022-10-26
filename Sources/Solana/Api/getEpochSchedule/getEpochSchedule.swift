@@ -32,9 +32,9 @@ public extension Api {
 public extension ApiTemplates {
     struct GetEpochSchedule: ApiTemplate {
         public init() {}
-        
+
         public typealias Success = EpochSchedule
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getEpochSchedule(onComplete: completion)
         }

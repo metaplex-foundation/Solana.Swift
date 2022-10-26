@@ -36,11 +36,11 @@ public extension ApiTemplates {
         public init(commitment: Commitment? = nil) {
             self.commitment = commitment
         }
-        
+
         public let commitment: Commitment?
-        
+
         public typealias Success = UInt64
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getSlot(commitment: commitment, onComplete: completion)
         }

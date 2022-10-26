@@ -38,11 +38,11 @@ public extension ApiTemplates {
         public init(commitment: Commitment? = nil) {
             self.commitment = commitment
         }
-        
+
         public let commitment: Commitment?
-        
+
         public typealias Success = EpochInfo
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getEpochInfo(commitment: commitment, onComplete: completion)
         }

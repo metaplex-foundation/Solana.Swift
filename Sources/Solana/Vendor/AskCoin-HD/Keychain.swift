@@ -32,7 +32,7 @@ class Keychain: NSObject {
 	private var chainCode: Data?
 
 	fileprivate var isMasterKey = false
-    
+
 	var depth: UInt8 = 0
 	var hardened = false
 	var index: UInt32 = 0

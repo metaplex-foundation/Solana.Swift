@@ -18,7 +18,7 @@ extension Action {
         // check
 
         api.getAccountInfo(account: destination, decodedTo: EmptyInfo.self,
-                                         allowUnfundedRecipient:allowUnfundedRecipient) { resultInfo in
+                                         allowUnfundedRecipient: allowUnfundedRecipient) { resultInfo in
             if case let Result.failure(error) = resultInfo {
                 if let solanaError = error as? SolanaError,
                    case SolanaError.couldNotRetriveAccountInfo = solanaError {

@@ -41,12 +41,12 @@ public extension ApiTemplates {
             self.epoch = epoch
             self.commitment = commitment
         }
-        
+
         public let epoch: UInt64?
         public let commitment: Commitment?
-        
+
         public typealias Success = [String: [Int]]?
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.getLeaderSchedule(epoch: epoch, commitment: commitment, onComplete: completion)
         }

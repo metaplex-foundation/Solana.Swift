@@ -114,12 +114,12 @@ public extension ApiTemplates {
             self.serializedTransaction = serializedTransaction
             self.configs = configs
         }
-        
+
         public let serializedTransaction: String
         public let configs: RequestConfiguration
-        
+
         public typealias Success = TransactionID
-        
+
         public func perform(withConfigurationFrom apiClass: Api, completion: @escaping (Result<Success, Error>) -> Void) {
             apiClass.sendTransaction(serializedTransaction: serializedTransaction, configs: configs, onComplete: completion)
         }

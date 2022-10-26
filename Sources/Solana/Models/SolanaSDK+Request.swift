@@ -51,8 +51,7 @@ public struct RequestConfiguration: Encodable {
             && filters == nil
             && limit == nil
             && before == nil
-            && until == nil
-        {
+            && until == nil {
             return nil
         }
         self.commitment = commitment
@@ -68,7 +67,7 @@ public struct RequestConfiguration: Encodable {
 public struct DataSlice: Encodable {
     public let offset: Int
     public let length: Int
-    public init(offset: Int, length: Int){
+    public init(offset: Int, length: Int) {
         self.offset = offset
         self.length = length
     }
