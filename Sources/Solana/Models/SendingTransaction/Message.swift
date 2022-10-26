@@ -37,19 +37,11 @@ extension Transaction {
 
             var data = Data(/*capacity: bufferSize*/)
             
-            let sortedKeys = accountKeys.sorted { (x, y) -> Bool in
-                if x.isSigner != y.isSigner {return x.isSigner}
-                if x.isWritable != y.isWritable {return x.isWritable}
-                // TODO: English sorting should be here to match kotlin and js implementation
-                return x.publicKey.base58EncodedString.lowercased() < y.publicKey.base58EncodedString.lowercased()
-            }
-
-
             // Compiled instruction
             return encodeHeader().map { data.append($0) }
-                .flatMap { _ in return encodeAccountKeys(sortedAccountKeys: sortedKeys).map { data.append($0) } }
+                .flatMap { _ in return encodeAccountKeys().map { data.append($0) } }
                 .flatMap { _ in return encodeRecentBlockhash().map { data.append($0) }}
-                .flatMap { _ in return encodeInstructions(sortedAccountKeys: sortedKeys).map { data.append($0) }}
+                .flatMap { _ in return encodeInstructions().map { data.append($0) }}
                 .map { data }
         }
 
@@ -74,19 +66,14 @@ extension Transaction {
             return .success(Data(header.bytes))
         }
 
-        private func encodeAccountKeys(sortedAccountKeys: [AccountMeta]) -> Result<Data, Error> {
+        private func encodeAccountKeys() -> Result<Data, Error> {
             // length
-            return encodeLength(sortedAccountKeys.count).map { keyCount in
+            return encodeLength(accountKeys.count).map { keyCount in
                 // construct data
-                var data = Data(capacity: keyCount.count + sortedAccountKeys.count * PublicKey.LENGTH)
-//                // sort
-//                let signedKeys = accountKeys.filter {$0.isSigner}
-//                let unsignedKeys = accountKeys.filter {!$0.isSigner}
-//                let accountKeys = signedKeys + unsignedKeys
-                
+                var data = Data(capacity: keyCount.count + accountKeys.count * PublicKey.LENGTH)
                 // append data
                 data.append(keyCount)
-                for meta in sortedAccountKeys {
+                for meta in accountKeys {
                     data.append(meta.publicKey.data)
                 }
                 return data
@@ -97,7 +84,7 @@ extension Transaction {
             return .success(Data(Base58.decode(recentBlockhash)))
         }
 
-        private func encodeInstructions(sortedAccountKeys: [AccountMeta]) -> Result<Data, Error> {
+        private func encodeInstructions() -> Result<Data, Error> {
             var compiledInstructions = [SerialiseCompiledInstruction]()
 
             for instruction in programInstructions {
@@ -107,7 +94,7 @@ extension Transaction {
                 var keyIndices = Data()
                 for i in 0..<keysSize {
                     do {
-                        let index = try sortedAccountKeys.index(ofElementWithPublicKey: instruction.keys[i].publicKey).get()
+                        let index = try accountKeys.index(ofElementWithPublicKey: instruction.keys[i].publicKey).get()
                         keyIndices.append(UInt8(index))
                     } catch let error {
                         return .failure(error)
@@ -116,11 +103,10 @@ extension Transaction {
 
                 do {
                     let compiledInstruction = SerialiseCompiledInstruction(
-                        programIdIndex: UInt8(try sortedAccountKeys.index(ofElementWithPublicKey: instruction.programId).get()),
+                        programIdIndex: UInt8(try accountKeys.index(ofElementWithPublicKey: instruction.programId).get()),
                         keyIndicesCount: [UInt8](Data.encodeLength(keysSize)),
                         keyIndices: [UInt8](keyIndices),
                         dataLength: [UInt8](Data.encodeLength(instruction.data.count)),
-//                        dataLength: [11, 11, 10],
                         data: instruction.data
                     )
                     compiledInstructions.append(compiledInstruction)
@@ -179,8 +165,6 @@ extension Transaction.Message {
         }
     }
     
-    
-    
     static func from(buffer: Data) -> Transaction.Message {
         // Slice up wire data
         var byteArray = buffer
@@ -198,7 +182,7 @@ extension Transaction.Message {
         byteArray = accountCount.1
         
         var accountKeys: [String] = []
-        for i in 0...(accountCount.0 - 1) {
+        for _ in 0...(accountCount.0 - 1) {
             let account = byteArray[0..<PUBKEY_LENGTH]
             byteArray = Data(byteArray.dropFirst(PUBKEY_LENGTH))
             
@@ -212,7 +196,7 @@ extension Transaction.Message {
         byteArray = instructionCount.1
         
         var instructions: [CompiledInstruction] = []
-        for i in 0...(instructionCount.0 - 1) {
+        for _ in 0...(instructionCount.0 - 1) {
             guard let programIdIndex = byteArray.firstAsInt() else { break }
             
             byteArray = Data(byteArray.dropFirst())
@@ -232,10 +216,6 @@ extension Transaction.Message {
             
             let compiledInstruction = CompiledInstruction.init(prograIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
             instructions.append(compiledInstruction)
-        }
-        
-        accountKeys.forEach {
-            print("Key: " + $0)
         }
         
         let header = Header(

@@ -144,7 +144,16 @@ public struct Transaction {
         }
     }
 
-    private func compileMessage() -> Result<Message, Error> {
+    static func sortAccountMetas(accountMetas: [AccountMeta]) -> [AccountMeta] {
+        return accountMetas.sorted { (x, y) -> Bool in
+            if x.isSigner != y.isSigner {return x.isSigner}
+            if x.isWritable != y.isWritable {return x.isWritable}
+            // TODO: English sorting should be here to match kotlin and js implementation
+            return x.publicKey.base58EncodedString.lowercased() < y.publicKey.base58EncodedString.lowercased()
+        }
+    }
+    
+    func compileMessage() -> Result<Message, Error> {
         // verify instructions
         guard instructions.count > 0 else {
             return .failure(SolanaError.other("No instructions provided"))
@@ -168,11 +177,7 @@ public struct Transaction {
         }
 
         // sort accountMetas, first by signer, then by writable
-        accountMetas.sort { (x, y) -> Bool in
-            if x.isSigner != y.isSigner {return x.isSigner}
-            if x.isWritable != y.isWritable {return x.isWritable}
-            return x.publicKey.base58EncodedString < y.publicKey.base58EncodedString
-        }
+        accountMetas = Transaction.sortAccountMetas(accountMetas: accountMetas)
 
         // filterOut duplicate account metas, keeps writable one
         accountMetas = accountMetas.reduce([AccountMeta](), {result, accountMeta in
@@ -232,8 +237,6 @@ public struct Transaction {
                 }
             }
         }
-
-        accountMetas = signedKeys + unsignedKeys
 
         return .success(Message(
             accountKeys: accountMetas,
