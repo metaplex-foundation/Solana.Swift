@@ -170,10 +170,10 @@ extension Transaction.Message {
         guard let numReadonlyUnsignedAccounts = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of unsigned accounts") }
         byteArray = Data(byteArray.dropFirst())
               
-        let accounts = Shortvec.nextBlock(buffer: byteArray, multiplier: PUBKEY_LENGTH)
-        byteArray = accounts.1
+        let accountsBlock = Shortvec.nextBlock(buffer: byteArray, multiplier: PUBKEY_LENGTH)
+        byteArray = accountsBlock.1
         
-        let accountKeys = accounts.0
+        let accountKeys = accountsBlock.0
             .bytes
             .chunked(into: PUBKEY_LENGTH)
             .map { Base58.encode($0) }
@@ -181,26 +181,24 @@ extension Transaction.Message {
         let recentBlockhash = byteArray[0..<PUBKEY_LENGTH].bytes
         byteArray = Data(byteArray.dropFirst(PUBKEY_LENGTH))
         
-        let instructionCount = Shortvec.decodeLength(buffer: byteArray)
-        byteArray = instructionCount.1
+        let instructionsBlock = Shortvec.decodeLength(buffer: byteArray)
+        byteArray = instructionsBlock.1
         
         var instructions: [CompiledInstruction] = []
-        for _ in 0...(instructionCount.0 - 1) {
+        for _ in 0...(instructionsBlock.0 - 1) {
             guard let programIdIndex = byteArray.firstAsInt() else { break }
             
             byteArray = Data(byteArray.dropFirst())
             
-            let accountCount = Shortvec.nextBlock(buffer: byteArray)
-            byteArray = accountCount.1
+            let accountBlock = Shortvec.nextBlock(buffer: byteArray)
+            byteArray = accountBlock.1
             
-            let accounts = accountCount.0.bytes.map{ Int($0) }
+            let accounts = accountBlock.0.bytes.map{ Int($0) }
             
-            let dataLength = Shortvec.nextBlock(buffer: byteArray)
-            byteArray = dataLength.1
-            
-            let dataSlice = dataLength.0.bytes
-            
-            let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
+            let dataBlock = Shortvec.nextBlock(buffer: byteArray)
+            byteArray = dataBlock.1
+                        
+            let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataBlock.0.bytes)
             instructions.append(compiledInstruction)
         }
         
