@@ -1,15 +1,9 @@
 import Foundation
 
-public class CompiledInstruction {
+struct CompiledInstruction {
     let programIdIndex: Int
     let accounts: [Int]
     let data: [UInt8]
-    
-    init(prograIdIndex: Int, accounts: [Int], data: [UInt8]) {
-        self.programIdIndex = prograIdIndex
-        self.accounts = accounts
-        self.data = data
-    }
 }
 
 extension Transaction {
@@ -142,8 +136,6 @@ extension Transaction.Message {
             self.numReadonlyUnsignedAccounts = numReadonlyUnsignedAccounts
         }
         
-        static let LENGTH = 3
-
         var bytes: [UInt8] {
             [numRequiredSignatures, numReadonlySignedAccounts, numReadonlyUnsignedAccounts]
         }
@@ -165,27 +157,27 @@ extension Transaction.Message {
         }
     }
     
-    static func from(buffer: Data) -> Transaction.Message {
+    static func from(buffer: Data) throws -> Transaction.Message {
         // Slice up wire data
         var byteArray = buffer
         
-        let numRequiredSignatures = byteArray.first!
+        guard let numRequiredSignatures = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of required signatures") }
         byteArray = Data(byteArray.dropFirst())
         
-        let numReadonlySignedAccounts = byteArray.first!
+        guard let numReadonlySignedAccounts = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of signed accounts") }
         byteArray = Data(byteArray.dropFirst())
         
-        let numReadonlyUnsignedAccounts = byteArray.first!
+        guard let numReadonlyUnsignedAccounts = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of unsigned accounts") }
         byteArray = Data(byteArray.dropFirst())
-        
+                
         let accountCount = Shortvec.decodeLength(buffer: byteArray)
         byteArray = accountCount.1
-        
+
         var accountKeys: [String] = []
         for _ in 0...(accountCount.0 - 1) {
             let account = byteArray[0..<PUBKEY_LENGTH]
             byteArray = Data(byteArray.dropFirst(PUBKEY_LENGTH))
-            
+
             accountKeys.append(Base58.encode(account.bytes))
         }
         
@@ -213,7 +205,7 @@ extension Transaction.Message {
             let dataSlice = Data(byteArray[0..<dataLength.0]).bytes
             byteArray = Data(byteArray.dropFirst(dataLength.0))
             
-            let compiledInstruction = CompiledInstruction.init(prograIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
+            let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
             instructions.append(compiledInstruction)
         }
         
@@ -227,11 +219,10 @@ extension Transaction.Message {
         let accountMetasAsDictionary = Dictionary(uniqueKeysWithValues: accountMetas.map{ ($0.publicKey.base58EncodedString, $0) })
         
         var programInstructions: [TransactionInstruction] = []
-        for i in 0...(instructions.count - 1) {
-            let instruction = instructions[i]
+        for instruction in instructions {
             // TODO: Not sure if it should continue or throw, but I don't think it can happen here
             guard let programId = PublicKey(string: accountKeys[instruction.programIdIndex]) else { continue }
-            
+
             var keys: [AccountMeta] = []
             for j in 0...(instruction.accounts.count - 1) {
                 let accountIndex = instruction.accounts[j]
@@ -240,7 +231,7 @@ extension Transaction.Message {
                 guard let accountMeta = accountMetasAsDictionary[pubKey] else { continue }
                 keys.append(accountMeta)
             }
-            
+
             let transactionInstruction = TransactionInstruction(keys: keys, programId: programId, data: instruction.data)
             programInstructions.append(transactionInstruction)
         }
@@ -251,11 +242,10 @@ extension Transaction.Message {
     static func keysToAccountMetas(accountKeys: [String], header: Header) -> [AccountMeta] {
         var accountMetas: [AccountMeta] = []
         
-        for i in 0...(accountKeys.count - 1) {
-            let key = accountKeys[i]
+        for (index, key) in accountKeys.enumerated() {
             guard let account = PublicKey(string: key) else { continue }
-            let isSigner = header.isAccountSigner(index: i)
-            let isWritable = header.isAccountWritable(index: i, accountKeysCount: accountKeys.count)
+            let isSigner = header.isAccountSigner(index: index)
+            let isWritable = header.isAccountWritable(index: index, accountKeysCount: accountKeys.count)
             
             let accountMeta = AccountMeta(publicKey: account, isSigner: isSigner, isWritable: isWritable)
             accountMetas.append(accountMeta)

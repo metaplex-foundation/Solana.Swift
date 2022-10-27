@@ -2,8 +2,8 @@ import Foundation
 import TweetNacl
 
 public struct Transaction {
-    static let SIGNATURE_LENGTH: Int = 64
-    static let DEFAULT_SIGNATURE = Data(capacity: 0)
+    private static let SIGNATURE_LENGTH: Int = 64
+    private static let DEFAULT_SIGNATURE = Data(capacity: 0)
     
     var signatures = [Signature]()
     private let feePayer: PublicKey
@@ -145,7 +145,7 @@ public struct Transaction {
     }
 
     static func sortAccountMetas(accountMetas: [AccountMeta]) -> [AccountMeta] {
-        let locale = NSLocale.init(localeIdentifier :  "en_US") as Locale
+        let locale = Locale(identifier: "en_US")
         return accountMetas.sorted { (x, y) -> Bool in
             if x.isSigner != y.isSigner {return x.isSigner}
             if x.isWritable != y.isWritable {return x.isWritable}
@@ -327,18 +327,13 @@ public extension Transaction {
         let feePayer = fromMessage.accountKeys[0].publicKey
        
         var sigs: [Transaction.Signature] = []
-        for i in 0...(signatures.count - 1) {
-            let signature = Base58.encode(signatures[i]) == Base58.encode(DEFAULT_SIGNATURE.bytes) ? nil : signatures[i]
+        
+        for (index, signature) in signatures.enumerated() {
+            let signatureEncoded = Base58.encode(signature) == Base58.encode(DEFAULT_SIGNATURE.bytes) ? nil : signature
             
-            let publicKey = fromMessage.accountKeys[i].publicKey
+            let publicKey = fromMessage.accountKeys[index].publicKey
             
-            if (signature == nil) {
-                let sig = Transaction.Signature(signature: nil, publicKey: publicKey)
-                sigs.append(sig)
-            } else {
-                let sig = Transaction.Signature(signature: Data(signature!), publicKey: publicKey)
-                sigs.append(sig)
-            }
+            sigs.append(Transaction.Signature(signature: signatureEncoded.map { Data($0) }, publicKey: publicKey))
         }
                 
         return Transaction(signatures: sigs, feePayer: feePayer, instructions: fromMessage.programInstructions, recentBlockhash: fromMessage.recentBlockhash)
@@ -370,11 +365,7 @@ public class Shortvec {
 }
 
 public extension Data {
-    func firstAsInt(withDefault: Int? = nil) -> Int? {
-        guard let first = self.first else {
-            return withDefault
-        }
-        
-        return Int(first)
+    func firstAsInt() -> Int? {
+        return self.first.map { Int($0) }
     }
 }
