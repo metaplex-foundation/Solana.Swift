@@ -2,7 +2,10 @@ import Foundation
 import TweetNacl
 
 public struct Transaction {
-    private var signatures = [Signature]()
+    private static let SIGNATURE_LENGTH: Int = 64
+    private static let DEFAULT_SIGNATURE = Data(capacity: 0)
+    
+    var signatures = [Signature]()
     private let feePayer: PublicKey
     private let recentBlockhash: String
 
@@ -136,12 +139,21 @@ public struct Transaction {
                     return message
                 }
             }
-            signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
+
             return message
         }
     }
 
-    private func compileMessage() -> Result<Message, Error> {
+    static func sortAccountMetas(accountMetas: [AccountMeta]) -> [AccountMeta] {
+        let locale = Locale(identifier: "en_US")
+        return accountMetas.sorted { (x, y) -> Bool in
+            if x.isSigner != y.isSigner {return x.isSigner}
+            if x.isWritable != y.isWritable {return x.isWritable}
+            return x.publicKey.base58EncodedString.compare(y.publicKey.base58EncodedString, locale: locale) == .orderedAscending
+        }
+    }
+    
+    func compileMessage() -> Result<Message, Error> {
         // verify instructions
         guard instructions.count > 0 else {
             return .failure(SolanaError.other("No instructions provided"))
@@ -165,11 +177,7 @@ public struct Transaction {
         }
 
         // sort accountMetas, first by signer, then by writable
-        accountMetas.sort { (x, y) -> Bool in
-            if x.isSigner != y.isSigner {return x.isSigner}
-            if x.isWritable != y.isWritable {return x.isWritable}
-            return false
-        }
+        accountMetas = Transaction.sortAccountMetas(accountMetas: accountMetas)
 
         // filterOut duplicate account metas, keeps writable one
         accountMetas = accountMetas.reduce([AccountMeta](), {result, accountMeta in
@@ -230,8 +238,6 @@ public struct Transaction {
             }
         }
 
-        accountMetas = signedKeys + unsignedKeys
-
         return .success(Message(
             accountKeys: accountMetas,
             recentBlockhash: recentBlockhash,
@@ -286,6 +292,7 @@ public struct Transaction {
 }
 
 public extension Transaction {
+    
     struct Signature {
         var signature: Data?
         var publicKey: PublicKey
@@ -294,5 +301,79 @@ public extension Transaction {
             self.signature = signature
             self.publicKey = publicKey
         }
+    }
+    
+    static func from(buffer: Data) throws -> Transaction {
+        // Slice up wire data
+        var byteArray = buffer
+        
+        let signatureCount = Shortvec.decodeLength(buffer: byteArray)
+        byteArray = signatureCount.1
+        
+        var signatures: [[UInt8]] = []
+        for _ in 0...(signatureCount.0) - 1 {
+            let signature = byteArray[0..<SIGNATURE_LENGTH]
+            byteArray = Data(byteArray.dropFirst(SIGNATURE_LENGTH))
+
+            signatures.append(signature.bytes)
+        }
+        
+        return try populateTransaction(fromMessage: Message.from(buffer: byteArray), signatures: signatures)
+    }
+    
+    private static func populateTransaction(fromMessage: Message, signatures: [[UInt8]]) throws -> Transaction {
+        
+        // TODO: Should check against required number of signatures if there are any
+        let feePayer = fromMessage.accountKeys[0].publicKey
+       
+        var sigs: [Transaction.Signature] = []
+        
+        for (index, signature) in signatures.enumerated() {
+            let signatureEncoded = Base58.encode(signature) == Base58.encode(DEFAULT_SIGNATURE.bytes) ? nil : signature
+            
+            let publicKey = fromMessage.accountKeys[index].publicKey
+            
+            sigs.append(Transaction.Signature(signature: signatureEncoded.map { Data($0) }, publicKey: publicKey))
+        }
+                
+        return Transaction(signatures: sigs, feePayer: feePayer, instructions: fromMessage.programInstructions, recentBlockhash: fromMessage.recentBlockhash)
+    }
+}
+
+public class Shortvec {
+    static func decodeLength(buffer: Data) -> (Int, Data) {
+        var newBytes = buffer
+        var len = 0
+        var size = 0
+        while (true) {
+            guard let elem = newBytes.firstAsInt() else {
+                break
+            }
+            
+            newBytes = Data(newBytes.dropFirst(1))
+            
+            len = len | (elem & 0x7f) << (size * 7)
+            size += 1
+            
+            if ((elem & 0x80) == 0) {
+                break
+            }
+        }
+        
+        return (len, newBytes)
+    }
+    
+    static func nextBlock(buffer: Data, multiplier: Int = 1) -> (Data, Data) {
+        let nextLengh = decodeLength(buffer: buffer)
+        
+        let block = Data(nextLengh.1[0..<(nextLengh.0 * multiplier)])
+        
+        return (block, Data(nextLengh.1.dropFirst(nextLengh.0 * multiplier)))
+    }
+}
+
+public extension Data {
+    func firstAsInt() -> Int? {
+        return self.first.map { Int($0) }
     }
 }
