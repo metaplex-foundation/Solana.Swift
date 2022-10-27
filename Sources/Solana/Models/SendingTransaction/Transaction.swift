@@ -139,17 +139,17 @@ public struct Transaction {
                     return message
                 }
             }
-            //signatures = signedKeys.map {Signature(signature: nil, publicKey: $0.publicKey)}
+
             return message
         }
     }
 
     static func sortAccountMetas(accountMetas: [AccountMeta]) -> [AccountMeta] {
+        let locale = NSLocale.init(localeIdentifier :  "en_US") as Locale
         return accountMetas.sorted { (x, y) -> Bool in
             if x.isSigner != y.isSigner {return x.isSigner}
             if x.isWritable != y.isWritable {return x.isWritable}
-            // TODO: English sorting should be here to match kotlin and js implementation
-            return x.publicKey.base58EncodedString.lowercased() < y.publicKey.base58EncodedString.lowercased()
+            return x.publicKey.base58EncodedString.compare(y.publicKey.base58EncodedString, locale: locale) == .orderedAscending
         }
     }
     
@@ -340,11 +340,7 @@ public extension Transaction {
                 sigs.append(sig)
             }
         }
-        
-        sigs.forEach {
-            print("Signatures are " + $0.publicKey.base58EncodedString)
-        }
-        
+                
         return Transaction(signatures: sigs, feePayer: feePayer, instructions: fromMessage.programInstructions, recentBlockhash: fromMessage.recentBlockhash)
     }
 }

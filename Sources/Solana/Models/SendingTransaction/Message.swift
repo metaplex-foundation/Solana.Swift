@@ -211,7 +211,6 @@ extension Transaction.Message {
             byteArray = dataLength.1
             
             let dataSlice = Data(byteArray[0..<dataLength.0]).bytes
-            let data = Base58.encode(dataSlice)
             byteArray = Data(byteArray.dropFirst(dataLength.0))
             
             let compiledInstruction = CompiledInstruction.init(prograIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
@@ -225,7 +224,7 @@ extension Transaction.Message {
         )
         
         let accountMetas = keysToAccountMetas(accountKeys: accountKeys, header: header)
-        var accountMetasAsDictionary = Dictionary(uniqueKeysWithValues: accountMetas.map{ ($0.publicKey.base58EncodedString, $0) })
+        let accountMetasAsDictionary = Dictionary(uniqueKeysWithValues: accountMetas.map{ ($0.publicKey.base58EncodedString, $0) })
         
         var programInstructions: [TransactionInstruction] = []
         for i in 0...(instructions.count - 1) {
@@ -250,7 +249,6 @@ extension Transaction.Message {
     }
     
     static func keysToAccountMetas(accountKeys: [String], header: Header) -> [AccountMeta] {
-        let accountKeysCount = accountKeys.count
         var accountMetas: [AccountMeta] = []
         
         for i in 0...(accountKeys.count - 1) {
