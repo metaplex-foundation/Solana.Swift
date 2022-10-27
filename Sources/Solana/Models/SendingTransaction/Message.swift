@@ -169,17 +169,14 @@ extension Transaction.Message {
         
         guard let numReadonlyUnsignedAccounts = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of unsigned accounts") }
         byteArray = Data(byteArray.dropFirst())
-                
-        let accountCount = Shortvec.decodeLength(buffer: byteArray)
-        byteArray = accountCount.1
-
-        var accountKeys: [String] = []
-        for _ in 0...(accountCount.0 - 1) {
-            let account = byteArray[0..<PUBKEY_LENGTH]
-            byteArray = Data(byteArray.dropFirst(PUBKEY_LENGTH))
-
-            accountKeys.append(Base58.encode(account.bytes))
-        }
+              
+        let accounts = Shortvec.nextBlock(buffer: byteArray, multiplier: PUBKEY_LENGTH)
+        byteArray = accounts.1
+        
+        let accountKeys = accounts.0
+            .bytes
+            .chunked(into: PUBKEY_LENGTH)
+            .map { Base58.encode($0) }
         
         let recentBlockhash = byteArray[0..<PUBKEY_LENGTH].bytes
         byteArray = Data(byteArray.dropFirst(PUBKEY_LENGTH))
@@ -193,17 +190,15 @@ extension Transaction.Message {
             
             byteArray = Data(byteArray.dropFirst())
             
-            let accountCount = Shortvec.decodeLength(buffer: byteArray)
+            let accountCount = Shortvec.nextBlock(buffer: byteArray)
             byteArray = accountCount.1
             
-            let accounts = byteArray[0..<accountCount.0].bytes.map{ Int($0) }
-            byteArray = Data(byteArray.dropFirst(accountCount.0))
+            let accounts = accountCount.0.bytes.map{ Int($0) }
             
-            let dataLength = Shortvec.decodeLength(buffer: byteArray)
+            let dataLength = Shortvec.nextBlock(buffer: byteArray)
             byteArray = dataLength.1
             
-            let dataSlice = Data(byteArray[0..<dataLength.0]).bytes
-            byteArray = Data(byteArray.dropFirst(dataLength.0))
+            let dataSlice = dataLength.0.bytes
             
             let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataSlice)
             instructions.append(compiledInstruction)

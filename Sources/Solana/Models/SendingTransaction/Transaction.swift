@@ -362,6 +362,14 @@ public class Shortvec {
         
         return (len, newBytes)
     }
+    
+    static func nextBlock(buffer: Data, multiplier: Int = 1) -> (Data, Data) {
+        let nextLengh = decodeLength(buffer: buffer)
+        
+        let block = Data(nextLengh.1[0..<(nextLengh.0 * multiplier)])
+        
+        return (block, Data(nextLengh.1.dropFirst(nextLengh.0 * multiplier)))
+    }
 }
 
 public extension Data {
