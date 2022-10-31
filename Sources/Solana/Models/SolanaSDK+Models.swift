@@ -120,7 +120,7 @@ public struct ProgramAccount<T: BufferLayout>: Decodable {
 }
 
 public struct ProgramAccountPureData: Decodable {
-    public let publicKey: String
+    public let pubkey: String
     public let account: BufferInfoPureData
 }
 
