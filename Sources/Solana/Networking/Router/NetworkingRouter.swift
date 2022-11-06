@@ -44,8 +44,11 @@ public class NetworkingRouter: SolanaRouter {
 
             do {
                 let encoder = JSONEncoder()
-                encoder.outputFormatting = .withoutEscapingSlashes
-                urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
+                if #available(iOS 13.0, *) {
+                    // There may be bugs on older versions of iOS here. Consider upping the minimum version, or figure out some different way of doing this
+                    encoder.outputFormatting = .withoutEscapingSlashes
+                }
+                urlRequest.httpBody = try encoder.encode(requestAPI)
                 cb(.success(urlRequest))
                 return
             } catch let ecodingError {
