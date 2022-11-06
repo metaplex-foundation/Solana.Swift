@@ -43,6 +43,8 @@ public class NetworkingRouter: SolanaRouter {
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             do {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .withoutEscapingSlashes
                 urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
                 cb(.success(urlRequest))
                 return
