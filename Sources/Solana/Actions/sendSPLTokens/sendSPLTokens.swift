@@ -80,6 +80,7 @@ public extension Action {
         from fromPublicKey: String,
         to destinationAddress: String,
         amount: UInt64,
+        allowUnfundedRecipient: Bool = false,
         payer: Account
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
@@ -88,6 +89,7 @@ public extension Action {
                 from: fromPublicKey,
                 to: destinationAddress,
                 amount: amount,
+                allowUnfundedRecipient: allowUnfundedRecipient,
                 payer: payer,
                 onComplete: c.resume(with:)
             )
