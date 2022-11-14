@@ -20,13 +20,13 @@ public struct Transaction {
     }
 
     // MARK: - Methods
-    public mutating func sign(signers: [Account]) -> Result<Void, Error> {
+    public mutating func sign(signers: [Signer]) -> Result<Void, Error> {
         guard signers.count > 0 else {
             return .failure(SolanaError.invalidRequest(reason: "No signers"))
         }
 
         // unique signers
-        let signers = signers.reduce([Account](), {signers, signer in
+        let signers = signers.reduce([Signer](), {signers, signer in
             var uniqueSigners = signers
             if !uniqueSigners.contains(where: {$0.publicKey == signer.publicKey}) {
                 uniqueSigners.append(signer)
@@ -77,13 +77,13 @@ public struct Transaction {
     }
 
     // MARK: - Signing
-    public mutating func partialSign(signers: [Account]) -> Result<Void, Error> {
+    public mutating func partialSign(signers: [Signer]) -> Result<Void, Error> {
         if signers.count == 0 {
             return .failure(SolanaError.other("No signers"))
         }
 
         // unique signers
-        let signers = signers.reduce([Account](), {signers, signer in
+        let signers = signers.reduce([Signer](), {signers, signer in
             var uniqueSigners = signers
             if !uniqueSigners.contains(where: {$0.publicKey == signer.publicKey}) {
                 uniqueSigners.append(signer)
@@ -96,7 +96,7 @@ public struct Transaction {
         }
     }
 
-    private mutating func _partialSign(message: Message, signers: [Account]) -> Result<Void, Error> {
+    private mutating func _partialSign(message: Message, signers: [Signer]) -> Result<Void, Error> {
         message.serialize()
             .flatMap { signData in
                 for signer in signers {

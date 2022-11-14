@@ -4,24 +4,24 @@ import Solana
 class sendSOL: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))! // 5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))! // 5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx
     }
     
     func testSendSOLFromBalance() {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try! solana.api.getBalance(account: account.publicKey.base58EncodedString)?.get()
+        let balance = try! solana.api.getBalance(account: signer.publicKey.base58EncodedString)?.get()
         XCTAssertNotNil(balance)
 
         let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: balance!/10,
-            from: account
+            from: signer
         )?.get()
         XCTAssertNotNil(transactionId)
     }
@@ -30,7 +30,7 @@ class sendSOL: XCTestCase {
         let transactionId = try! solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9),
-            from: account
+            from: signer
             ,allowUnfundedRecipient: true
         )?.get()
         XCTAssertNotNil(transactionId)
@@ -40,7 +40,7 @@ class sendSOL: XCTestCase {
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 0.001.toLamport(decimals: 9),
-            from: account
+            from: signer
         )?.get())
     }
     func testSendSOLBigAmmount() {
@@ -48,7 +48,7 @@ class sendSOL: XCTestCase {
         XCTAssertThrowsError(try solana.action.sendSOL(
             to: toPublicKey,
             amount: 9223372036854775808,
-            from: account
+            from: signer
         )?.get())
     }
 }

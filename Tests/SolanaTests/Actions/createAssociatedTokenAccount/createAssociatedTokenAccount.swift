@@ -5,20 +5,20 @@ class createAssociatedTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var networkRouterMock: NetworkingRouterMock!
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         let wallet: TestsWallet = .devnet
         networkRouterMock = NetworkingRouterMock()
         solana = Solana(router: networkRouterMock)
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     override func tearDownWithError() throws {
         networkRouterMock = nil
         solana = nil
-        account = nil
+        signer = nil
         try super.tearDownWithError()
     }
 
@@ -28,7 +28,7 @@ class createAssociatedTokenAccount: XCTestCase {
         networkRouterMock.expectedResults.append(.success(.json(filename:"getAccountInfo")))
 
         // act
-        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: account.publicKey, tokenMint: tokenMint, payer: account)?.get()
+        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try! solana.action.getOrCreateAssociatedTokenAccount(for: signer.publicKey, tokenMint: tokenMint, payer: signer)?.get()
 
         // assert
         XCTAssertEqual(networkRouterMock.requestCalled.count, 1)
@@ -38,7 +38,7 @@ class createAssociatedTokenAccount: XCTestCase {
     
     func testFailCreateAssociatedTokenAccountItExisted() {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        XCTAssertThrowsError(try (solana.action.createAssociatedTokenAccount(for: account.publicKey, tokenMint: tokenMint, payer: account)?.get() as TransactionID?))
+        XCTAssertThrowsError(try (solana.action.createAssociatedTokenAccount(for: signer.publicKey, tokenMint: tokenMint, payer: signer)?.get() as TransactionID?))
     }
 
     func testFindAssociatedTokenAddress() {

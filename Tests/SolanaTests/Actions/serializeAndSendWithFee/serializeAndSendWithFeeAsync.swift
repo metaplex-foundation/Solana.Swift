@@ -6,43 +6,43 @@ import XCTest
 class serializeAndSendWithFeeAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
     func testSimulationSerializeAndSend() async throws {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try await solana.api.getBalance(account: account.publicKey.base58EncodedString)
+        let balance = try await solana.api.getBalance(account: signer.publicKey.base58EncodedString)
         XCTAssertNotNil(balance)
 
         let instruction = SystemProgram.transferInstruction(
-            from: account.publicKey,
+            from: signer.publicKey,
             to: PublicKey(string: toPublicKey)!,
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try await solana.action.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [account])
+        let transactionId = try await solana.action.serializeAndSendWithFeeSimulation(instructions: [instruction], signers: [signer])
         XCTAssertNotNil(transactionId)
     }
     
     func testSerializeAndSend() async throws {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try await solana.api.getBalance(account: account.publicKey.base58EncodedString)
+        let balance = try await solana.api.getBalance(account: signer.publicKey.base58EncodedString)
         XCTAssertNotNil(balance)
 
         let instruction = SystemProgram.transferInstruction(
-            from: account.publicKey,
+            from: signer.publicKey,
             to: PublicKey(string: toPublicKey)!,
             lamports: 0.001.toLamport(decimals: 9)
         )
         
-        let transactionId = try await solana.action.serializeAndSendWithFee( instructions: [instruction], signers: [account])
+        let transactionId = try await solana.action.serializeAndSendWithFee( instructions: [instruction], signers: [signer])
         XCTAssertNotNil(transactionId)
     }
     

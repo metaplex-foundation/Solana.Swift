@@ -6,16 +6,16 @@ import Solana
 class getTokenWalletsAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .getWallets
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testsGetTokenWallets() async throws {
-        let wallets = try await solana.action.getTokenWallets(account: account.publicKey.base58EncodedString)
+        let wallets = try await solana.action.getTokenWallets(account: signer.publicKey.base58EncodedString)
         XCTAssertFalse(wallets.isEmpty)
     }
 }

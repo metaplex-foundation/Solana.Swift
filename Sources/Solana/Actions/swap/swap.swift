@@ -8,7 +8,7 @@ extension Action {
     }
 
     public func swap(
-        account: Account,
+        signer: Signer,
         pool: Pool? = nil,
         source: PublicKey,
         sourceMint: PublicKey,
@@ -18,7 +18,7 @@ extension Action {
         amount: UInt64,
         onComplete: @escaping(Result<SwapResponse, Error>) -> Void
     ) {
-        let owner = account
+        let owner = signer
 
         // reduce pools
         var getPoolRequest: ContResult<Pool, Error>
@@ -214,9 +214,9 @@ extension Action {
         payer: PublicKey,
         instructions: inout [TransactionInstruction],
         cleanupInstructions: inout [TransactionInstruction],
-        signers: inout [Account],
+        signers: inout [Signer],
         minimumBalanceForRentExemption: UInt64
-    ) -> Result<Account, Error> {
+    ) -> Result<Signer, Error> {
         guard let newAccount = HotAccount() else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
@@ -255,9 +255,9 @@ extension Action {
         mint: PublicKey,
         instructions: inout [TransactionInstruction],
         cleanupInstructions: inout [TransactionInstruction],
-        signers: inout [Account],
+        signers: inout [Signer],
         minimumBalanceForRentExemption: UInt64
-    ) -> Result<Account, Error> {
+    ) -> Result<Signer, Error> {
         guard let newAccount = HotAccount() else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
@@ -297,7 +297,7 @@ extension Action {
 @available(macOS 10.15, *)
 public extension Action {
     func swap(
-        account: Account,
+        signer: Signer,
         pool: Pool? = nil,
         source: PublicKey,
         sourceMint: PublicKey,
@@ -308,7 +308,7 @@ public extension Action {
     ) async throws -> SwapResponse {
         try await withCheckedThrowingContinuation { c in
             self.swap(
-                account: account,
+                signer: signer,
                 pool: pool,
                 source: source,
                 sourceMint: sourceMint,
@@ -329,7 +329,7 @@ public extension Action {
 
 extension ActionTemplates {
     public struct Swap: ActionTemplate {
-        public init(account: Account,
+        public init(signer: Signer,
                     pool: Pool? = nil,
                     source: PublicKey,
                     sourceMint: PublicKey,
@@ -337,7 +337,7 @@ extension ActionTemplates {
                     destinationMint: PublicKey,
                     slippage: Double,
                     amount: UInt64) {
-            self.account = account
+            self.signer = signer
             self.pool = pool
             self.source = source
             self.sourceMint = sourceMint
@@ -347,7 +347,7 @@ extension ActionTemplates {
             self.amount = amount
         }
 
-        public let account: Account
+        public let signer: Signer
         public let pool: Pool?// = nil
         public let source: PublicKey
         public let sourceMint: PublicKey
@@ -359,7 +359,7 @@ extension ActionTemplates {
         public typealias Success = Action.SwapResponse
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Action.SwapResponse, Error>) -> Void) {
-            actionClass.swap(account: account,
+            actionClass.swap(signer: signer,
                              pool: pool,
                              source: source,
                              sourceMint: sourceMint,

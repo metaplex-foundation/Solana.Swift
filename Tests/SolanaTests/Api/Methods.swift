@@ -4,7 +4,7 @@ import XCTest
 class Methods: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var account: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet

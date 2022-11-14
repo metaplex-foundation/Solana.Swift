@@ -7,25 +7,25 @@ class createAssociatedTokenAccountAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var networkRouterMock: NetworkingRouterMock!
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: .devnetSolana))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testGetOrCreateAssociatedTokenAccount() async throws {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
-        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try await solana.action.getOrCreateAssociatedTokenAccount(owner: account.publicKey, tokenMint: tokenMint, payer: account)
+        let account: (transactionId: TransactionID?, associatedTokenAddress: PublicKey)? = try await solana.action.getOrCreateAssociatedTokenAccount(owner: signer.publicKey, tokenMint: tokenMint, payer: signer)
         XCTAssertNotNil(account)
     }
     
     func testFailCreateAssociatedTokenAccountItExisted() async throws {
         let tokenMint = PublicKey(string: "2tWC4JAdL4AxEFJySziYJfsAnW2MHKRo98vbAPiRDSk8")!
         await asyncAssertThrowing("Should fail to create associated token account if existed") {
-            try await (solana.action.createAssociatedTokenAccount(for: account.publicKey, tokenMint: tokenMint, payer: account) as TransactionID?)
+            try await (solana.action.createAssociatedTokenAccount(for: signer.publicKey, tokenMint: tokenMint, payer: signer) as TransactionID?)
         }
 
     }

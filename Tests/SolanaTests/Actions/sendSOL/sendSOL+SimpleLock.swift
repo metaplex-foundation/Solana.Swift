@@ -28,7 +28,7 @@ extension Action {
     func sendSOL(
         to destination: String,
         amount: UInt64,
-        from: Account,
+        from: Signer,
         allowUnfundedRecipient: Bool = false
     ) -> Result<TransactionID, Error>? {
         var transaction: Result<TransactionID, Error>?

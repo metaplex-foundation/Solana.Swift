@@ -12,7 +12,7 @@ extension Action {
     public func getOrCreateAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account
+        payer: Signer
     ) -> Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>? {
         var info: Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>?
         let lock = RunLoopSimpleLock()
@@ -29,7 +29,7 @@ extension Action {
     public func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account
+        payer: Signer
     ) -> Result<TransactionID, Error>? {
         var transactionId: Result<TransactionID, Error>?
         let lock = RunLoopSimpleLock()

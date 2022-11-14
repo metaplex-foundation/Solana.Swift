@@ -6,12 +6,12 @@ import XCTest
 class getMintDataAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testGetMintData() async throws {

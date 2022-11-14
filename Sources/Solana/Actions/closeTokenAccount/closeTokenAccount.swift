@@ -2,7 +2,7 @@ import Foundation
 
 extension Action {
     public func closeTokenAccount(
-        account: Account,
+        signer: Signer,
         tokenPubkey: String,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
@@ -13,10 +13,10 @@ extension Action {
 
         let instruction = TokenProgram.closeAccountInstruction(
             account: tokenPubkey,
-            destination: account.publicKey,
-            owner: account.publicKey
+            destination: signer.publicKey,
+            owner: signer.publicKey
         )
-        serializeAndSendWithFee(instructions: [instruction], signers: [account]) {
+        serializeAndSendWithFee(instructions: [instruction], signers: [signer]) {
             onComplete($0)
             return
         }
@@ -27,29 +27,29 @@ extension Action {
 @available(macOS 10.15, *)
 public extension Action {
     func closeTokenAccount(
-        account: Account,
+        signer: Signer,
         tokenPubkey: String
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
-            self.closeTokenAccount(account: account, tokenPubkey: tokenPubkey, onComplete: c.resume(with:))
+            self.closeTokenAccount(signer: signer, tokenPubkey: tokenPubkey, onComplete: c.resume(with:))
         }
     }
 }
 
 extension ActionTemplates {
     public struct CloseTokenAccountAction: ActionTemplate {
-        public init(account: Account, tokenPubkey: String) {
-            self.account = account
+        public init(signer: Signer, tokenPubkey: String) {
+            self.signer = signer
             self.tokenPubkey = tokenPubkey
         }
 
         public typealias Success = TransactionID
 
-        public let account: Account
+        public let signer: Signer
         public let tokenPubkey: String
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {
-            actionClass.closeTokenAccount(account: account, tokenPubkey: tokenPubkey, onComplete: completion)
+            actionClass.closeTokenAccount(signer: signer, tokenPubkey: tokenPubkey, onComplete: completion)
         }
     }
 }

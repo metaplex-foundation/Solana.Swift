@@ -5,13 +5,10 @@ import XCTest
 class TokenInfoTests: XCTestCase {
     var endpoint = RPCEndpoint.mainnetBetaSolana
     var solanaSDK: Solana!
-    var account: Account!
 
     override func setUpWithError() throws {
-        let wallet: TestsWallet = .devnet
         let tokenProvider = try! TokenListProvider(path: getFileFrom("TokenInfo/mainnet-beta.tokens"))
         solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), tokenProvider: tokenProvider)
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testCloseAccountInstruction() {
