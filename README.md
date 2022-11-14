@@ -124,7 +124,7 @@ Solana.Swift comes with Bip39 support. Do not confuse a seed phrase with an acco
 To create a new seed phrase only use `Mnemonic()`. It will create a 256 strength from an English Wordlist. 
 
 ```swift
-let phrase= Mnemonic())
+let phrase = Mnemonic()
 let account = HotAccount(phrase: phrase)
 ```
 
