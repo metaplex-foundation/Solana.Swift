@@ -7,14 +7,14 @@ class createTokenAccountAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var networkRouterMock: NetworkingRouterMock!
     var solana: Solana!
-    var account: Signer!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         let wallet: TestsWallet = .devnet
         networkRouterMock = NetworkingRouterMock()
         solana = Solana(router: networkRouterMock)
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testCreateTokenAccount() async throws {
@@ -27,7 +27,7 @@ class createTokenAccountAsync: XCTestCase {
         ])
 
         // act
-        let account: (signature: String, newPubkey: String)? = try! await solana.action.createTokenAccount( mintAddress: mintAddress, payer: self.account)
+        let account: (signature: String, newPubkey: String)? = try! await solana.action.createTokenAccount( mintAddress: mintAddress, payer: self.signer)
         
         // assert
         XCTAssertEqual(networkRouterMock.requestCalled.count, 3)

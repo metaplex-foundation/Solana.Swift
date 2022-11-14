@@ -6,12 +6,12 @@ import Solana
 class sendSPLTokensAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Signer!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     
     func testSendSPLTokenWithFee() async throws {
@@ -25,7 +25,7 @@ class sendSPLTokensAsync: XCTestCase {
             from: source,
             to: destination,
             amount: Double(0.001).toLamport(decimals: 5),
-            payer: account
+            payer: signer
         )
         XCTAssertNotNil(transactionId)
         
@@ -35,7 +35,7 @@ class sendSPLTokensAsync: XCTestCase {
             from: destination,
             to: source,
             amount: Double(0.001).toLamport(decimals: 5),
-            payer: account
+            payer: signer
         )
         XCTAssertNotNil(transactionIdB)
     }

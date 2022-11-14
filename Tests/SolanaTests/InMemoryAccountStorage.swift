@@ -22,19 +22,19 @@ enum TestsWallet{
 
 class InMemoryAccountStorage: SolanaAccountStorage {
     
-    private var _account: Signer?
-    func save(_ account: Signer) -> Result<Void, Error> {
-        _account = account
+    private var _signer: Signer?
+    func save(_ signer: Signer) -> Result<Void, Error> {
+        _signer = signer
         return .success(())
     }
     var account: Result<Signer, Error> {
-        if let account = _account {
+        if let account = _signer {
             return .success(account)
         }
         return .failure(SolanaError.unauthorized)
     }
     func clear() -> Result<Void, Error> {
-        _account = nil
+        _signer = nil
         return .success(())
     }
 }

@@ -6,12 +6,12 @@ import XCTest
 class MethodsAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Signer!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
     func testGetAccountInfo() async throws {
@@ -35,7 +35,7 @@ class MethodsAsync: XCTestCase {
     }
   
     func testGetBalance() async throws {
-        let value = try await solana.api.getBalance(account: account.publicKey.base58EncodedString)
+        let value = try await solana.api.getBalance(account: signer.publicKey.base58EncodedString)
         XCTAssertTrue(value > 0)
     }
     func testGetClusterNodes() async throws {

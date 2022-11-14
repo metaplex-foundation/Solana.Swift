@@ -6,23 +6,23 @@ import Solana
 class sendSOLAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Signer!
+    var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
         solana = Solana(router: NetworkingRouter(endpoint: endpoint))
-        account = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))! // 5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx
+        signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))! // 5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx
     }
     
     func testSendSOLFromBalance() async throws {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
 
-        let balance = try await solana.api.getBalance(account: account.publicKey.base58EncodedString, commitment: nil)
+        let balance = try await solana.api.getBalance(account: signer.publicKey.base58EncodedString, commitment: nil)
         XCTAssertNotNil(balance)
 
         let transactionId = try await solana.action.sendSOL(
             to: toPublicKey,
-            from: account,
+            from: signer,
             amount: balance/10
         )
         XCTAssertNotNil(transactionId)
@@ -32,7 +32,7 @@ class sendSOLAsync: XCTestCase {
         let toPublicKey = "3h1zGmCwsRJnVk5BuRNMLsPaQu1y2aqXqXDWYCgrp5UG"
         let transactionId = try await solana.action.sendSOL(
             to: toPublicKey,
-            from: account,
+            from: signer,
             amount: 0.001.toLamport(decimals: 9)
         )
         XCTAssertNotNil(transactionId)
@@ -42,7 +42,7 @@ class sendSOLAsync: XCTestCase {
         await asyncAssertThrowing("sendSOL should fail when destination is incorrect") {
             try await solana.action.sendSOL(
                 to: toPublicKey,
-                from: account,
+                from: signer,
                 amount: 0.001.toLamport(decimals: 9)
             )
         }
@@ -52,7 +52,7 @@ class sendSOLAsync: XCTestCase {
         await asyncAssertThrowing("sendSOL should fail when amount is too big") {
             try await solana.action.sendSOL(
                 to: toPublicKey,
-                from: account,
+                from: signer,
                 amount: 9223372036854775808
             )
         }

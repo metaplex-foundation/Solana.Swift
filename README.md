@@ -68,12 +68,12 @@ let router = NetworkingRouter(endpoint: endpoint)
 let solana = Solana(router: router)
 ```
 
-## Accounts or Signers
+## Signers or Accounts  
 
-The library provides an Account protocol that acts as the signer for any operation. This account allows any client to implement their Wallet architecture and storage. Keep in mind that the secretKey is not handled by the protocol that's up to the implementation. 
+The library provides an Signer protocol that acts as the signer for any operation. This account allows any client to implement their Wallet architecture and storage. Keep in mind that the secretKey is not handled by the protocol that's up to the implementation. 
 
 ```swift
-public protocol Account {
+public protocol Signer {
     var publicKey: PublicKey { get }
     func sign(serializedMessage: Data) throws -> Data
 }
@@ -82,7 +82,7 @@ public protocol Account {
 An example implementation can be a HotAccount. Solana.Swift comes with `HotAccount` which allows the creation and recovery from a standard Solana Mnemonic. This implementation does provide a secretKey object. The secretKey is held on a variable keep in mind that this might now be a secure way of permanent storage.
 
 ```swift
-public struct HotAccount:  Account {
+public struct HotAccount: Signer {
     public let phrase: [String]
     public let publicKey: PublicKey
     public let secretKey: Data
@@ -103,7 +103,7 @@ let phrase12 = "miracle pizza supply useful steak border same again youth silver
 let account12 = HotAccount(phrase: phrase12)
 ```
 
-Create a Hot Account from bip32Deprecated("m/501'") seed phrase. Yes, we support Wallet Index and several accounts from the same Mnemonic. This is helpful for wallet creation. 
+Create a HotAccount from bip32Deprecated("m/501'") seed phrase. Yes, we support Wallet Index and several accounts from the same Mnemonic. This is helpful for wallet creation. 
 
 ```swift
 let phrase24 = "hint begin crowd dolphin drive render finger above sponsor prize runway invest dizzy pony bitter trial ignore crop please industry hockey wire use side".components(separatedBy: " ")

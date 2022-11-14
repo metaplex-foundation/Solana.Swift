@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol SolanaAccountStorage {
-    func save(_ account: Signer) -> Result<Void, Error>
+    func save(_ signer: Signer) -> Result<Void, Error>
     var account: Result<Signer, Error> { get }
     func clear() -> Result<Void, Error>
 }
