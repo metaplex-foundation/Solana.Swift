@@ -3,7 +3,7 @@ import Foundation
 extension Action {
     public func sendSOL(
         to destination: String,
-        from: Account,
+        from: Signer,
         amount: UInt64,
         allowUnfundedRecipient: Bool = false,
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
@@ -69,7 +69,7 @@ extension Action {
 public extension Action {
     func sendSOL(
         to destination: String,
-        from: Account,
+        from: Signer,
         amount: UInt64
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
@@ -80,7 +80,7 @@ public extension Action {
 
 extension ActionTemplates {
     public struct SendSOL: ActionTemplate {
-        public init(amount: UInt64, destination: String, from: Account) {
+        public init(amount: UInt64, destination: String, from: Signer) {
             self.amount = amount
             self.destination = destination
             self.from = from
@@ -89,7 +89,7 @@ extension ActionTemplates {
         public typealias Success = TransactionID
         public let amount: UInt64
         public let destination: String
-        public let from: Account
+        public let from: Signer
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
             actionClass.sendSOL(to: destination, from: from, amount: amount, onComplete: completion)

@@ -1,12 +1,15 @@
 import Foundation
 import TweetNacl
 
-public protocol Account {
+@available(*, deprecated, renamed: "Signer")
+typealias Account = Signer
+
+public protocol Signer {
     var publicKey: PublicKey { get }
     func sign(serializedMessage: Data) throws -> Data
 }
 
-public struct HotAccount: Codable, Hashable, Account {
+public struct HotAccount: Codable, Hashable, Signer {
     public let phrase: [String]
     public let publicKey: PublicKey
     public let secretKey: Data

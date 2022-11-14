@@ -4,7 +4,7 @@ import XCTest
 class closeTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solanaSDK: Solana!
-    var account: Account!
+    var account: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet

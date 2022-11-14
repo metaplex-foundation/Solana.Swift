@@ -10,7 +10,7 @@ import Solana
 extension Action {
     public func createTokenAccount(
         mintAddress: String,
-        payer: Account
+        payer: Signer
     ) -> Result<(signature: String, newPubkey: String), Error>? {
         var transactionResult: Result<(signature: String, newPubkey: String), Error>?
         let lock = RunLoopSimpleLock()

@@ -8,7 +8,7 @@ extension Action {
     }
 
     public func swap(
-        account: Account,
+        account: Signer,
         pool: Pool? = nil,
         source: PublicKey,
         sourceMint: PublicKey,
@@ -214,9 +214,9 @@ extension Action {
         payer: PublicKey,
         instructions: inout [TransactionInstruction],
         cleanupInstructions: inout [TransactionInstruction],
-        signers: inout [Account],
+        signers: inout [Signer],
         minimumBalanceForRentExemption: UInt64
-    ) -> Result<Account, Error> {
+    ) -> Result<Signer, Error> {
         guard let newAccount = HotAccount() else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
@@ -255,9 +255,9 @@ extension Action {
         mint: PublicKey,
         instructions: inout [TransactionInstruction],
         cleanupInstructions: inout [TransactionInstruction],
-        signers: inout [Account],
+        signers: inout [Signer],
         minimumBalanceForRentExemption: UInt64
-    ) -> Result<Account, Error> {
+    ) -> Result<Signer, Error> {
         guard let newAccount = HotAccount() else {
             return .failure(SolanaError.invalidRequest(reason: "Could not create new Account"))
         }
@@ -297,7 +297,7 @@ extension Action {
 @available(macOS 10.15, *)
 public extension Action {
     func swap(
-        account: Account,
+        account: Signer,
         pool: Pool? = nil,
         source: PublicKey,
         sourceMint: PublicKey,
@@ -329,7 +329,7 @@ public extension Action {
 
 extension ActionTemplates {
     public struct Swap: ActionTemplate {
-        public init(account: Account,
+        public init(account: Signer,
                     pool: Pool? = nil,
                     source: PublicKey,
                     sourceMint: PublicKey,
@@ -347,7 +347,7 @@ extension ActionTemplates {
             self.amount = amount
         }
 
-        public let account: Account
+        public let account: Signer
         public let pool: Pool?// = nil
         public let source: PublicKey
         public let sourceMint: PublicKey

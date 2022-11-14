@@ -82,7 +82,7 @@ public struct TokenProgram {
         account: PublicKey,
         delegate: PublicKey,
         owner: PublicKey,
-        multiSigners: [Account] = [],
+        multiSigners: [Signer] = [],
         amount: UInt64
     ) -> TransactionInstruction {
         var keys = [
@@ -156,7 +156,7 @@ public struct TokenProgram {
         mint: PublicKey,
         destination: PublicKey,
         owner: PublicKey,
-        multiSigners: [Account],
+        multiSigners: [Signer],
         amount: Lamports,
         decimals: Decimals
     ) -> TransactionInstruction {

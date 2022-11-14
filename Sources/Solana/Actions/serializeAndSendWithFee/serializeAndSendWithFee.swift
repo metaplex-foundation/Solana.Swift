@@ -3,7 +3,7 @@ import Foundation
 extension Action {
     fileprivate func retryOrError(instructions: [TransactionInstruction],
                                   recentBlockhash: String? = nil,
-                                  signers: [Account],
+                                  signers: [Signer],
                                   maxAttempts: Int = 3,
                                   numberOfTries: Int = 0,
                                   error: Error,
@@ -30,7 +30,7 @@ extension Action {
     public func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttemps: Int,
         numberOfTries: Int,
         onComplete: @escaping ((Result<String, Error>) -> Void)
@@ -47,7 +47,7 @@ extension Action {
     public func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttempts: Int = 3,
         numberOfTries: Int = 0,
         onComplete: @escaping ((Result<String, Error>) -> Void)
@@ -90,7 +90,7 @@ public extension Action {
     func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttempts: Int = 3,
         numberOfTries: Int = 0
     ) async throws -> String {
@@ -109,7 +109,7 @@ public extension Action {
     func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttempts: Int = 3,
         numberOfTries: Int = 0
     ) async throws -> String {
@@ -129,7 +129,7 @@ public extension Action {
 extension Action {
     fileprivate func retrySimulateOrError(instructions: [TransactionInstruction],
                                           recentBlockhash: String? = nil,
-                                          signers: [Account],
+                                          signers: [Signer],
                                           maxAttempts: Int = 3,
                                           numberOfTries: Int = 0,
                                           error: (Error),
@@ -156,7 +156,7 @@ extension Action {
     public func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttemps: Int,
         numberOfTries: Int,
         onComplete: @escaping ((Result<String, Error>) -> Void)) {
@@ -166,7 +166,7 @@ extension Action {
     public func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttempts: Int = 3,
         numberOfTries: Int = 0,
         onComplete: @escaping((Result<String, Error>) -> Void)
@@ -203,7 +203,7 @@ extension Action {
 
 extension ActionTemplates {
     public struct SerializeAndSendWithFee: ActionTemplate {
-        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, maxAttempts: Int = 3) {
+        public init(instructions: [TransactionInstruction], signers: [Signer], recentBlockhash: String? = nil, maxAttempts: Int = 3) {
             self.instructions = instructions
             self.signers = signers
             self.recentBlockhash = recentBlockhash
@@ -212,7 +212,7 @@ extension ActionTemplates {
 
         public let instructions: [TransactionInstruction]
         public let recentBlockhash: String?
-        public let signers: [Account]
+        public let signers: [Signer]
         public let maxAttempts: Int
 
         public typealias Success = String
@@ -223,7 +223,7 @@ extension ActionTemplates {
     }
 
     public struct SerializeAndSendWithFeeSimulation: ActionTemplate {
-        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil, maxAttempts: Int = 3) {
+        public init(instructions: [TransactionInstruction], signers: [Signer], recentBlockhash: String? = nil, maxAttempts: Int = 3) {
             self.instructions = instructions
             self.signers = signers
             self.recentBlockhash = recentBlockhash
@@ -232,7 +232,7 @@ extension ActionTemplates {
 
         public let instructions: [TransactionInstruction]
         public let recentBlockhash: String?
-        public let signers: [Account]
+        public let signers: [Signer]
         public let maxAttempts: Int
 
         public typealias Success = String

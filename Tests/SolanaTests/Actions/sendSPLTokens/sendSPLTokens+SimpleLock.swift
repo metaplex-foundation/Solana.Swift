@@ -30,7 +30,7 @@ extension Action {
         from fromPublicKey: String,
         to destinationAddress: String,
         amount: UInt64,
-        payer: Account
+        payer: Signer
     ) -> Result<TransactionID, Error>? {
         var transaction: Result<TransactionID, Error>?
         let lock = RunLoopSimpleLock()

@@ -2,7 +2,7 @@ import Foundation
 
 extension Action {
     public func closeTokenAccount(
-        account: Account,
+        account: Signer,
         tokenPubkey: String,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
@@ -27,7 +27,7 @@ extension Action {
 @available(macOS 10.15, *)
 public extension Action {
     func closeTokenAccount(
-        account: Account,
+        account: Signer,
         tokenPubkey: String
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
@@ -38,14 +38,14 @@ public extension Action {
 
 extension ActionTemplates {
     public struct CloseTokenAccountAction: ActionTemplate {
-        public init(account: Account, tokenPubkey: String) {
+        public init(account: Signer, tokenPubkey: String) {
             self.account = account
             self.tokenPubkey = tokenPubkey
         }
 
         public typealias Success = TransactionID
 
-        public let account: Account
+        public let account: Signer
         public let tokenPubkey: String
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {

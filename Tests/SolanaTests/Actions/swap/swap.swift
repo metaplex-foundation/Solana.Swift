@@ -4,7 +4,7 @@ import XCTest
 class swap: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var solana: Solana!
-    var account: Account!
+    var account: Signer!
     let publicKey = PublicKey(string: "11111111111111111111111111111111")!
 
     override func setUpWithError() throws {

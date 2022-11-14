@@ -8,7 +8,7 @@ extension Action {
 
     public func createTokenAccount(
         mintAddress: String,
-        payer: Account,
+        payer: Signer,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
         self.api.getRecentBlockhash { resultBlockhash in
@@ -28,7 +28,7 @@ extension Action {
 
     fileprivate func callGetCreateTokenAccountFee(
         mintAddress: String,
-        payer: Account,
+        payer: Signer,
         recentBlockhash: String,
         onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)
     ) {
@@ -50,7 +50,7 @@ extension Action {
     }
 
     fileprivate func signAndSend(mintAddress: String,
-                          payer: Account,
+                          payer: Signer,
                           recentBlockhash: String,
                           minBalance: UInt64,
                           onComplete: @escaping ((Result<(signature: String, newPubkey: String), Error>) -> Void)) {
@@ -110,7 +110,7 @@ public extension Action {
 
     func createTokenAccount(
         mintAddress: String,
-        payer: Account
+        payer: Signer
     ) async throws -> (signature: String, newPubkey: String) {
         try await withCheckedThrowingContinuation { c in
             self.createTokenAccount(mintAddress: mintAddress, payer: payer, onComplete: c.resume(with:))
@@ -144,7 +144,7 @@ extension ActionTemplates {
         public typealias Success = (signature: String, newPubkey: String)
 
         public let mintAddress: String
-        public let payer: Account
+        public let payer: Signer
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<(signature: String, newPubkey: String), Error>) -> Void) {
             actionClass.createTokenAccount(mintAddress: mintAddress, payer: payer, onComplete: completion)

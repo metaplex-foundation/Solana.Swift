@@ -5,7 +5,7 @@ extension Action {
     public func getOrCreateAssociatedTokenAccount(
         owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account,
+        payer: Signer,
         onComplete: @escaping (Result<(transactionId: TransactionID?, associatedTokenAddress: PublicKey), Error>) -> Void
     ) {
         guard case let .success(associatedAddress) = PublicKey.associatedTokenAddress(
@@ -51,7 +51,7 @@ extension Action {
     public func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account,
+        payer: Signer,
         onComplete: @escaping ((Result<TransactionID, Error>) -> Void)
     ) {
 
@@ -94,7 +94,7 @@ public extension Action {
     func getOrCreateAssociatedTokenAccount(
         owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account
+        payer: Signer
     ) async throws -> (transactionId: TransactionID?, associatedTokenAddress: PublicKey) {
         try await withCheckedThrowingContinuation { c in
             self.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint, payer: payer, onComplete: c.resume(with:))
@@ -104,7 +104,7 @@ public extension Action {
     func createAssociatedTokenAccount(
         for owner: PublicKey,
         tokenMint: PublicKey,
-        payer: Account
+        payer: Signer
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
             self.createAssociatedTokenAccount(for: owner, tokenMint: tokenMint, payer: payer, onComplete: c.resume(with:))
@@ -115,7 +115,7 @@ public extension Action {
 extension ActionTemplates {
 
     public struct CreateAssociatedTokenAccountAction: ActionTemplate {
-        public init(owner: PublicKey, tokenMint: PublicKey, payer: Account) {
+        public init(owner: PublicKey, tokenMint: PublicKey, payer: Signer) {
             self.owner = owner
             self.tokenMint = tokenMint
             self.payer = payer
@@ -124,7 +124,7 @@ extension ActionTemplates {
         public typealias Success = TransactionID
         public let owner: PublicKey
         public let tokenMint: PublicKey
-        public let payer: Account
+        public let payer: Signer
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<TransactionID, Error>) -> Void) {
             actionClass.createAssociatedTokenAccount(
@@ -137,7 +137,7 @@ extension ActionTemplates {
     }
 
     public struct GetOrCreateAssociatedTokenAccountAction: ActionTemplate {
-        public init(owner: PublicKey, tokenMint: PublicKey, payer: Account) {
+        public init(owner: PublicKey, tokenMint: PublicKey, payer: Signer) {
             self.owner = owner
             self.tokenMint = tokenMint
             self.payer = payer
@@ -146,7 +146,7 @@ extension ActionTemplates {
         public typealias Success = (transactionId: TransactionID?, associatedTokenAddress: PublicKey)
         public let owner: PublicKey
         public let tokenMint: PublicKey
-        public let payer: Account
+        public let payer: Signer
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<Success, Error>) -> Void) {
             actionClass.getOrCreateAssociatedTokenAccount(owner: owner, tokenMint: tokenMint, payer: payer, onComplete: completion)

@@ -11,7 +11,7 @@ extension Action {
     func serializeAndSendWithFee(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttemps: Int = 3,
         numberOfTries: Int = 0
     ) -> Result<String, Error>? {
@@ -34,7 +34,7 @@ extension Action {
     func serializeAndSendWithFeeSimulation(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         maxAttemps: Int = 3,
         numberOfTries: Int = 0
     ) -> Result<String, Error>? {

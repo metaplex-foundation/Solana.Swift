@@ -7,7 +7,7 @@ class createAssociatedTokenAccountAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var networkRouterMock: NetworkingRouterMock!
     var solana: Solana!
-    var account: Account!
+    var account: Signer!
     
     override func setUpWithError() throws {
         try super.setUpWithError()

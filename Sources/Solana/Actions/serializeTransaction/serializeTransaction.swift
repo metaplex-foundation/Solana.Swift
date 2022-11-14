@@ -4,7 +4,7 @@ extension Action {
     public func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account],
+        signers: [Signer],
         onComplete: @escaping ((Result<String, Error>) -> Void)
     ) {
         guard let feePayer = signers.first?.publicKey else {
@@ -48,7 +48,7 @@ public extension Action {
     func serializeTransaction(
         instructions: [TransactionInstruction],
         recentBlockhash: String? = nil,
-        signers: [Account]
+        signers: [Signer]
     ) async throws -> String {
         try await withCheckedThrowingContinuation { c in
             self.serializeTransaction(
@@ -63,7 +63,7 @@ public extension Action {
 
 extension ActionTemplates {
     public struct SerializeTransaction: ActionTemplate {
-        public init(instructions: [TransactionInstruction], signers: [Account], recentBlockhash: String? = nil) {
+        public init(instructions: [TransactionInstruction], signers: [Signer], recentBlockhash: String? = nil) {
             self.instructions = instructions
             self.recentBlockhash = recentBlockhash
             self.signers = signers
@@ -73,7 +73,7 @@ extension ActionTemplates {
 
         public let instructions: [TransactionInstruction]
         public let recentBlockhash: String?
-        public let signers: [Account]
+        public let signers: [Signer]
 
         public func perform(withConfigurationFrom actionClass: Action, completion: @escaping (Result<String, Error>) -> Void) {
             actionClass.serializeTransaction(instructions: instructions, recentBlockhash: recentBlockhash, signers: signers, onComplete: completion)

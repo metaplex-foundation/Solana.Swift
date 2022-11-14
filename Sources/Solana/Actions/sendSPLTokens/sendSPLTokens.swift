@@ -7,7 +7,7 @@ extension Action {
         to destinationAddress: String,
         amount: UInt64,
         allowUnfundedRecipient: Bool = false,
-        payer: Account,
+        payer: Signer,
         onComplete: @escaping (Result<TransactionID, Error>) -> Void
     ) {
 
@@ -81,7 +81,7 @@ public extension Action {
         to destinationAddress: String,
         amount: UInt64,
         allowUnfundedRecipient: Bool = false,
-        payer: Account
+        payer: Signer
     ) async throws -> TransactionID {
         try await withCheckedThrowingContinuation { c in
             self.sendSPLTokens(
@@ -103,7 +103,7 @@ extension ActionTemplates {
         public let fromPublicKey: String
         public let destinationAddress: String
         public let amount: UInt64
-        public let payer: Account
+        public let payer: Signer
         public let allowUnfundedRecipient: Bool
 
         public typealias Success = TransactionID
