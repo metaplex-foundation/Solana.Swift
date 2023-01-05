@@ -44,7 +44,7 @@ public class NetworkingRouter: SolanaRouter {
 
             do {
                 let encoder = JSONEncoder()
-                if #available(iOS 13.0, *) {
+                if #available(iOS 13.0, macOS 10.15, *) {
                     // There may be bugs on older versions of iOS here. Consider upping the minimum version, or figure out some different way of doing this
                     encoder.outputFormatting = .withoutEscapingSlashes
                 }
