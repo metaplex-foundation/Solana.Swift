@@ -10,6 +10,7 @@ public enum HTTPMethod: String {
 public enum RPCError: Error {
     case httpError
     case httpErrorCode(Int)
+    case invalidRequestData
     case invalidResponseNoData
     case invalidResponse(ResponseError)
     case unknownResponse
@@ -43,7 +44,19 @@ public class NetworkingRouter: SolanaRouter {
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             do {
-                urlRequest.httpBody = try JSONEncoder().encode(requestAPI)
+                let encoder = JSONEncoder()
+                if #available(iOS 13.0, macOS 10.15, *) {
+                    encoder.outputFormatting = .withoutEscapingSlashes
+                    urlRequest.httpBody = try encoder.encode(requestAPI)
+                } else {
+                    let data = try encoder.encode(requestAPI)
+                    guard let string = String(data: data, encoding: .utf8) else { throw RPCError.invalidRequestData }
+                    let fixedString = string.replacingOccurrences(of: "\\/", with: "/")
+                    
+                    guard let fixedData = fixedString.data(using: .utf8) else { throw RPCError.invalidRequestData }
+                    urlRequest.httpBody = fixedData
+                }
+                
                 cb(.success(urlRequest))
                 return
             } catch let ecodingError {
