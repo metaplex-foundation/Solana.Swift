@@ -55,8 +55,8 @@ final class SocketTests: XCTestCase {
     
     let socket = SolanaSocket(
         endpoint: RPCEndpoint(
-            url: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_URL"]!) ??  URL(string: "https://api.devnet.solana.com")!,
-            urlWebSocket: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_WSS"]!) ?? URL(string: "wss://api.devnet.solana.com")!,
+            url: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_URL"] ?? "") ??  URL(string: "https://api.devnet.solana.com")!,
+            urlWebSocket: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_WSS"] ?? "") ?? URL(string: "wss://api.devnet.solana.com")!,
             network: .devnet
         ),
         enableDebugLogs: true
