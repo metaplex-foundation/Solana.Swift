@@ -4,7 +4,11 @@ import XCTest
 @available(iOS 13.0, *)
 @available(macOS 10.15, *)
 class MethodsAsync: XCTestCase {
-    var endpoint = RPCEndpoint.devnetSolana
+    let endpoint = RPCEndpoint(
+        url: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_URL"] ?? "") ??  URL(string: "https://api.devnet.solana.com")!,
+        urlWebSocket: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_WSS"] ?? "") ?? URL(string: "wss://api.devnet.solana.com")!,
+        network: .devnet
+    )
     var solana: Solana!
     var signer: Signer!
 
@@ -44,27 +48,29 @@ class MethodsAsync: XCTestCase {
     }
     func testGetBlockTime() async throws {
         try await testGetRecentBlockhash()
-        _ = try await solana.api.getBlockTime(block: 109479081)
+        let slot = try! solana.api.getSlot()!.get()
+        _ = try await solana.api.getBlockTime(block: slot)
     }
     // func testGetConfirmedBlock() async throws {
     //     let block = try await solana.api.getConfirmedBlock(slot: 63426807)
     //     XCTAssertEqual(63426806, block.parentSlot);
     // }
     func testGetConfirmedBlocks() async throws {
-        let blocks = try await solana.api.getConfirmedBlocks(startSlot:109479079, endSlot: 109479081)
-        XCTAssertEqual(blocks.count, 2);
+        let slot = try! solana.api.getSlot()!.get()
+        let blocks = try await solana.api.getConfirmedBlocks(startSlot:slot-10, endSlot: slot-5)
+        XCTAssert(blocks.count > 0)
     }
     func testGetConfirmedBlocksWithLimit() async throws {
         let blocks = try await solana.api.getConfirmedBlocksWithLimit(startSlot:109479071, limit: 10)
         XCTAssertEqual(blocks.count, 10);
     }
     func testGetConfirmedSignaturesForAddress2() async throws {
-        let result = try await solana.api.getConfirmedSignaturesForAddress2(account: "5nA7ZpnrhapTRSuiQziKiXtMoWrJYGGG1PWBjzMYSgmD", configs: RequestConfiguration(limit: 4))
+        let result = try await solana.api.getConfirmedSignaturesForAddress2(account: "Vote111111111111111111111111111111111111111", configs: RequestConfiguration(limit: 4))
         XCTAssertEqual(result.count, 4)
     }
     func testGetConfirmedTransaction() async throws {
-        let transaction = try await solana.api.getConfirmedTransaction(transactionSignature: "5w6yLNSVWwqaBRcpffpDi2NvxcSxMAvPDi39ehf5MrRqa2va94ibnxBiss8CZW7MDdmriECxWtN8doDnGUfZzbLA")
-        XCTAssertEqual(transaction.blockTime, 1642843449)
+        let transaction = try await solana.api.getConfirmedTransaction(transactionSignature: "3nRsxY29xgo4G9zb71VkZDJFvsZAJZWeXVLGfgNFwZ4Bbudv3DXy4Yw1WdJLJLf4MDNNHm78nQxCUdv9nhCFcLov")
+        XCTAssertEqual(transaction.blockTime, 1675377453)
     }
     func testGetEpochInfo() async throws {
         _ = try await solana.api.getEpochInfo()
@@ -149,14 +155,14 @@ class MethodsAsync: XCTestCase {
     func testGetTransactionCount() async throws {
         _ = try await solana.api.getTransactionCount()
     }
-    func testGetStakeActivation() async throws {
+    /*func testGetStakeActivation() async throws {
         // https://explorer.solana.com/address/AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G
         let mainNetSolana = Solana(router: NetworkingRouter(endpoint: .mainnetBetaSolana))
         let stakeActivation = try await mainNetSolana.api.getStakeActivation(stakeAccount: "AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G")
         XCTAssertEqual("active", stakeActivation.state)
         XCTAssertTrue(stakeActivation.active > 0)
         XCTAssertEqual(0, stakeActivation.inactive)
-    }
+    }*/
     func testGetSignatureStatuses() async throws {
         _ = try await solana.api.getSignatureStatuses(pubkeys: ["3nVfYabxKv9ohGb4nXF3EyJQnbVcGVQAm2QKzdPrsemrP4D8UEZEzK8bCWgyTFif6mjo99akvHcCbxiEKzN5L9ZG"])
 

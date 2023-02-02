@@ -50,7 +50,7 @@ class serializeAndSendWithFee: XCTestCase {
         
         let instruction = SystemProgram.transferInstruction(from: fromPublicKey, to: toPublicKey, lamports: 3000)
         
-        XCTAssertEqual(PublicKey.programId, instruction.programId)
+        XCTAssertEqual(PublicKey.systemProgramId, instruction.programId)
         XCTAssertEqual(2, instruction.keys.count)
         XCTAssertEqual(toPublicKey, instruction.keys[1].publicKey)
         XCTAssertEqual([2, 0, 0, 0, 184, 11, 0, 0, 0, 0, 0, 0], instruction.data)
