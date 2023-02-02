@@ -10,7 +10,6 @@ public struct RPCEndpoint: Hashable, Codable {
         self.network = network
     }
 
-    public static let mainnetBetaSerum = RPCEndpoint(url: URL(string: "https://solana-api.projectserum.com")!, urlWebSocket: URL(string: "wss://solana-api.projectserum.com")!, network: .mainnetBeta)
     public static let mainnetBetaSolana = RPCEndpoint(url: URL(string: "https://api.mainnet-beta.solana.com")!, urlWebSocket: URL(string: "wss://api.mainnet-beta.solana.com")!, network: .mainnetBeta)
     public static let devnetSolana = RPCEndpoint(url: URL(string: "https://api.devnet.solana.com")!, urlWebSocket: URL(string: "wss://api.devnet.solana.com")!, network: .devnet)
     public static let testnetSolana = RPCEndpoint(url: URL(string: "https://api.testnet.solana.com")!, urlWebSocket: URL(string: "wss://api.testnet.solana.com")!, network: .testnet)
