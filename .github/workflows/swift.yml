@@ -17,6 +17,6 @@ jobs:
       run: swift build
     - name: Run tests
       run: swift test --enable-code-coverage
-	  env:
-		  DEVNET_VALIDATOR_URL: ${{ secrets.DEVNET_VALIDATOR_URL }}
-		  DEVNET_VALIDATOR_WSS: ${{ secrets.DEVNET_VALIDATOR_WSS }}
+      env:
+        DEVNET_VALIDATOR_URL: ${{ secrets.DEVNET_VALIDATOR_URL }}
+        DEVNET_VALIDATOR_WSS: ${{ secrets.DEVNET_VALIDATOR_WSS }}
