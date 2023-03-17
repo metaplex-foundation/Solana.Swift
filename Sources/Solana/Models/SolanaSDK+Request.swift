@@ -36,6 +36,7 @@ public struct RequestConfiguration: Encodable {
     public let before: String?
     public let until: String?
     public let skipPreflight: Bool?
+    public let preflightCommitment: Commitment?
 
     public init?(
         commitment: Commitment? = nil,
@@ -45,7 +46,8 @@ public struct RequestConfiguration: Encodable {
         limit: Int? = nil,
         before: String? = nil,
         until: String? = nil,
-        skipPreflight: Bool? = nil
+        skipPreflight: Bool? = nil,
+        preflightCommitment: Commitment? = nil
     ) {
         if commitment == nil
             && encoding == nil
@@ -54,7 +56,8 @@ public struct RequestConfiguration: Encodable {
             && limit == nil
             && before == nil
             && until == nil
-            && skipPreflight == nil {
+            && skipPreflight == nil
+            && preflightCommitment == nil {
             return nil
         }
         self.commitment = commitment
@@ -65,6 +68,7 @@ public struct RequestConfiguration: Encodable {
         self.before = before
         self.until = until
         self.skipPreflight = skipPreflight
+        self.preflightCommitment = preflightCommitment
     }
 }
 
