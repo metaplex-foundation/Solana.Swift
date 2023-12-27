@@ -11,12 +11,12 @@
         }
       },
       {
-        "package": "secp256k1",
-        "repositoryURL": "https://github.com/Boilertalk/secp256k1.swift.git",
+        "package": "secp256k1_ext",
+        "repositoryURL": "https://github.com/kk-vv/secp256k1_ext.swift",
         "state": {
-          "branch": null,
-          "revision": "cd187c632fb812fd93711a9f7e644adb7e5f97f0",
-          "version": "0.1.7"
+          "branch": "master",
+          "revision": "d915ea5efd62e1fdf979a32c73c0cd64ea8a6eb1",
+          "version": null
         }
       },
       {
