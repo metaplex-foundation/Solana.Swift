@@ -5,7 +5,7 @@ public struct Transaction {
     private static let SIGNATURE_LENGTH: Int = 64
     private static let DEFAULT_SIGNATURE = Data(capacity: 0)
     
-    var signatures = [Signature]()
+    public private(set) var signatures = [Signature]()
     private let feePayer: PublicKey
     private let recentBlockhash: String
 
