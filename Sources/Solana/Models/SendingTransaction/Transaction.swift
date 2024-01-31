@@ -363,9 +363,16 @@ public class Shortvec {
         return (len, newBytes)
     }
     
-    static func nextBlock(buffer: Data, multiplier: Int = 1) -> (Data, Data) {
+    public enum NextBlockError: Error {
+        case outOfRange
+    }
+    
+    static func nextBlock(buffer: Data, multiplier: Int = 1) throws -> (Data, Data) {
         let nextLengh = decodeLength(buffer: buffer)
         
+        guard nextLengh.0 * multiplier < nextLengh.1.count else {
+            throw NextBlockError.outOfRange
+        }
         let block = Data(nextLengh.1[0..<(nextLengh.0 * multiplier)])
         
         return (block, Data(nextLengh.1.dropFirst(nextLengh.0 * multiplier)))
