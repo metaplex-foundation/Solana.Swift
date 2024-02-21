@@ -6,7 +6,7 @@ public protocol SolanaAccountStorage {
     func clear() -> Result<Void, Error>
 }
 
-public class Solana {
+public class SolanaCore {
     let router: SolanaRouter
     public let socket: SolanaSocket
     public let api: Api

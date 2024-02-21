@@ -3,12 +3,12 @@ import XCTest
 
 class closeTokenAccount: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solanaSDK: Solana!
+    var solanaSDK: SolanaCore!
     var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint))
+        solanaSDK = SolanaCore(router: NetworkingRouter(endpoint: endpoint))
         signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     

@@ -3,13 +3,13 @@ import XCTest
 
 class swap: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solana: Solana!
+    var solana: SolanaCore!
     var signer: Signer!
     let publicKey = PublicKey(string: "11111111111111111111111111111111")!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        solana = SolanaCore(router: NetworkingRouter(endpoint: endpoint))
         signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
@@ -20,10 +20,10 @@ class swap: XCTestCase {
         let USDCMintAddress = "2ST2CedQ1QT7f2G31Qws9n7GFj7C56fKnhbxnvLymFwU"
         let USDTMintAddress = "E9ySnfyR467236FjUQKswrXq1qmHmS7WyjbiWo7Fnmgo"
         
-        let source = try Solana.PublicKey(string: USDCWallet)
-        let sourceMint = try Solana.PublicKey(string: USDCMintAddress)
-        let destination = try Solana.PublicKey(string: USDTWallet)
-        let destinationMint = try Solana.PublicKey(string: USDTMintAddress)
+        let source = try SolanaCore.PublicKey(string: USDCWallet)
+        let sourceMint = try SolanaCore.PublicKey(string: USDCMintAddress)
+        let destination = try SolanaCore.PublicKey(string: USDTWallet)
+        let destinationMint = try SolanaCore.PublicKey(string: USDTMintAddress)
 
         _ = try solanaSDK.swap(
             source: source,

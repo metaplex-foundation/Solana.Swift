@@ -4,11 +4,11 @@ import XCTest
 
 class TokenInfoTests: XCTestCase {
     var endpoint = RPCEndpoint.mainnetBetaSolana
-    var solanaSDK: Solana!
+    var solanaSDK: SolanaCore!
 
     override func setUpWithError() throws {
         let tokenProvider = try! TokenListProvider(path: getFileFrom("TokenInfo/mainnet-beta.tokens"))
-        solanaSDK = Solana(router: NetworkingRouter(endpoint: endpoint), tokenProvider: tokenProvider)
+        solanaSDK = SolanaCore(router: NetworkingRouter(endpoint: endpoint), tokenProvider: tokenProvider)
     }
     
     func testCloseAccountInstruction() {
