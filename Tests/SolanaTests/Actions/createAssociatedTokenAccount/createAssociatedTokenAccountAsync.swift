@@ -6,13 +6,13 @@ import Solana
 class createAssociatedTokenAccountAsync: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
     var networkRouterMock: NetworkingRouterMock!
-    var solana: Solana!
+    var solana: SolanaCore!
     var signer: Signer!
     
     override func setUpWithError() throws {
         try super.setUpWithError()
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: .devnetSolana))
+        solana = SolanaCore(router: NetworkingRouter(endpoint: .devnetSolana))
         signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
     

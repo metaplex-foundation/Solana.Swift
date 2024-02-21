@@ -9,12 +9,12 @@ class MethodsAsync: XCTestCase {
         urlWebSocket: URL(string: ProcessInfo.processInfo.environment["DEVNET_VALIDATOR_WSS"] ?? "") ?? URL(string: "wss://api.devnet.solana.com")!,
         network: .devnet
     )
-    var solana: Solana!
+    var solana: SolanaCore!
     var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        solana = SolanaCore(router: NetworkingRouter(endpoint: endpoint))
         signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))!
     }
 
@@ -157,7 +157,7 @@ class MethodsAsync: XCTestCase {
     }
     /*func testGetStakeActivation() async throws {
         // https://explorer.solana.com/address/AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G
-        let mainNetSolana = Solana(router: NetworkingRouter(endpoint: .mainnetBetaSolana))
+        let mainNetSolana = SolanaCore(router: NetworkingRouter(endpoint: .mainnetBetaSolana))
         let stakeActivation = try await mainNetSolana.api.getStakeActivation(stakeAccount: "AUi8iPbT4sDpd3Bi6Jj7TL5LBEiXEEm2137bSkpL6Z9G")
         XCTAssertEqual("active", stakeActivation.state)
         XCTAssertTrue(stakeActivation.active > 0)

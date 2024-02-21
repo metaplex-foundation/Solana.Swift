@@ -3,12 +3,12 @@ import Solana
 
 class sendSOL: XCTestCase {
     var endpoint = RPCEndpoint.devnetSolana
-    var solana: Solana!
+    var solana: SolanaCore!
     var signer: Signer!
 
     override func setUpWithError() throws {
         let wallet: TestsWallet = .devnet
-        solana = Solana(router: NetworkingRouter(endpoint: endpoint))
+        solana = SolanaCore(router: NetworkingRouter(endpoint: endpoint))
         signer = HotAccount(phrase: wallet.testAccount.components(separatedBy: " "))! // 5Zzguz4NsSRFxGkHfM4FmsFpGZiCDtY72zH2jzMcqkJx
     }
     
