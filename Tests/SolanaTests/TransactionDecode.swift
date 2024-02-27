@@ -8,7 +8,6 @@ final class TransactionDecodeTests: XCTestCase {
         
         let data = Data(base64Encoded: swapTransaction)
         assert(data != nil)
-        Transaction.Mess
         let transaction = try! Transaction.from(buffer: data!)
         let programIds = transaction.instructions.map {
             $0.programId.base58EncodedString
