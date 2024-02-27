@@ -7,7 +7,7 @@ struct CompiledInstruction {
 }
 
 extension Transaction {
-    struct Message {
+    public struct Message {
         static let PUBKEY_LENGTH = 32
         
         // MARK: - Constants
@@ -18,6 +18,12 @@ extension Transaction {
         var recentBlockhash: String
         //        var instructions: [Transaction.Instruction]
         var programInstructions: [TransactionInstruction]
+        
+        public init(accountKeys: [AccountMeta], recentBlockhash: String, programInstructions: [TransactionInstruction]) {
+            self.accountKeys = accountKeys
+            self.recentBlockhash = recentBlockhash
+            self.programInstructions = programInstructions
+        }
 
         func serialize() -> Result<Data, Error> {
             // Construct data
@@ -161,6 +167,13 @@ extension Transaction.Message {
         // Slice up wire data
         var byteArray = buffer
         
+        guard let prefix = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of required signatures") }
+        let maskedPrefix =  prefix & 0x7f
+        guard prefix != maskedPrefix else {
+            throw SolanaError.invalidRequest(reason: "Could not parse legacy type")
+        }
+        byteArray = Data(byteArray.dropFirst())
+
         guard let numRequiredSignatures = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of required signatures") }
         byteArray = Data(byteArray.dropFirst())
         
@@ -170,7 +183,7 @@ extension Transaction.Message {
         guard let numReadonlyUnsignedAccounts = byteArray.first else { throw SolanaError.invalidRequest(reason: "Could not parse number of unsigned accounts") }
         byteArray = Data(byteArray.dropFirst())
               
-        let accountsBlock = Shortvec.nextBlock(buffer: byteArray, multiplier: PUBKEY_LENGTH)
+        let accountsBlock = try Shortvec.nextBlock(buffer: byteArray, multiplier: PUBKEY_LENGTH)
         byteArray = accountsBlock.1
         
         let accountKeys = accountsBlock.0
@@ -190,16 +203,20 @@ extension Transaction.Message {
             
             byteArray = Data(byteArray.dropFirst())
             
-            let accountBlock = Shortvec.nextBlock(buffer: byteArray)
-            byteArray = accountBlock.1
-            
-            let accounts = accountBlock.0.bytes.map{ Int($0) }
-            
-            let dataBlock = Shortvec.nextBlock(buffer: byteArray)
-            byteArray = dataBlock.1
-                        
-            let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataBlock.0.bytes)
-            instructions.append(compiledInstruction)
+            do {
+                let accountBlock = try Shortvec.nextBlock(buffer: byteArray)
+                byteArray = accountBlock.1
+                
+                let accounts = accountBlock.0.bytes.map{ Int($0) }
+                
+                let dataBlock = try Shortvec.nextBlock(buffer: byteArray)
+                byteArray = dataBlock.1
+                
+                let compiledInstruction = CompiledInstruction(programIdIndex: programIdIndex, accounts: accounts, data: dataBlock.0.bytes)
+                instructions.append(compiledInstruction)
+            } catch {
+                break
+            }
         }
         
         let header = Header(
@@ -217,12 +234,16 @@ extension Transaction.Message {
             guard let programId = PublicKey(string: accountKeys[instruction.programIdIndex]) else { continue }
 
             var keys: [AccountMeta] = []
-            for j in 0...(instruction.accounts.count - 1) {
-                let accountIndex = instruction.accounts[j]
-                let pubKey = accountKeys[accountIndex]
-                // TODO: Not sure if it should continue or throw, but I don't think it can happen here
-                guard let accountMeta = accountMetasAsDictionary[pubKey] else { continue }
-                keys.append(accountMeta)
+            if !instruction.accounts.isEmpty {
+                for j in 0...(instruction.accounts.count - 1) {
+                    let accountIndex = instruction.accounts[j]
+                    if accountIndex < accountKeys.count {
+                        let pubKey = accountKeys[accountIndex]
+                        // TODO: Not sure if it should continue or throw, but I don't think it can happen here
+                        guard let accountMeta = accountMetasAsDictionary[pubKey] else { continue }
+                        keys.append(accountMeta)
+                    }
+                }
             }
 
             let transactionInstruction = TransactionInstruction(keys: keys, programId: programId, data: instruction.data)

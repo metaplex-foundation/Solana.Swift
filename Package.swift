@@ -15,9 +15,9 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(name: "TweetNacl", url: "https://github.com/bitmark-inc/tweetnacl-swiftwrap.git", from: "1.0.2"),
-        .package(url: "https://github.com/daltoniam/Starscream.git", from: "4.0.0"),
+        .package(url: "https://github.com/daltoniam/Starscream.git", "4.0.4"..."4.0.4"),
         .package(name: "Beet", url: "https://github.com/metaplex-foundation/beet-swift.git", from: "1.0.2"),
-        .package(name: "secp256k1", url: "https://github.com/Boilertalk/secp256k1.swift.git", from: "0.1.7"),
+        .package(name: "secp256k1", url: "https://github.com/GigaBitcoin/secp256k1.swift.git", "0.10.0"..."0.10.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
     ],
     targets: [

@@ -5,7 +5,7 @@ public struct Transaction {
     private static let SIGNATURE_LENGTH: Int = 64
     private static let DEFAULT_SIGNATURE = Data(capacity: 0)
     
-    var signatures = [Signature]()
+    public private(set) var signatures = [Signature]()
     private let feePayer: PublicKey
     private let recentBlockhash: String
 
@@ -321,7 +321,25 @@ public extension Transaction {
         return try populateTransaction(fromMessage: Message.from(buffer: byteArray), signatures: signatures)
     }
     
-    private static func populateTransaction(fromMessage: Message, signatures: [[UInt8]]) throws -> Transaction {
+    static func signaturesFrom(buffer: Data) throws -> [[UInt8]] {
+        // Slice up wire data
+        var byteArray = buffer
+        
+        let signatureCount = Shortvec.decodeLength(buffer: byteArray)
+        byteArray = signatureCount.1
+        
+        var signatures: [[UInt8]] = []
+        for _ in 0...(signatureCount.0) - 1 {
+            let signature = byteArray[0..<SIGNATURE_LENGTH]
+            byteArray = Data(byteArray.dropFirst(SIGNATURE_LENGTH))
+            
+            signatures.append(signature.bytes)
+        }
+        
+        return signatures
+    }
+    
+    static func populateTransaction(fromMessage: Message, signatures: [[UInt8]]) throws -> Transaction {
         
         // TODO: Should check against required number of signatures if there are any
         let feePayer = fromMessage.accountKeys[0].publicKey
@@ -363,9 +381,16 @@ public class Shortvec {
         return (len, newBytes)
     }
     
-    static func nextBlock(buffer: Data, multiplier: Int = 1) -> (Data, Data) {
+    public enum NextBlockError: Error {
+        case outOfRange
+    }
+    
+    static func nextBlock(buffer: Data, multiplier: Int = 1) throws -> (Data, Data) {
         let nextLengh = decodeLength(buffer: buffer)
         
+        guard nextLengh.0 * multiplier < nextLengh.1.count else {
+            throw NextBlockError.outOfRange
+        }
         let block = Data(nextLengh.1[0..<(nextLengh.0 * multiplier)])
         
         return (block, Data(nextLengh.1.dropFirst(nextLengh.0 * multiplier)))
